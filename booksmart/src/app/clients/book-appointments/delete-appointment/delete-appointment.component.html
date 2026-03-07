@@ -1,0 +1,31 @@
+<div class="success-card" *ngIf="showSuccessCard">
+  🗑️ Cita eliminada correctamente
+</div>
+
+<div class="modal-backdrop">
+  <div class="modal">
+
+    <h2>Eliminar Cita</h2>
+
+    <p class="message">
+      ¿Estás segura que deseas eliminar esta cita?
+    </p>
+
+    <div class="buttons">
+      <button 
+        class="delete-btn" 
+        (click)="confirmDelete()" 
+        [disabled]="loading">
+        {{ loading ? 'Eliminando...' : 'Eliminar' }}
+      </button>
+
+      <button 
+        class="cancel-btn" 
+        (click)="closeModal()" 
+        [disabled]="loading">
+        Cancelar
+      </button>
+    </div>
+
+  </div>
+</div>

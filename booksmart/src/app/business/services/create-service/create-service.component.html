@@ -1,0 +1,49 @@
+<div class="modal">
+
+  <div class="modal-content">
+
+    <h2>Agregar Servicio</h2>
+
+    <label>Establecimiento</label>
+
+    <select [(ngModel)]="service.establecimiento_id">
+
+      <option value="">Seleccione un establecimiento</option>
+
+      <option
+        *ngFor="let est of establishments"
+        [value]="est.establecimiento_id">
+
+        {{ est.nombre }}
+
+      </option>
+
+    </select>
+
+    <label>Nombre</label>
+    <input type="text" [(ngModel)]="service.nombre">
+
+    <label>Descripción</label>
+    <textarea [(ngModel)]="service.descripcion"></textarea>
+
+    <label>Duración (min)</label>
+    <input type="number" [(ngModel)]="service.duracion">
+
+    <label>Precio</label>
+    <input type="number" [(ngModel)]="service.precio">
+
+    <div class="buttons">
+
+      <button class="save-btn" (click)="createService()">
+        Guardar
+      </button>
+
+      <button class="cancel-btn" (click)="closeModal()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

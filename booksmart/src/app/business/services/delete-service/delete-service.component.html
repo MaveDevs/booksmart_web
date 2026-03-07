@@ -1,0 +1,29 @@
+<div class="modal-backdrop">
+
+  <div class="modal">
+
+    <h2>Eliminar Servicio</h2>
+
+    <p>¿Seguro que deseas eliminar este servicio?</p>
+
+    <div class="buttons">
+
+      <button class="delete-btn"
+              (click)="deleteService()">
+        Eliminar
+      </button>
+
+      <button class="cancel-btn"
+              (click)="closeModal()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="success-card" *ngIf="showSuccessCard">
+  Servicio eliminado correctamente
+</div>

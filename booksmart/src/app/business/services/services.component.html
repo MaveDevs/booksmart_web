@@ -1,0 +1,85 @@
+<div class="container">
+
+  <div class="header">
+
+    <h2>Servicios</h2>
+
+    <button class="add-btn"
+            (click)="openCreateModal()">
+      + Agregar Servicio
+    </button>
+
+  </div>
+
+  <div *ngIf="loading">
+    <p>Cargando servicios...</p>
+  </div>
+
+  <div *ngIf="!loading && services.length === 0">
+    <p>No hay servicios registrados</p>
+  </div>
+
+  <table *ngIf="services.length > 0" class="table">
+
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Precio</th>
+        <th>Duración</th>
+        <th>Establecimiento</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let service of services">
+
+        <td>{{ service.nombre }}</td>
+        <td>{{ service.descripcion }}</td>
+        <td>{{ service.precio }}</td>
+        <td>{{ service.duracion }} min</td>
+        <td>{{ service.establecimiento_nombre }}</td>
+
+        <td class="actions">
+
+          <button class="edit-btn"
+                  (click)="editService(service)">
+            ✎
+          </button>
+
+          <button class="delete-btn"
+                  (click)="openDeleteModal(service.servicio_id)">
+            🗑
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+
+<app-create-service
+  *ngIf="showCreateModal"
+  (close)="closeCreateModal()"
+  (created)="reloadAfterCreate()">
+</app-create-service>
+
+<app-edit-service
+  *ngIf="showModal"
+  [serviceId]="selectedId"
+  (close)="closeModal()"
+  (updated)="reloadAfterUpdate()">
+</app-edit-service>
+
+<app-delete-service
+  *ngIf="showDeleteModal"
+  [serviceId]="selectedId"
+  (close)="closeDeleteModal()"
+  (deleted)="reloadAfterDelete()">
+</app-delete-service>

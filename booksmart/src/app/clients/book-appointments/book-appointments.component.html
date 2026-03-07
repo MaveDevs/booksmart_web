@@ -1,0 +1,90 @@
+<div class="container">
+
+  <div class="header">
+
+    <h2>Citas</h2>
+
+    <button class="add-btn"
+            (click)="openCreateModal()">
+      + Agregar Cita
+    </button>
+
+  </div>
+
+  <div *ngIf="loading">
+    <p>Cargando citas...</p>
+  </div>
+
+  <div *ngIf="!loading && appointments.length === 0">
+    <p>No hay citas registradas</p>
+  </div>
+
+  <table *ngIf="appointments.length > 0" class="table">
+
+    <thead>
+      <tr>
+        <th>Cliente</th>
+        <th>Servicio</th>
+        <th>Fecha</th>
+        <th>Hora</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let cita of appointments">
+
+        <td>{{ cita.cliente_nombre }}</td>
+        <td>{{ cita.servicio_nombre }}</td>
+        <td>{{ cita.fecha }}</td>
+        <td>{{ cita.hora_inicio }} - {{ cita.hora_fin }}</td>
+
+        <td>
+          <span class="status">
+            {{ cita.estado }}
+          </span>
+        </td>
+
+        <td class="actions">
+
+          <button class="edit-btn"
+                  (click)="editAppointment(cita)">
+            ✎
+          </button>
+
+          <button class="delete-btn"
+                  (click)="openDeleteModal(cita.cita_id)">
+            🗑
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+
+<app-create-appointment
+  *ngIf="showCreateModal"
+  (close)="closeCreateModal()"
+  (created)="reloadAfterCreate()">
+</app-create-appointment>
+
+<app-edit-appointment
+  *ngIf="showModal"
+  [appointmentId]="selectedId"
+  (close)="closeModal()"
+  (updated)="reloadAfterUpdate()">
+</app-edit-appointment>
+
+<app-delete-appointment
+  *ngIf="showDeleteModal"
+  [appointmentId]="selectedId"
+  (close)="closeDeleteModal()"
+  (deleted)="reloadAfterDelete()">
+</app-delete-appointment>

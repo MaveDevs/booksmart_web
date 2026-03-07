@@ -1,0 +1,72 @@
+<div class="modal-overlay">
+
+  <div class="modal-card">
+
+    <h2>Crear establecimiento</h2>
+
+    <form (ngSubmit)="createEstablishment()">
+
+      <input
+        type="text"
+        placeholder="Nombre"
+        [(ngModel)]="establishment.nombre"
+        name="nombre"
+        required>
+
+      <input
+        type="text"
+        placeholder="Descripción"
+        [(ngModel)]="establishment.descripcion"
+        name="descripcion">
+
+      <input
+        type="text"
+        placeholder="Dirección"
+        [(ngModel)]="establishment.direccion"
+        name="direccion">
+
+      <input
+        type="number"
+        placeholder="Latitud"
+        [(ngModel)]="establishment.latitud"
+        name="latitud">
+
+      <input
+        type="number"
+        placeholder="Longitud"
+        [(ngModel)]="establishment.longitud"
+        name="longitud">
+
+      <input
+        type="text"
+        placeholder="Teléfono"
+        [(ngModel)]="establishment.telefono"
+        name="telefono">
+
+      <input
+        type="number"
+        placeholder="Usuario ID"
+        [(ngModel)]="establishment.usuario_id"
+        name="usuario_id"
+        required>
+
+      <div class="buttons">
+
+        <button type="submit" class="save-btn">
+          Crear
+        </button>
+
+        <button
+          type="button"
+          class="cancel-btn"
+          (click)="closeModal()">
+          Cancelar
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

@@ -1,0 +1,105 @@
+/* 🔥 Card éxito */
+.success-card {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  background: #1FBF9F;
+  color: #F8F9FA;
+  padding: 14px 20px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(31, 58, 95, 0.3);
+  font-weight: 500;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Animación suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fondo modal */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(31, 58, 95, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Card modal */
+.modal {
+  background: #F8F9FA;
+  padding: 28px;
+  border-radius: 16px;
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  text-align: center;
+}
+
+/* Título */
+.modal h2 {
+  color: #1F3A5F;
+}
+
+/* Texto */
+.message {
+  color: #3A3A3A;
+  font-size: 15px;
+}
+
+/* Botones */
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.buttons button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  color: #F8F9FA;
+  font-weight: 500;
+  transition: 0.2s ease;
+}
+
+/* Botón eliminar */
+.delete-btn {
+  background: #1F3A5F;
+}
+
+.delete-btn:hover:not(:disabled) {
+  background: #179E85;
+}
+
+/* Botón cancelar */
+.cancel-btn {
+  background: #1FBF9F;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: #179E85;
+}
+
+/* Deshabilitado */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

@@ -1,0 +1,28 @@
+<div class="modal-backdrop">
+  <div class="modal">
+
+    <h2>Editar Servicio</h2>
+
+    <label>Nombre</label>
+    <input type="text" [(ngModel)]="service.nombre">
+
+    <label>Descripción</label>
+    <textarea [(ngModel)]="service.descripcion"></textarea>
+
+    <label>Duración</label>
+    <input type="number" [(ngModel)]="service.duracion">
+
+    <label>Precio</label>
+    <input type="number" [(ngModel)]="service.precio">
+
+    <div class="buttons">
+      <button (click)="updateService()">Guardar</button>
+      <button (click)="closeModal()">Cancelar</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="success-card" *ngIf="showSuccessCard">
+   Servicio actualizado correctamente
+</div>

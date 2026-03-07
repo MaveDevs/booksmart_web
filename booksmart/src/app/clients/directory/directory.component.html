@@ -1,0 +1,94 @@
+<div class="container">
+
+  <div class="header">
+
+    <h2>Directorio de Negocios</h2>
+
+    <button
+      class="add-btn"
+      (click)="openCreateModal()">
+      + Agregar establecimiento
+    </button>
+
+  </div>
+
+  <div *ngIf="establishments.length === 0">
+    <p>No hay establecimientos registrados</p>
+  </div>
+
+  <table *ngIf="establishments.length > 0" class="table">
+
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Dirección</th>
+        <th>Teléfono</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let business of establishments">
+
+        <td>{{ business.establecimiento_id }}</td>
+
+        <td>{{ business.nombre }}</td>
+
+        <td>{{ business.descripcion }}</td>
+
+        <td>{{ business.direccion }}</td>
+
+        <td>{{ business.telefono }}</td>
+
+        <td>
+          <span class="status" *ngIf="business.activo">Activo</span>
+          <span class="status inactive" *ngIf="!business.activo">Inactivo</span>
+        </td>
+
+        <td class="actions">
+
+          <button
+            class="edit-btn"
+            (click)="openEditModal(business.establecimiento_id)">
+            ✎
+          </button>
+
+          <button
+            class="delete-btn"
+            (click)="openDeleteModal(business.establecimiento_id)">
+            🗑
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+
+<app-create-establishment
+  *ngIf="showCreateModal"
+  (close)="closeCreateModal()"
+  (created)="reloadAfterCreate()">
+</app-create-establishment>
+
+<app-edit-establishment
+  *ngIf="showEditModal"
+  [establishmentId]="selectedId"
+  (close)="closeEditModal()"
+  (updated)="reloadAfterEdit()">
+</app-edit-establishment>
+
+<app-delete-establishment
+  *ngIf="showDeleteModal"
+  [establishmentId]="selectedId"
+  (close)="closeDeleteModal()"
+  (deleted)="reloadAfterDelete()">
+</app-delete-establishment>
