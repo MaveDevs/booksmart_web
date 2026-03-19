@@ -12,43 +12,120 @@
 
   </div>
 
+
   <div *ngIf="establishments.length === 0">
     <p>No hay establecimientos registrados</p>
   </div>
+
 
   <table *ngIf="establishments.length > 0" class="table">
 
     <thead>
       <tr>
-        <th>ID</th>
+
+        <th>Logo</th>
+        <th>Portada</th>
         <th>Nombre</th>
-        <th>Descripción</th>
+        <th>Descripción pública</th>
         <th>Dirección</th>
         <th>Teléfono</th>
+
+        <th>Día</th>
+        <th>Hora inicio</th>
+        <th>Hora fin</th>
+
         <th>Estado</th>
         <th>Acciones</th>
+
       </tr>
     </thead>
+
 
     <tbody>
 
       <tr *ngFor="let business of establishments">
 
-        <td>{{ business.establecimiento_id }}</td>
-
-        <td>{{ business.nombre }}</td>
-
-        <td>{{ business.descripcion }}</td>
-
-        <td>{{ business.direccion }}</td>
-
-        <td>{{ business.telefono }}</td>
-
+        <!-- LOGO -->
         <td>
-          <span class="status" *ngIf="business.activo">Activo</span>
-          <span class="status inactive" *ngIf="!business.activo">Inactivo</span>
+          <img
+            *ngIf="business.imagen_logo"
+            [src]="business.imagen_logo"
+            width="50"
+            style="border-radius:6px;">
         </td>
 
+
+        <!-- PORTADA -->
+        <td>
+          <img
+            *ngIf="business.imagen_portada"
+            [src]="business.imagen_portada"
+            width="120"
+            style="border-radius:6px;">
+        </td>
+
+
+        <!-- NOMBRE -->
+        <td>
+          {{ business.nombre }}
+        </td>
+
+
+        <!-- DESCRIPCION PUBLICA -->
+        <td>
+          {{ business.descripcion_publica }}
+        </td>
+
+
+        <!-- DIRECCION -->
+        <td>
+          {{ business.direccion }}
+        </td>
+
+
+        <!-- TELEFONO -->
+        <td>
+          {{ business.telefono }}
+        </td>
+
+
+        <!-- DIA -->
+        <td>
+          {{ business.dia_semana }}
+        </td>
+
+
+        <!-- HORA INICIO -->
+        <td>
+          {{ business.hora_inicio }}
+        </td>
+
+
+        <!-- HORA FIN -->
+        <td>
+          {{ business.hora_fin }}
+        </td>
+
+
+        <!-- ESTADO -->
+        <td>
+
+          <span
+            class="status"
+            *ngIf="business.activo">
+            Activo
+          </span>
+
+          <span
+            class="status inactive"
+            *ngIf="!business.activo">
+            Inactivo
+          </span>
+
+        </td>
+
+
+        <!-- ACCIONES -->
         <td class="actions">
 
           <button
@@ -73,12 +150,16 @@
 
 </div>
 
+
+<!-- MODAL CREAR -->
 <app-create-establishment
   *ngIf="showCreateModal"
   (close)="closeCreateModal()"
   (created)="reloadAfterCreate()">
 </app-create-establishment>
 
+
+<!-- MODAL EDITAR -->
 <app-edit-establishment
   *ngIf="showEditModal"
   [establishmentId]="selectedId"
@@ -86,6 +167,8 @@
   (updated)="reloadAfterEdit()">
 </app-edit-establishment>
 
+
+<!-- MODAL ELIMINAR -->
 <app-delete-establishment
   *ngIf="showDeleteModal"
   [establishmentId]="selectedId"

@@ -1,1 +1,92 @@
-<p>reports works!</p>
+<div class="container">
+
+  <div class="header">
+
+    <h2>Reportes del Sistema</h2>
+
+    <button
+      class="add-btn"
+      (click)="openCreateModal()">
+      + Crear reporte
+    </button>
+
+  </div>
+
+  <div *ngIf="loading">
+    <p>Cargando reportes...</p>
+  </div>
+
+  <div *ngIf="!loading && reports.length === 0">
+    <p>No hay reportes generados</p>
+  </div>
+
+  <table *ngIf="reports.length > 0" class="table">
+
+    <thead>
+      <tr>
+        <th>Establecimiento</th>
+        <th>Descripción</th>
+        <th>Fecha generación</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let report of reports">
+
+        <td>{{ report.establecimiento_nombre }}</td>
+
+        <td>{{ report.descripcion }}</td>
+
+        <td>{{ report.fecha_generacion }}</td>
+
+        <td class="actions">
+
+          <button
+            class="download-btn"
+            (click)="downloadReport(report)">
+            ⬇
+          </button>
+
+          <button
+            class="edit-btn"
+            (click)="openEditModal(report.reporte_id)">
+            ✏
+          </button>
+
+          <button
+            class="delete-btn"
+            (click)="openDeleteModal(report.reporte_id)">
+            🗑
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+
+<app-create-report
+  *ngIf="showCreateModal"
+  (close)="closeCreateModal()"
+  (created)="reloadAfterCreate()">
+</app-create-report>
+
+<app-edit-report
+  *ngIf="showEditModal"
+  [reportId]="selectedId"
+  (close)="closeEditModal()"
+  (updated)="reloadAfterEdit()">
+</app-edit-report>
+
+<app-delete-report
+  *ngIf="showDeleteModal"
+  [reportId]="selectedId"
+  (close)="closeDeleteModal()"
+  (deleted)="reloadAfterDelete()">
+</app-delete-report>

@@ -1,0 +1,25 @@
+<div class="modal-backdrop">
+
+  <div class="modal">
+
+    <h2>Editar Reporte</h2>
+
+    <label>Descripción</label>
+
+    <textarea [(ngModel)]="report.descripcion"></textarea>
+
+    <div class="buttons">
+
+      <button (click)="updateReport()">
+        Guardar
+      </button>
+
+      <button (click)="closeModal()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,1 +1,104 @@
-<p>users works!</p>
+<div class="container">
+
+  <div class="header">
+
+    <h2>Dueños de Establecimientos</h2>
+
+    <button
+      class="add-btn"
+      (click)="openCreateModal()">
+      + Crear Dueño
+    </button>
+
+  </div>
+
+  <div *ngIf="loading">
+    <p>Cargando usuarios...</p>
+  </div>
+
+  <div *ngIf="!loading && owners.length === 0">
+    <p>No hay dueños registrados</p>
+  </div>
+
+  <table *ngIf="owners.length > 0" class="table">
+
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Correo</th>
+        <th>Estado</th>
+        <th>Fecha creación</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let user of owners">
+
+        <td>{{ user.nombre }}</td>
+
+        <td>{{ user.apellido }}</td>
+
+        <td>{{ user.correo }}</td>
+
+        <td>
+          <span *ngIf="user.activo">Activo</span>
+          <span *ngIf="!user.activo">Inactivo</span>
+        </td>
+
+        <td>{{ user.fecha_creacion }}</td>
+
+        <td class="actions">
+
+          <button
+            class="edit-btn"
+            (click)="openEditModal(user.usuario_id)">
+            ✎
+          </button>
+
+          <button
+            class="delete-btn"
+            (click)="openDeleteModal(user.usuario_id)">
+            🗑
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+
+
+<!-- CREAR -->
+
+<app-create-user
+  *ngIf="showCreateModal"
+  (close)="closeCreateModal()"
+  (created)="reloadAfterCreate()">
+</app-create-user>
+
+
+<!-- EDITAR -->
+
+<app-edit-user
+  *ngIf="showEditModal"
+  [userId]="selectedId"
+  (close)="closeEditModal()"
+  (updated)="reloadAfterEdit()">
+</app-edit-user>
+
+
+<!-- ELIMINAR -->
+
+<app-delete-user
+  *ngIf="showDeleteModal"
+  [userId]="selectedId"
+  (close)="closeDeleteModal()"
+  (deleted)="reloadAfterDelete()">
+</app-delete-user>

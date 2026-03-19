@@ -1,0 +1,33 @@
+<div class="modal-backdrop">
+
+  <div class="modal">
+
+    <h2>Crear Dueño</h2>
+
+    <label>Nombre</label>
+    <input type="text" [(ngModel)]="user.nombre">
+
+    <label>Apellido</label>
+    <input type="text" [(ngModel)]="user.apellido">
+
+    <label>Correo</label>
+    <input type="email" [(ngModel)]="user.correo">
+
+    <label>Contraseña</label>
+    <input type="password" [(ngModel)]="user.contrasena">
+
+    <div class="buttons">
+
+      <button (click)="createUser()">
+        Guardar
+      </button>
+
+      <button (click)="closeModal()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

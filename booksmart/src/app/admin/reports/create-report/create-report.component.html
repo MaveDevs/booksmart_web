@@ -1,0 +1,41 @@
+<div class="modal-backdrop">
+
+  <div class="modal">
+
+    <h2>Crear Reporte</h2>
+
+    <label>Establecimiento</label>
+
+    <select [(ngModel)]="report.establecimiento_id">
+
+      <option value="0">Seleccionar</option>
+
+      <option
+        *ngFor="let est of establishments"
+        [value]="est.establecimiento_id">
+
+        {{ est.nombre }}
+
+      </option>
+
+    </select>
+
+    <label>Descripción</label>
+
+    <textarea [(ngModel)]="report.descripcion"></textarea>
+
+    <div class="buttons">
+
+      <button (click)="createReport()">
+        Guardar
+      </button>
+
+      <button (click)="closeModal()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

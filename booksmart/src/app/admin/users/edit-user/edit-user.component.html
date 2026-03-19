@@ -1,0 +1,32 @@
+<div class="modal-backdrop">
+
+  <div class="modal">
+
+    <h2>Editar Dueño</h2>
+
+    <label>Nombre</label>
+    <input type="text" [(ngModel)]="user.nombre">
+
+    <label>Apellido</label>
+    <input type="text" [(ngModel)]="user.apellido">
+
+    <label>Correo</label>
+    <input type="email" [(ngModel)]="user.correo">
+
+    <label>Activo</label>
+    <select [(ngModel)]="user.activo">
+      <option [value]="true">Activo</option>
+      <option [value]="false">Inactivo</option>
+    </select>
+
+    <div class="buttons">
+
+      <button (click)="updateUser()">Guardar</button>
+
+      <button (click)="closeModal()">Cancelar</button>
+
+    </div>
+
+  </div>
+
+</div>

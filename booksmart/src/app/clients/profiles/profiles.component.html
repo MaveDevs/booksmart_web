@@ -1,1 +1,59 @@
-<p>profiles works!</p>
+<div class="container">
+
+  <div class="header">
+    <h2>Perfiles de Establecimientos</h2>
+  </div>
+
+  <div *ngIf="loading">
+    <p>Cargando perfiles...</p>
+  </div>
+
+  <div *ngIf="!loading && profiles.length === 0">
+    <p>No hay perfiles registrados</p>
+  </div>
+
+  <table *ngIf="profiles.length > 0" class="table">
+
+    <thead>
+      <tr>
+        <th>Establecimiento</th>
+        <th>Descripción</th>
+        <th>Logo</th>
+        <th>Portada</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let profile of profiles">
+
+
+        <td>
+          {{ profile.establecimiento_nombre }}
+        </td>
+
+        <td>
+          {{ profile.descripcion_publica }}
+        </td>
+
+        <td>
+          <img
+            *ngIf="profile.imagen_logo"
+            [src]="profile.imagen_logo"
+            width="60">
+        </td>
+
+        <td>
+          <img
+            *ngIf="profile.imagen_portada"
+            [src]="profile.imagen_portada"
+            width="100">
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>

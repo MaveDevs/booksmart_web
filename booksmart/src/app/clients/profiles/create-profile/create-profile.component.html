@@ -1,0 +1,58 @@
+<div class="modal-backdrop">
+
+  <div class="modal">
+
+    <h2>Agregar Perfil</h2>
+
+    <label>Establecimiento</label>
+
+    <select [(ngModel)]="profile.establecimiento_id">
+
+      <option value="0">Seleccione un establecimiento</option>
+
+      <option
+        *ngFor="let est of establishments"
+        [value]="est.establecimiento_id">
+
+        {{ est.nombre }}
+
+      </option>
+
+    </select>
+
+    <label>Descripción pública</label>
+
+    <textarea
+      placeholder="Descripción del negocio"
+      [(ngModel)]="profile.descripcion_publica">
+    </textarea>
+
+    <label>Logo (URL)</label>
+
+    <input
+      type="text"
+      placeholder="https://..."
+      [(ngModel)]="profile.imagen_logo">
+
+    <label>Imagen portada (URL)</label>
+
+    <input
+      type="text"
+      placeholder="https://..."
+      [(ngModel)]="profile.imagen_portada">
+
+    <div class="buttons">
+
+      <button class="save-btn" (click)="createProfile()">
+        Guardar
+      </button>
+
+      <button class="cancel-btn" (click)="closeModal()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

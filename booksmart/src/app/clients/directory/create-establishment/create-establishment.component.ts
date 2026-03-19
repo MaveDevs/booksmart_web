@@ -28,6 +28,18 @@ export class CreateEstablishmentComponent {
     activo: true
   };
 
+  profile: any = {
+    descripcion_publica: '',
+    imagen_logo: '',
+    imagen_portada: ''
+  };
+
+  agenda: any = {
+    dia_semana: '',
+    hora_inicio: '',
+    hora_fin: ''
+  };
+
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -49,22 +61,68 @@ export class CreateEstablishmentComponent {
 
   createEstablishment() {
 
-    this.http
-      .post(
-        `${this.apiUrl}/establishments/`,
-        this.establishment,
-        { headers: this.getHeaders() }
-      )
-      .subscribe({
-        next: () => {
-          alert('Establecimiento creado correctamente');
-          this.created.emit();
-        },
-        error: (err) => {
-          console.error(err);
-          alert('Error al crear establecimiento');
-        }
-      });
+    this.http.post(
+      `${this.apiUrl}/establishments/`,
+      this.establishment,
+      { headers: this.getHeaders() }
+    ).subscribe({
+
+      next: (data: any) => {
+
+        const establishmentId = data.establecimiento_id;
+
+
+        const profileData = {
+          establecimiento_id: establishmentId,
+          descripcion_publica: this.profile.descripcion_publica,
+          imagen_logo: this.profile.imagen_logo,
+          imagen_portada: this.profile.imagen_portada
+        };
+
+        this.http.post(
+          `${this.apiUrl}/profiles/`,
+          profileData,
+          { headers: this.getHeaders() }
+        ).subscribe({
+          next: () => {
+
+            const agendaData = {
+              establecimiento_id: establishmentId,
+              dia_semana: this.agenda.dia_semana,
+              hora_inicio: this.agenda.hora_inicio,
+              hora_fin: this.agenda.hora_fin
+            };
+
+            this.http.post(
+              `${this.apiUrl}/agendas/`,
+              agendaData,
+              { headers: this.getHeaders() }
+            ).subscribe({
+              next: () => {
+                alert('Establecimiento, perfil y agenda creados correctamente');
+                this.created.emit();
+              },
+              error: (err) => {
+                console.error(err);
+                alert('Perfil creado pero error en agenda');
+              }
+            });
+
+          },
+          error: (err) => {
+            console.error(err);
+            alert('Establecimiento creado pero error al crear perfil');
+          }
+        });
+
+      },
+
+      error: (err) => {
+        console.error(err);
+        alert('Error al crear establecimiento');
+      }
+
+    });
 
   }
 
