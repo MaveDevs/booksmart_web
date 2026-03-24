@@ -1,48 +1,72 @@
-<div class="modal">
+<div class="modal" (click)="closeModal()">
 
-  <div class="modal-content">
+  <div class="modal-content" (click)="$event.stopPropagation()">
 
     <h2>Agregar Servicio</h2>
 
-    <label>Establecimiento</label>
+    <form (ngSubmit)="createService()">
 
-    <select [(ngModel)]="service.establecimiento_id">
+      <div class="form-group">
+        <label>Establecimiento</label>
+        <select [(ngModel)]="service.establecimiento_id"
+                name="establecimiento_id"
+                required>
 
-      <option value="">Seleccione un establecimiento</option>
+          <option value="">Seleccione un establecimiento</option>
 
-      <option
-        *ngFor="let est of establishments"
-        [value]="est.establecimiento_id">
+          <option *ngFor="let est of establishments"
+                  [value]="est.establecimiento_id">
+            {{ est.nombre }}
+          </option>
 
-        {{ est.nombre }}
+        </select>
+      </div>
 
-      </option>
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text"
+               [(ngModel)]="service.nombre"
+               name="nombre"
+               required>
+      </div>
 
-    </select>
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea [(ngModel)]="service.descripcion"
+                  name="descripcion"></textarea>
+      </div>
 
-    <label>Nombre</label>
-    <input type="text" [(ngModel)]="service.nombre">
+      <div class="form-group">
+        <label>Duración (min)</label>
+        <input type="number"
+               [(ngModel)]="service.duracion"
+               name="duracion"
+               required>
+      </div>
 
-    <label>Descripción</label>
-    <textarea [(ngModel)]="service.descripcion"></textarea>
+      <div class="form-group">
+        <label>Precio</label>
+        <input type="number"
+               [(ngModel)]="service.precio"
+               name="precio"
+               required>
+      </div>
 
-    <label>Duración (min)</label>
-    <input type="number" [(ngModel)]="service.duracion">
+      <div class="buttons">
 
-    <label>Precio</label>
-    <input type="number" [(ngModel)]="service.precio">
+        <button type="submit" class="save-btn">
+          Guardar
+        </button>
 
-    <div class="buttons">
+        <button type="button"
+                class="cancel-btn"
+                (click)="closeModal()">
+          Cancelar
+        </button>
 
-      <button class="save-btn" (click)="createService()">
-        Guardar
-      </button>
+      </div>
 
-      <button class="cancel-btn" (click)="closeModal()">
-        Cancelar
-      </button>
-
-    </div>
+    </form>
 
   </div>
 

@@ -51,18 +51,25 @@ export class CreateUserComponent {
 
   createUser(){
 
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.http.post(
       `${this.apiUrl}/users/`,
       this.user,
       { headers:this.getHeaders() }
     ).subscribe({
-      next:()=>{
-        alert("Dueño creado correctamente");
+
+      next: () => {
+
         this.created.emit();
+        this.close.emit(); 
+
       },
-      error:(err)=>{
-        console.error("Error creando usuario",err);
+
+      error: (err) => {
+        console.error("Error creando usuario", err);
       }
+
     });
 
   }

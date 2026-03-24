@@ -21,7 +21,7 @@ export class CreateReportComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();
 
-  establishments:any[] = [];
+  establishments: any[] = [];
 
   report = {
     establecimiento_id: 0,
@@ -29,60 +29,69 @@ export class CreateReportComponent implements OnInit {
   };
 
   constructor(
-    private http:HttpClient,
-    @Inject(PLATFORM_ID) private platformId:Object
-  ){}
+    private http: HttpClient,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
-  ngOnInit():void{
+  ngOnInit(): void {
     this.loadEstablishments();
   }
 
-  getHeaders(){
+  getHeaders() {
 
     let token = '';
 
-    if(isPlatformBrowser(this.platformId)){
+    if (isPlatformBrowser(this.platformId)) {
       token = localStorage.getItem('access_token') || '';
     }
 
     return new HttpHeaders({
-      Authorization:`Bearer ${token}`,
-      'Content-Type':'application/json'
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
 
   }
 
-  loadEstablishments(){
+  loadEstablishments() {
 
-    this.http.get<any[]>(`${this.apiUrl}/establishments/`,{
-      headers:this.getHeaders()
+    this.http.get<any[]>(`${this.apiUrl}/establishments/`, {
+      headers: this.getHeaders()
     }).subscribe({
-      next:(data)=>{
+      next: (data) => {
         this.establishments = data;
+      },
+      error: (err) => {
+        console.error('Error cargando establecimientos', err);
       }
     });
 
   }
 
-  createReport(){
+  createReport() {
+
+    if (!isPlatformBrowser(this.platformId)) return;
 
     this.http.post(
       `${this.apiUrl}/reports/`,
       this.report,
-      { headers:this.getHeaders() }
+      { headers: this.getHeaders() }
     ).subscribe({
-      next:()=>{
-        alert("Reporte creado");
+
+      next: () => {
+
         this.created.emit();
+        this.close.emit(); 
       },
-      error:(err)=>{
-        console.error("Error creando reporte",err);
+
+      error: (err) => {
+        console.error('Error creando reporte', err);
       }
+
     });
 
   }
 
-  closeModal(){
+  closeModal() {
     this.close.emit();
   }
 

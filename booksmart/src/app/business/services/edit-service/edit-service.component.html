@@ -1,5 +1,10 @@
-<div class="modal-backdrop">
-  <div class="modal">
+<div class="success-card" *ngIf="showSuccessCard">
+  Servicio actualizado correctamente
+</div>
+
+<div class="modal-backdrop" (click)="closeModal()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
 
     <h2>Editar Servicio</h2>
 
@@ -16,13 +21,19 @@
     <input type="number" [(ngModel)]="service.precio">
 
     <div class="buttons">
-      <button (click)="updateService()">Guardar</button>
-      <button (click)="closeModal()">Cancelar</button>
+
+      <button class="save-btn"
+              (click)="updateService()">
+        Guardar
+      </button>
+
+      <button class="cancel-btn"
+              (click)="closeModal()">
+        Cancelar
+      </button>
+
     </div>
 
   </div>
-</div>
 
-<div class="success-card" *ngIf="showSuccessCard">
-   Servicio actualizado correctamente
 </div>

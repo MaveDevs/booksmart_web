@@ -1,6 +1,10 @@
-<div class="modal-backdrop">
+<div class="success-card" *ngIf="showSuccessCard">
+  Usuario actualizado correctamente
+</div>
 
-  <div class="modal">
+<div class="modal-backdrop" (click)="closeModal()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
 
     <h2>Editar Dueño</h2>
 
@@ -21,9 +25,15 @@
 
     <div class="buttons">
 
-      <button (click)="updateUser()">Guardar</button>
+      <button class="save-btn"
+              (click)="updateUser()">
+        Guardar
+      </button>
 
-      <button (click)="closeModal()">Cancelar</button>
+      <button class="cancel-btn"
+              (click)="closeModal()">
+        Cancelar
+      </button>
 
     </div>
 

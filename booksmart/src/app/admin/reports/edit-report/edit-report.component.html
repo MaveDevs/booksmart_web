@@ -1,20 +1,27 @@
-<div class="modal-backdrop">
+<div class="success-card" *ngIf="showSuccessCard">
+  Reporte actualizado correctamente
+</div>
 
-  <div class="modal">
+<div class="modal-backdrop" (click)="closeModal()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
 
     <h2>Editar Reporte</h2>
 
     <label>Descripción</label>
-
     <textarea [(ngModel)]="report.descripcion"></textarea>
 
     <div class="buttons">
 
-      <button (click)="updateReport()">
+      <button 
+        class="save-btn"
+        (click)="updateReport()">
         Guardar
       </button>
 
-      <button (click)="closeModal()">
+      <button 
+        class="cancel-btn"
+        (click)="closeModal()">
         Cancelar
       </button>
 

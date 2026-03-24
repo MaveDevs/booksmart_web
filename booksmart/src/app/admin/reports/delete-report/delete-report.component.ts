@@ -21,6 +21,10 @@ export class DeleteReportComponent {
 
   apiUrl='http://localhost:8000/api/v1';
 
+  // 🔥 AGREGAR ESTO
+  showSuccessCard = false;
+  loading = false;
+
   constructor(
     private http:HttpClient,
     @Inject(PLATFORM_ID) private platformId:Object
@@ -31,21 +35,40 @@ export class DeleteReportComponent {
     const token = localStorage.getItem('access_token');
 
     return new HttpHeaders({
-      Authorization:`Bearer ${token}`
+      Authorization:`Bearer ${token}`,
+      'Content-Type':'application/json'
     });
 
   }
 
   deleteReport(){
 
+    if (!isPlatformBrowser(this.platformId) || this.loading) return;
+
+    this.loading = true;
+
     this.http.delete(
       `${this.apiUrl}/reports/${this.reportId}`,
       { headers:this.getHeaders() }
     ).subscribe({
+
       next:()=>{
-        alert("Reporte eliminado");
+
+        this.showSuccessCard = true;
         this.deleted.emit();
+
+        setTimeout(()=>{
+          this.showSuccessCard = false;
+          this.close.emit();
+        },1500);
+
+      },
+
+      error:(err)=>{
+        console.error("Error eliminando reporte",err);
+        this.loading = false;
       }
+
     });
 
   }

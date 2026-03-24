@@ -7,7 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './delete-establishment.component.html',
-  styleUrl: './delete-establishment.component.css'
+  styleUrls: ['./delete-establishment.component.css'] // 🔥 IMPORTANTE (tenías mal styleUrl)
 })
 export class DeleteEstablishmentComponent {
 
@@ -17,6 +17,9 @@ export class DeleteEstablishmentComponent {
   @Output() deleted = new EventEmitter<void>();
 
   apiUrl = 'http://localhost:8000/api/v1';
+
+  showSuccessCard = false;
+  loading = false;
 
   constructor(
     private http: HttpClient,
@@ -39,20 +42,33 @@ export class DeleteEstablishmentComponent {
 
   deleteEstablishment() {
 
-    this.http
-      .delete(`${this.apiUrl}/establishments/${this.establishmentId}`, {
-        headers: this.getHeaders()
-      })
-      .subscribe({
-        next: () => {
-          alert('Establecimiento eliminado');
-          this.deleted.emit();
-        },
-        error: (err) => {
-          console.error(err);
-          alert('Error al eliminar');
-        }
-      });
+    if (!isPlatformBrowser(this.platformId) || this.loading) return;
+
+    this.loading = true;
+
+    this.http.delete(
+      `${this.apiUrl}/establishments/${this.establishmentId}`,
+      { headers: this.getHeaders() }
+    ).subscribe({
+
+      next: () => {
+
+        this.showSuccessCard = true;
+        this.deleted.emit();
+
+        setTimeout(() => {
+          this.showSuccessCard = false;
+          this.close.emit();
+        }, 1500);
+
+      },
+
+      error: (err) => {
+        console.error('Error eliminando establecimiento:', err);
+        this.loading = false;
+      }
+
+    });
 
   }
 

@@ -1,0 +1,32 @@
+<div class="modal-backdrop" (click)="closeModal()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <h2>Eliminar Establecimiento</h2>
+
+    <p class="message">
+      ¿Seguro que deseas eliminar este establecimiento?
+    </p>
+
+    <div class="buttons">
+
+      <button class="delete-btn"
+              [disabled]="loading"
+              (click)="deleteEstablishment()">
+        Eliminar
+      </button>
+
+      <button class="cancel-btn"
+              (click)="closeModal()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="success-card" *ngIf="showSuccessCard">
+  Establecimiento eliminado correctamente
+</div>

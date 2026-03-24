@@ -18,6 +18,9 @@ export class DeleteUserComponent {
 
   apiUrl = 'http://localhost:8000/api/v1';
 
+  showSuccessCard = false;
+  loading = false;
+
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -32,23 +35,36 @@ export class DeleteUserComponent {
     }
 
     return new HttpHeaders({
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
     });
 
   }
 
   deleteUser() {
 
+    if (!isPlatformBrowser(this.platformId) || this.loading) return;
+
+    this.loading = true;
+
     this.http.delete(
       `${this.apiUrl}/users/${this.userId}`,
       { headers: this.getHeaders() }
     ).subscribe({
       next: () => {
-        alert("Usuario eliminado");
+
+        this.showSuccessCard = true;
         this.deleted.emit();
+
+        setTimeout(() => {
+          this.showSuccessCard = false;
+          this.close.emit();
+        }, 1500);
+
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error('Error eliminando usuario:', err);
+        this.loading = false;
       }
     });
 

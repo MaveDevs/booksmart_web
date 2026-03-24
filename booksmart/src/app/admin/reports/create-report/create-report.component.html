@@ -1,40 +1,49 @@
-<div class="modal-backdrop">
+<div class="modal-backdrop" (click)="closeModal()">
 
-  <div class="modal">
+  <div class="modal" (click)="$event.stopPropagation()">
 
     <h2>Crear Reporte</h2>
 
-    <label>Establecimiento</label>
+    <form (ngSubmit)="createReport()">
 
-    <select [(ngModel)]="report.establecimiento_id">
+      <div class="form-group">
+        <label>Establecimiento</label>
+        <select [(ngModel)]="report.establecimiento_id"
+                name="establecimiento_id"
+                required>
 
-      <option value="0">Seleccionar</option>
+          <option value="">Seleccionar</option>
 
-      <option
-        *ngFor="let est of establishments"
-        [value]="est.establecimiento_id">
+          <option *ngFor="let est of establishments"
+                  [value]="est.establecimiento_id">
+            {{ est.nombre }}
+          </option>
 
-        {{ est.nombre }}
+        </select>
+      </div>
 
-      </option>
+      <div class="form-group">
+        <label>Descripción</label>
+        <textarea [(ngModel)]="report.descripcion"
+                  name="descripcion"
+                  required></textarea>
+      </div>
 
-    </select>
+      <div class="buttons">
 
-    <label>Descripción</label>
+        <button type="submit" class="save-btn">
+          Guardar
+        </button>
 
-    <textarea [(ngModel)]="report.descripcion"></textarea>
+        <button type="button"
+                class="cancel-btn"
+                (click)="closeModal()">
+          Cancelar
+        </button>
 
-    <div class="buttons">
+      </div>
 
-      <button (click)="createReport()">
-        Guardar
-      </button>
-
-      <button (click)="closeModal()">
-        Cancelar
-      </button>
-
-    </div>
+    </form>
 
   </div>
 

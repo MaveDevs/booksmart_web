@@ -21,6 +21,8 @@ export class EditUserComponent implements OnChanges {
 
   user: any = {};
 
+  showSuccessCard = false;
+
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
@@ -36,7 +38,11 @@ export class EditUserComponent implements OnChanges {
 
   getHeaders() {
 
-    const token = localStorage.getItem('access_token');
+    let token = '';
+
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('access_token') || '';
+    }
 
     return new HttpHeaders({
       Authorization: `Bearer ${token}`,
@@ -65,18 +71,30 @@ export class EditUserComponent implements OnChanges {
 
   updateUser() {
 
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.http.put(
       `${this.apiUrl}/users/${this.userId}`,
       this.user,
       { headers: this.getHeaders() }
     ).subscribe({
+
       next: () => {
-        alert("Usuario actualizado");
+
+        this.showSuccessCard = true;
         this.updated.emit();
+
+        setTimeout(() => {
+          this.showSuccessCard = false;
+          this.close.emit();
+        }, 2000);
+
       },
+
       error: (err) => {
         console.error('Error actualizando usuario:', err);
       }
+
     });
 
   }

@@ -25,6 +25,9 @@ export class EditReportComponent implements OnChanges {
 
   report:any={};
 
+  // 🔥 AGREGAR ESTO
+  showSuccessCard = false;
+
   constructor(
     private http:HttpClient,
     @Inject(PLATFORM_ID) private platformId:Object
@@ -38,7 +41,11 @@ export class EditReportComponent implements OnChanges {
 
   getHeaders(){
 
-    const token = localStorage.getItem('access_token');
+    let token = '';
+
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('access_token') || '';
+    }
 
     return new HttpHeaders({
       Authorization:`Bearer ${token}`,
@@ -49,12 +56,17 @@ export class EditReportComponent implements OnChanges {
 
   loadReport(){
 
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.http.get(
       `${this.apiUrl}/reports/${this.reportId}`,
       { headers:this.getHeaders() }
     ).subscribe({
-      next:(data)=>{
+      next:(data:any)=>{
         this.report = data;
+      },
+      error:(err)=>{
+        console.error("Error cargando reporte",err);
       }
     });
 
@@ -62,15 +74,30 @@ export class EditReportComponent implements OnChanges {
 
   updateReport(){
 
+    if (!isPlatformBrowser(this.platformId)) return;
+
     this.http.put(
       `${this.apiUrl}/reports/${this.reportId}`,
       this.report,
       { headers:this.getHeaders() }
     ).subscribe({
+
       next:()=>{
-        alert("Reporte actualizado");
+
+        this.showSuccessCard = true;
         this.updated.emit();
+
+        setTimeout(()=>{
+          this.showSuccessCard = false;
+          this.close.emit();
+        },2000);
+
+      },
+
+      error:(err)=>{
+        console.error("Error actualizando reporte",err);
       }
+
     });
 
   }

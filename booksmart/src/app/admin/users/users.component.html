@@ -44,8 +44,10 @@
         <td>{{ user.correo }}</td>
 
         <td>
-          <span *ngIf="user.activo">Activo</span>
-          <span *ngIf="!user.activo">Inactivo</span>
+            <span 
+              [ngClass]="user.activo ? 'status-active' : 'status-inactive'">
+              {{ user.activo ? 'Activo' : 'Inactivo' }}
+            </span>
         </td>
 
         <td>{{ user.fecha_creacion }}</td>

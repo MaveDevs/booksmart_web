@@ -1,18 +1,25 @@
-<div class="modal-backdrop">
+<div class="modal-backdrop" (click)="closeModal()">
 
-  <div class="modal">
+  <div class="modal" (click)="$event.stopPropagation()">
 
     <h2>Eliminar Reporte</h2>
 
-    <p>¿Seguro que deseas eliminar este reporte?</p>
+    <p class="message">
+      ¿Seguro que deseas eliminar este reporte?
+    </p>
 
     <div class="buttons">
 
-      <button (click)="deleteReport()">
+      <button 
+        class="delete-btn"
+        [disabled]="loading"
+        (click)="deleteReport()">
         Eliminar
       </button>
 
-      <button (click)="closeModal()">
+      <button 
+        class="cancel-btn"
+        (click)="closeModal()">
         Cancelar
       </button>
 
@@ -20,4 +27,8 @@
 
   </div>
 
+</div>
+
+<div class="success-card" *ngIf="showSuccessCard">
+  Reporte eliminado correctamente
 </div>

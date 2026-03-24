@@ -1,32 +1,58 @@
-<div class="modal-backdrop">
+<div class="modal-backdrop" (click)="closeModal()">
 
-  <div class="modal">
+  <div class="modal" (click)="$event.stopPropagation()">
 
     <h2>Crear Dueño</h2>
 
-    <label>Nombre</label>
-    <input type="text" [(ngModel)]="user.nombre">
+    <form (ngSubmit)="createUser()">
 
-    <label>Apellido</label>
-    <input type="text" [(ngModel)]="user.apellido">
+      <div class="form-group">
+        <label>Nombre</label>
+        <input type="text"
+               [(ngModel)]="user.nombre"
+               name="nombre"
+               required>
+      </div>
 
-    <label>Correo</label>
-    <input type="email" [(ngModel)]="user.correo">
+      <div class="form-group">
+        <label>Apellido</label>
+        <input type="text"
+               [(ngModel)]="user.apellido"
+               name="apellido"
+               required>
+      </div>
 
-    <label>Contraseña</label>
-    <input type="password" [(ngModel)]="user.contrasena">
+      <div class="form-group">
+        <label>Correo</label>
+        <input type="email"
+               [(ngModel)]="user.correo"
+               name="correo"
+               required>
+      </div>
 
-    <div class="buttons">
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password"
+               [(ngModel)]="user.contrasena"
+               name="contrasena"
+               required>
+      </div>
 
-      <button (click)="createUser()">
-        Guardar
-      </button>
+      <div class="buttons">
 
-      <button (click)="closeModal()">
-        Cancelar
-      </button>
+        <button type="submit" class="save-btn">
+          Guardar
+        </button>
 
-    </div>
+        <button type="button"
+                class="cancel-btn"
+                (click)="closeModal()">
+          Cancelar
+        </button>
+
+      </div>
+
+    </form>
 
   </div>
 
