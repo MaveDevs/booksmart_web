@@ -1,0 +1,98 @@
+.success-card {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  background: #1FBF9F;
+  color: #F8F9FA;
+  padding: 15px 20px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(31, 58, 95, 0.3);
+  font-weight: 500;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(31, 58, 95, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #F8F9FA;
+  padding: 25px;
+  border-radius: 16px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal h2 {
+  color: #1F3A5F;
+  text-align: center;
+}
+
+.modal label {
+  color: #3A3A3A;
+  font-weight: 500;
+}
+
+.modal input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #1FBF9F;
+  outline: none;
+}
+
+.modal input:focus {
+  border: 1px solid #179E85;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.buttons button {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  color: #F8F9FA;
+}
+
+.buttons button:first-child {
+  background: #1FBF9F;
+}
+
+.buttons button:first-child:hover {
+  background: #179E85;
+}
+
+.buttons button:last-child {
+  background: #1F3A5F;
+}
+
+.buttons button:last-child:hover {
+  background: #179E85;
+}

@@ -1,7 +1,6 @@
 <div class="container">
 
   <div class="header">
-
     <h2>Directorio de Negocios</h2>
 
     <button
@@ -9,169 +8,102 @@
       (click)="openCreateModal()">
       + Agregar establecimiento
     </button>
-
   </div>
 
-
-  <div *ngIf="establishments.length === 0">
+  <div *ngIf="establishments.length === 0" class="empty">
     <p>No hay establecimientos registrados</p>
   </div>
 
+  <div class="cards" *ngIf="establishments.length > 0">
 
-  <table *ngIf="establishments.length > 0" class="table">
+    <div class="card" *ngFor="let business of establishments">
 
-    <thead>
-      <tr>
+      <div class="cover">
+        <img
+          *ngIf="business.imagen_portada"
+          [src]="business.imagen_portada"
+          alt="Portada">
+      </div>
 
-        <th>Logo</th>
-        <th>Portada</th>
-        <th>Nombre</th>
-        <th>Descripción pública</th>
-        <th>Dirección</th>
-        <th>Teléfono</th>
+      <div class="card-header">
 
-        <th>Día</th>
-        <th>Hora inicio</th>
-        <th>Hora fin</th>
+        <img
+          *ngIf="business.imagen_logo"
+          [src]="business.imagen_logo"
+          class="logo">
 
-        <th>Estado</th>
-        <th>Acciones</th>
+        <h3>{{ business.nombre }}</h3>
 
-      </tr>
-    </thead>
+      </div>
 
+      <div class="card-body">
 
-    <tbody>
-
-      <tr *ngFor="let business of establishments">
-
-        <!-- LOGO -->
-        <td>
-          <img
-            *ngIf="business.imagen_logo"
-            [src]="business.imagen_logo"
-            width="50"
-            style="border-radius:6px;">
-        </td>
-
-
-        <!-- PORTADA -->
-        <td>
-          <img
-            *ngIf="business.imagen_portada"
-            [src]="business.imagen_portada"
-            width="120"
-            style="border-radius:6px;">
-        </td>
-
-
-        <!-- NOMBRE -->
-        <td>
-          {{ business.nombre }}
-        </td>
-
-
-        <!-- DESCRIPCION PUBLICA -->
-        <td>
+        <p class="description">
           {{ business.descripcion_publica }}
-        </td>
+        </p>
 
+        <p><strong>📍 Dirección:</strong><br>{{ business.direccion }}</p>
+        <p><strong>📞 Teléfono:</strong> {{ business.telefono }}</p>
 
-        <!-- DIRECCION -->
-        <td>
-          {{ business.direccion }}
-        </td>
+        <p>
+          <strong>🕒 Horario:</strong><br>
+          {{ business.dia_semana }}<br>
+          {{ business.hora_inicio }} - {{ business.hora_fin }}
+        </p>
 
-
-        <!-- TELEFONO -->
-        <td>
-          {{ business.telefono }}
-        </td>
-
-
-        <!-- DIA -->
-        <td>
-          {{ business.dia_semana }}
-        </td>
-
-
-        <!-- HORA INICIO -->
-        <td>
-          {{ business.hora_inicio }}
-        </td>
-
-
-        <!-- HORA FIN -->
-        <td>
-          {{ business.hora_fin }}
-        </td>
-
-
-        <!-- ESTADO -->
-        <td>
-
+        <p>
+          <strong>Estado:</strong>
           <span
             class="status"
-            *ngIf="business.activo">
-            Activo
+            [ngClass]="{ 'inactive': !business.activo }">
+            {{ business.activo ? 'Activo' : 'Inactivo' }}
           </span>
+        </p>
 
-          <span
-            class="status inactive"
-            *ngIf="!business.activo">
-            Inactivo
-          </span>
+      </div>
 
-        </td>
+      <div class="card-actions">
 
+        <button
+          class="edit-btn"
+          (click)="openEditModal(business.establecimiento_id)">
+          ✎
+        </button>
 
-        <!-- ACCIONES -->
-        <td class="actions">
+        <button
+          class="delete-btn"
+          (click)="openDeleteModal(business.establecimiento_id)">
+          🗑
+        </button>
 
-          <button
-            class="edit-btn"
-            (click)="openEditModal(business.establecimiento_id)">
-            ✎
-          </button>
+      </div>
 
-          <button
-            class="delete-btn"
-            (click)="openDeleteModal(business.establecimiento_id)">
-            🗑
-          </button>
+    </div>
 
-        </td>
-
-      </tr>
-
-    </tbody>
-
-  </table>
+  </div>
 
 </div>
 
+<div class="modals">
 
-<!-- MODAL CREAR -->
-<app-create-establishment
-  *ngIf="showCreateModal"
-  (close)="closeCreateModal()"
-  (created)="reloadAfterCreate()">
-</app-create-establishment>
+  <app-create-establishment
+    *ngIf="showCreateModal"
+    (close)="closeCreateModal()"
+    (created)="reloadAfterCreate()">
+  </app-create-establishment>
 
+  <app-edit-establishment
+    *ngIf="showEditModal"
+    [establishmentId]="selectedId"
+    (close)="closeEditModal()"
+    (updated)="reloadAfterEdit()">
+  </app-edit-establishment>
 
-<!-- MODAL EDITAR -->
-<app-edit-establishment
-  *ngIf="showEditModal"
-  [establishmentId]="selectedId"
-  (close)="closeEditModal()"
-  (updated)="reloadAfterEdit()">
-</app-edit-establishment>
+  <app-delete-establishment
+    *ngIf="showDeleteModal"
+    [establishmentId]="selectedId"
+    (close)="closeDeleteModal()"
+    (deleted)="reloadAfterDelete()">
+  </app-delete-establishment>
 
-
-<!-- MODAL ELIMINAR -->
-<app-delete-establishment
-  *ngIf="showDeleteModal"
-  [establishmentId]="selectedId"
-  (close)="closeDeleteModal()"
-  (deleted)="reloadAfterDelete()">
-</app-delete-establishment>
+</div>

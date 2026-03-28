@@ -1,4 +1,4 @@
-<div class="modal-backdrop" (click)="closeModal()">
+<div class="modal-backdrop" (click)="onBackdropClick()">
 
   <div class="modal" (click)="$event.stopPropagation()">
 
@@ -12,12 +12,13 @@
 
       <button class="delete-btn"
               [disabled]="loading"
-              (click)="deleteEstablishment()">
-        Eliminar
+              (click)="deleteEstablishment(); $event.stopPropagation()">
+        {{ loading ? 'Eliminando...' : 'Eliminar' }}
       </button>
 
       <button class="cancel-btn"
-              (click)="closeModal()">
+              [disabled]="loading"
+              (click)="closeModal(); $event.stopPropagation()">
         Cancelar
       </button>
 

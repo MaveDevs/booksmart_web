@@ -1,7 +1,138 @@
-<div class="welcome-box">
-  <h2>Bienvenida</h2>
-  <p>
-    Desde este panel puedes administrar clientes, negocios
-    y la configuración global del sistema.
-  </p>
+<div class="dashboard">
+
+  <div class="header">
+    <h2>Panel Administrativo</h2>
+    <p>Resumen general del sistema</p>
+  </div>
+
+  <div class="cards">
+
+    <div class="card">
+      <span>Usuarios</span>
+      <h1>{{ totalUsers }}</h1>
+    </div>
+
+    <div class="card">
+      <span>Negocios</span>
+      <h1>{{ totalEstablishments }}</h1>
+    </div>
+
+    <div class="card">
+      <span>Citas</span>
+      <h1>{{ totalAppointments }}</h1>
+    </div>
+
+  </div>
+
+  <!-- GRID -->
+  <div class="content">
+
+    <!-- ESTADO -->
+    <div class="panel">
+
+      <h3>Estado de citas</h3>
+
+      <div class="estado-grid">
+
+        <div class="estado-card pendiente">
+          <span>Pendientes</span>
+          <h2>{{ citasPendientes }}</h2>
+        </div>
+
+        <div class="estado-card completada">
+          <span>Completadas</span>
+          <h2>{{ citasCompletadas }}</h2>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- NEGOCIOS -->
+    <div class="panel">
+
+      <h3>Citas por negocio</h3>
+
+      <div *ngFor="let e of citasPorLocal" class="bar-item">
+
+        <div class="bar-info">
+          <span>{{ e.nombre }}</span>
+          <span>{{ e.total }}</span>
+        </div>
+
+        <div class="bar">
+          <div class="bar-fill" [style.width.%]="e.total * 20"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- CLIENTES -->
+    <div class="panel">
+
+      <h3>Top clientes</h3>
+
+      <div *ngFor="let c of topClientes; let i = index" class="cliente-item">
+
+        <div class="cliente-left">
+          <span class="rank">#{{ i + 1 }}</span>
+          <span>{{ c.nombre }}</span>
+        </div>
+
+        <span class="badge">{{ c.total }}</span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- TABLA -->
+  <div class="table-box">
+
+    <h3>Próximas citas</h3>
+
+    <table>
+
+      <thead>
+        <tr>
+          <th>Cliente</th>
+          <th>Servicio</th>
+          <th>Negocio</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let c of proximasCitas">
+
+          <td>{{ c.cliente }}</td>
+          <td>{{ c.servicio }}</td>
+          <td>{{ c.negocio }}</td>
+          <td>{{ c.fecha }}</td>
+          <td>{{ c.hora_inicio }}</td>
+
+          <td>
+            <span
+              class="status"
+              [ngClass]="{
+                'pendiente': c.estado === 'PENDIENTE',
+                'completada': c.estado === 'COMPLETADA'
+              }">
+              {{ c.estado }}
+            </span>
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
 </div>

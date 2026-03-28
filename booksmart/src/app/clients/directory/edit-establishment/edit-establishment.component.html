@@ -1,53 +1,28 @@
-<div class="modal-overlay">
+<div class="success-card" *ngIf="showSuccessCard">
+   Establecimiento actualizado correctamente
+</div>
 
-  <div class="modal-card">
+<div class="modal-backdrop">
+  <div class="modal">
 
-    <h2>Editar establecimiento</h2>
+    <h2>Editar Establecimiento</h2>
 
-    <form (ngSubmit)="updateEstablishment()">
+    <label>Nombre</label>
+    <input type="text" [(ngModel)]="establishment.nombre">
 
-      <input
-        type="text"
-        placeholder="Nombre"
-        [(ngModel)]="establishment.nombre"
-        name="nombre"
-        required>
+    <label>Descripción</label>
+    <input type="text" [(ngModel)]="establishment.descripcion">
 
-      <input
-        type="text"
-        placeholder="Descripción"
-        [(ngModel)]="establishment.descripcion"
-        name="descripcion">
+    <label>Dirección</label>
+    <input type="text" [(ngModel)]="establishment.direccion">
 
-      <input
-        type="text"
-        placeholder="Dirección"
-        [(ngModel)]="establishment.direccion"
-        name="direccion">
+    <label>Teléfono</label>
+    <input type="text" [(ngModel)]="establishment.telefono">
 
-      <input
-        type="text"
-        placeholder="Teléfono"
-        [(ngModel)]="establishment.telefono"
-        name="telefono">
-
-      <div class="buttons">
-
-        <button type="submit" class="save-btn">
-          Guardar
-        </button>
-
-        <button
-          type="button"
-          class="cancel-btn"
-          (click)="closeModal()">
-          Cancelar
-        </button>
-
-      </div>
-
-    </form>
+    <div class="buttons">
+      <button (click)="updateEstablishment()">Guardar</button>
+      <button (click)="closeModal()">Cancelar</button>
+    </div>
 
   </div>
-
 </div>

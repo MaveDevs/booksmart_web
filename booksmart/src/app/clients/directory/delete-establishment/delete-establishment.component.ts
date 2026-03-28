@@ -7,7 +7,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './delete-establishment.component.html',
-  styleUrls: ['./delete-establishment.component.css'] // 🔥 IMPORTANTE (tenías mal styleUrl)
+  styleUrls: ['./delete-establishment.component.css']
 })
 export class DeleteEstablishmentComponent {
 
@@ -27,7 +27,6 @@ export class DeleteEstablishmentComponent {
   ) {}
 
   getHeaders() {
-
     let token = '';
 
     if (isPlatformBrowser(this.platformId)) {
@@ -44,14 +43,23 @@ export class DeleteEstablishmentComponent {
 
     if (!isPlatformBrowser(this.platformId) || this.loading) return;
 
+    console.log("ID a eliminar:", this.establishmentId); 
+
+    if (!this.establishmentId) {
+      console.error("❌ ID inválido");
+      return;
+    }
+
     this.loading = true;
 
     this.http.delete(
-      `${this.apiUrl}/establishments/${this.establishmentId}`,
+      `${this.apiUrl}/establishments/${this.establishmentId}/`, 
       { headers: this.getHeaders() }
     ).subscribe({
 
       next: () => {
+
+        console.log("✅ Eliminado correctamente");
 
         this.showSuccessCard = true;
         this.deleted.emit();
@@ -64,8 +72,12 @@ export class DeleteEstablishmentComponent {
       },
 
       error: (err) => {
-        console.error('Error eliminando establecimiento:', err);
+
+        console.error('❌ Error eliminando:', err);
+        console.log("Detalle:", err.error);
+
         this.loading = false;
+
       }
 
     });
@@ -73,7 +85,15 @@ export class DeleteEstablishmentComponent {
   }
 
   closeModal() {
-    this.close.emit();
+    if (!this.loading) {
+      this.close.emit();
+    }
+  }
+
+  onBackdropClick() {
+    if (!this.loading) {
+      this.closeModal();
+    }
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Input, Output, EventEmitter, Inject, PLATFORM_ID, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
@@ -8,9 +8,9 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './edit-establishment.component.html',
-  styleUrl: './edit-establishment.component.css'
+  styleUrls: ['./edit-establishment.component.css']
 })
-export class EditEstablishmentComponent {
+export class EditEstablishmentComponent implements OnChanges {
 
   @Input() establishmentId!: number;
 
@@ -19,32 +19,22 @@ export class EditEstablishmentComponent {
 
   apiUrl = 'http://localhost:8000/api/v1';
 
-  establishment: any = {
-    nombre: '',
-    descripcion: '',
-    direccion: '',
-    telefono: '',
-    latitud: 0,
-    longitud: 0,
-    activo: true
-  };
+  establishment: any = {};
+  showSuccessCard: boolean = false;
 
   constructor(
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
-  ngOnInit() {
-    this.loadEstablishment();
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['establishmentId'] && this.establishmentId) {
+      this.loadEstablishment();
+    }
   }
 
   getHeaders() {
-
-    let token = '';
-
-    if (isPlatformBrowser(this.platformId)) {
-      token = localStorage.getItem('access_token') || '';
-    }
+    const token = localStorage.getItem('access_token');
 
     return new HttpHeaders({
       Authorization: `Bearer ${token}`,
@@ -53,42 +43,48 @@ export class EditEstablishmentComponent {
   }
 
   loadEstablishment() {
+    if (!isPlatformBrowser(this.platformId)) return;
 
-    this.http
-      .get<any>(`${this.apiUrl}/establishments/${this.establishmentId}`, {
-        headers: this.getHeaders()
-      })
-      .subscribe({
-        next: (data) => {
-          this.establishment = data;
-        }
-      });
-
+    this.http.get(
+      `${this.apiUrl}/establishments/${this.establishmentId}`,
+      { headers: this.getHeaders() }
+    ).subscribe({
+      next: (data: any) => {
+        this.establishment = data;
+      },
+      error: (err) => {
+        console.error('Error cargando establecimiento:', err);
+      }
+    });
   }
 
   updateEstablishment() {
 
-    this.http
-      .put(
-        `${this.apiUrl}/establishments/${this.establishmentId}`,
-        this.establishment,
-        { headers: this.getHeaders() }
-      )
-      .subscribe({
-        next: () => {
-          alert('Establecimiento actualizado');
-          this.updated.emit();
-        },
-        error: (err) => {
-          console.error(err);
-          alert('Error al actualizar');
-        }
-      });
+    if (!isPlatformBrowser(this.platformId)) return;
 
+    this.http.put(
+      `${this.apiUrl}/establishments/${this.establishmentId}`,
+      this.establishment,
+      { headers: this.getHeaders() }
+    ).subscribe({
+      next: () => {
+
+        this.showSuccessCard = true;
+        this.updated.emit();
+
+        setTimeout(() => {
+          this.showSuccessCard = false;
+          this.close.emit();
+        }, 2000);
+
+      },
+      error: (err) => {
+        console.error('Error actualizando:', err);
+      }
+    });
   }
 
   closeModal() {
     this.close.emit();
   }
-
 }
