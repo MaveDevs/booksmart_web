@@ -1,0 +1,22 @@
+<div class="success-card" *ngIf="showSuccessCard">
+  Plan actualizado correctamente
+</div>
+
+<div class="modal-backdrop" (click)="closeModal()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
+    
+    <h2>Editar Plan</h2>
+
+    <input [(ngModel)]="plan.nombre" placeholder="Nombre">
+    <input [(ngModel)]="plan.descripcion" placeholder="Descripción">
+    <input type="number" [(ngModel)]="plan.precio" placeholder="Precio">
+
+    <div class="buttons">
+      <button class="save-btn" (click)="updatePlan()">Actualizar</button>
+      <button class="cancel-btn" (click)="closeModal()">Cancelar</button>
+    </div>
+
+  </div>
+
+</div>  

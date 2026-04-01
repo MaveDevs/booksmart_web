@@ -1,1 +1,147 @@
-<p>plans works!</p>
+<div class="container">
+
+  <div class="header">
+
+    <div class="title-section">
+      <h2>Planes</h2>
+
+      <div class="tabs">
+
+        <button 
+          [class.active]="view === 'subscriptions'"
+          (click)="setView('subscriptions')">
+          Planes por Establecimiento
+        </button>
+
+        <button 
+          [class.active]="view === 'plans'"
+          (click)="setView('plans')">
+          Ver Planes
+        </button>
+
+      </div>
+
+    </div>
+
+    <button 
+      *ngIf="view === 'plans'"
+      class="add-btn" 
+      (click)="openCreateModal()">
+      + Crear Plan
+    </button>
+
+    <button 
+      *ngIf="view === 'subscriptions'"
+      class="add-btn" 
+      (click)="openCreateSubModal()">
+      + Asignar Plan
+    </button>
+
+  </div>
+
+  <div *ngIf="view === 'subscriptions'">
+
+    <table class="table">
+
+      <thead>
+        <tr>
+          <th>Establecimiento</th>
+          <th>Plan</th>
+          <th>Precio</th>
+          <th>Estado</th>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let item of data">
+
+
+          <td>{{ item.establecimiento }}</td>
+          <td>{{ item.plan }}</td>
+          <td>${{ item.precio }}</td>
+
+          <td>
+            <span [ngClass]="item.estado === 'ACTIVA' ? 'status-active' : 'status-inactive'">
+              {{ item.estado }}
+            </span>
+          </td>
+
+          <td>{{ item.fecha_inicio }}</td>
+          <td>{{ item.fecha_fin }}</td>
+
+          <td class="actions">
+
+            <button class="edit-btn" (click)="openEditSubModal(item)">
+              ✎
+            </button>
+
+            <button class="delete-btn" (click)="openDeleteSubModal(item)">
+              🗑
+            </button>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+  <div *ngIf="view === 'plans'">
+
+    <table class="table">
+
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Precio</th>
+          <th>Activo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let plan of plans">
+
+          <td>{{ plan.nombre }}</td>
+          <td>{{ plan.descripcion }}</td>
+          <td>${{ plan.precio }}</td>
+
+          <td>
+            <span [ngClass]="plan.activo ? 'status-active' : 'status-inactive'">
+              {{ plan.activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+
+          <td class="actions">
+
+            <button class="edit-btn" (click)="openEditModal(plan.plan_id)">✎</button>
+            <button class="delete-btn" (click)="openDeleteModal(plan.plan_id)">🗑</button>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<app-create-plan *ngIf="showCreateModal" (close)="closeCreateModal()" (created)="reloadData()"></app-create-plan>
+<app-edit-plan *ngIf="showEditModal" [planId]="selectedId" (close)="closeEditModal()" (updated)="reloadData()"></app-edit-plan>
+<app-delete-plan *ngIf="showDeleteModal" [planId]="selectedId" (close)="closeDeleteModal()" (deleted)="reloadData()"></app-delete-plan>
+
+<app-create-subscription *ngIf="showCreateSubModal" (close)="closeCreateSubModal()" (created)="reloadData()"></app-create-subscription>
+<app-edit-subscription *ngIf="showEditSubModal" [subId]="selectedSubId" (close)="closeEditSubModal()" (updated)="reloadData()"></app-edit-subscription>
+<app-delete-subscription *ngIf="showDeleteSubModal" [subId]="selectedSubId" (close)="closeDeleteSubModal()" (deleted)="reloadData()"></app-delete-subscription>

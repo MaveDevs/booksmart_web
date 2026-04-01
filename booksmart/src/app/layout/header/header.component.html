@@ -6,19 +6,36 @@
 
   <div class="header-right">
 
-    <button class="icon-btn" title="Modo oscuro">
-      🌙
-    </button>
+    <button class="icon-btn">🌙</button>
 
-    <button class="icon-btn" title="Configuración">
-      ⚙️
-    </button>
+    <div class="profile" (click)="toggleProfile()">
 
-    <div class="profile">
-      <img src="/perfil.png" alt="Perfil de Luna" />
-      <span class="username">Luna</span>
+      <span class="username">
+        {{ user?.nombre || 'Usuario' }}
+      </span>
+
+      <span class="chevron" [class.active]="isOpen">
+        ▼
+      </span>
     </div>
+
+    <button class="logout-btn" (click)="logout()" title="Cerrar sesión">
+      ⤴
+    </button>
 
   </div>
 
 </header>
+
+<app-profile-modal
+  *ngIf="showModal"
+  [user]="user"
+  (close)="closeModal()"
+  (userUpdated)="updateUser($event)">
+</app-profile-modal>
+
+<app-logout-modal
+  *ngIf="showLogoutModal"
+  (confirm)="confirmLogout()"
+  (close)="closeLogoutModal()">
+</app-logout-modal>

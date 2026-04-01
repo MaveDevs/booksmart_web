@@ -1,0 +1,31 @@
+<div class="modal-backdrop" (click)="closeModal()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <h2>Cambiar Plan</h2>
+
+    <label>Plan</label>
+
+    <select [(ngModel)]="subscription.plan_id">
+      <option [ngValue]="null">Selecciona plan</option>
+
+      <option *ngFor="let p of plans" [ngValue]="p.plan_id">
+        {{ p.nombre }}
+      </option>
+    </select>
+
+    <div class="buttons">
+
+      <button class="save-btn" (click)="update()">
+        Actualizar
+      </button>
+
+      <button class="cancel-btn" (click)="closeModal()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,57 @@
+<div class="modal-backdrop" (click)="closeModal()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <h2>Asignar Plan</h2>
+
+    <form (ngSubmit)="create()">
+
+      <div class="form-group">
+        <label>Establecimiento</label>
+        <select [(ngModel)]="subscription.establecimiento_id"
+                name="establecimiento"
+                required>
+          <option [ngValue]="null">Selecciona establecimiento</option>
+
+          <option 
+            *ngFor="let e of establishments" 
+            [ngValue]="e.establecimiento_id">
+            {{ e.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Plan</label>
+        <select [(ngModel)]="subscription.plan_id"
+                name="plan"
+                required>
+          <option [ngValue]="null">Selecciona plan</option>
+
+          <option 
+            *ngFor="let p of plans" 
+            [ngValue]="p.plan_id">
+            {{ p.nombre }}
+          </option>
+        </select>
+      </div>
+
+      <div class="buttons">
+
+        <button type="submit" class="save-btn">
+          Guardar
+        </button>
+
+        <button type="button"
+                class="cancel-btn"
+                (click)="closeModal()">
+          Cancelar
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

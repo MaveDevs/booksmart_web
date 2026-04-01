@@ -28,22 +28,40 @@ export class LoginComponent {
     this.loading = true;
 
     this.authService.login(this.email, this.password).subscribe({
-      next: (res) => {
+      next: (res: any) => {
 
         console.log('RESPUESTA LOGIN:', res);
 
         if (res && res.access_token) {
+
           this.authService.saveToken(res.access_token);
-          this.loading = false;
-          this.router.navigate(['/dashboard']);
+
+          this.authService.getCurrentUser().subscribe({
+            next: (user: any) => {
+
+              console.log('USUARIO REAL:', user);
+
+              this.authService.setUser(user);
+
+              this.loading = false;
+
+              this.router.navigate(['/dashboard']);
+            },
+            error: (err: any) => {
+              console.error('Error obteniendo usuario:', err);
+              this.errorMessage = 'Error al obtener usuario';
+              this.loading = false;
+            }
+          });
+
         } else {
           this.errorMessage = 'No se recibió token válido';
           this.loading = false;
         }
       },
-      error: (err) => {
+
+      error: (err: any) => {
         console.error('ERROR COMPLETO:', err);
-        console.log('DETALLE BACKEND:', err.error);
         this.errorMessage = 'Correo o contraseña incorrectos';
         this.loading = false;
       }

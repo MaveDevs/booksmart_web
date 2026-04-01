@@ -1,0 +1,21 @@
+<div class="edit-container">
+
+  <h3>Editar Perfil</h3>
+
+  <input 
+    type="text" 
+    [(ngModel)]="editableUser.nombre" 
+    placeholder="Nombre" 
+  />
+
+  <input 
+    type="email" 
+    [(ngModel)]="editableUser.correo" 
+    placeholder="Correo" 
+  />
+
+  <button type="button" (click)="saveChanges()">
+    Guardar cambios
+  </button>
+
+</div>

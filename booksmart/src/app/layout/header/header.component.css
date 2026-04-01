@@ -1,16 +1,16 @@
 .header {
-  height: 80px;               
+  height: 80px;
   width: 100%;
   background: #FFFFFF;
   border-bottom: 1px solid #E6E8E7;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 32px;            
+  padding: 0 32px;
 }
 
 .page-title {
-  font-size: 22px;           
+  font-size: 22px;
   font-weight: 600;
   color: #1f2937;
 }
@@ -18,35 +18,62 @@
 .header-right {
   display: flex;
   align-items: center;
-  gap: 24px;                 
+  gap: 20px;
 }
 
 .icon-btn {
   background: transparent;
   border: none;
-  font-size: 22px;            
+  font-size: 22px;
   cursor: pointer;
 }
 
 .profile {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
   cursor: pointer;
 }
 
 .profile img {
-  width: 56px;                
-  height: 56px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   object-fit: cover;
 }
 
 .username {
-  font-size: 18px;           
+  font-size: 18px;
   font-weight: 600;
+}
+
+.chevron {
+  font-size: 14px;
+  transition: transform 0.3s ease;
+}
+
+.chevron.active {
+  transform: rotate(180deg);
 }
 
 .profile:hover {
   opacity: 0.85;
+}
+
+.logout-btn {
+  background: rgba(31, 58, 95, 0.1);
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 8px 12px;
+  transition: 0.25s ease;
+  color: #1F3A5F;
+}
+
+.logout-btn:hover {
+  background: #1FBF9F;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(31,191,159,0.35);
 }

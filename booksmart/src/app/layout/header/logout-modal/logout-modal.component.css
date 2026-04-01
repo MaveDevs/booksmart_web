@@ -1,28 +1,3 @@
-.success-card {
-  position: fixed;
-  top: 30px;
-  right: 30px;
-  background: #1FBF9F;
-  color: #F8F9FA;
-  padding: 14px 20px;
-  border-radius: 14px;
-  box-shadow: 0 8px 20px rgba(31, 58, 95, 0.3);
-  font-weight: 500;
-  z-index: 2000;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .modal-backdrop {
   position: fixed;
   top: 0;
@@ -45,6 +20,19 @@
   flex-direction: column;
   gap: 18px;
   text-align: center;
+  box-shadow: 0 10px 25px rgba(31, 58, 95, 0.15);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .modal h2 {
@@ -69,28 +57,20 @@
   cursor: pointer;
   color: #F8F9FA;
   font-weight: 500;
-  transition: 0.2s ease;
 }
 
 .delete-btn {
   background: #1F3A5F;
 }
 
-.delete-btn:hover:not(:disabled) {
+.delete-btn:hover {
   background: #179E85;
-  transform: scale(1.03);
 }
 
 .cancel-btn {
   background: #1FBF9F;
 }
 
-.cancel-btn:hover:not(:disabled) {
+.cancel-btn:hover {
   background: #179E85;
-  transform: scale(1.03);
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }

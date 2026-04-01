@@ -1,0 +1,34 @@
+<div class="modal-backdrop" (click)="closeModal()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <h2>Cancelar Plan</h2>
+
+    <p class="message">
+      ¿Seguro que deseas cancelar este plan?
+    </p>
+
+    <div class="buttons">
+
+      <button 
+        class="delete-btn"
+        [disabled]="loading"
+        (click)="delete()">
+        Eliminar
+      </button>
+
+      <button 
+        class="cancel-btn"
+        (click)="closeModal()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<div class="success-card" *ngIf="showSuccessCard">
+  Plan cancelado correctamente
+</div>

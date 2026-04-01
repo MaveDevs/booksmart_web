@@ -1,0 +1,25 @@
+<div class="modal-backdrop" (click)="onClose()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <h2>Cerrar sesión</h2>
+
+    <p class="message">
+      ¿Seguro que deseas cerrar sesión?
+    </p>
+
+    <div class="buttons">
+
+      <button class="delete-btn" (click)="onConfirm()">
+        Salir
+      </button>
+
+      <button class="cancel-btn" (click)="onClose()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

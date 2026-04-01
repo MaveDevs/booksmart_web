@@ -2,62 +2,72 @@
   display: block;
   width: 260px;
   min-height: 100vh;
-  background: #E6E8E7;
+  background: #F8F9FA;
   padding: 24px;
-  border-right: 2px solid #6FBFB5;
+  border-right: 1px solid rgba(31, 58, 95, 0.08);
   font-family: system-ui, sans-serif;
 }
 
 .logo-container {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 28px;
+  gap: 10px;
+  margin-bottom: 32px;
 }
 
 .logo-img {
-  width: 45px;   
+  width: 42px;
   height: auto;
 }
 
 .logo-text {
-  font-size: 18px;  
+  font-size: 18px;
   font-weight: 700;
-  color: #2EC4C6;
+  color: #1FBF9F;
   letter-spacing: 0.5px;
 }
 
 .menu-section {
-  margin-bottom: 26px;
+  margin-bottom: 28px;
 }
 
 .menu-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   color: #6FBFB5;
   text-transform: uppercase;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
 }
 
 .menu-item {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   padding: 10px 14px;
   margin-bottom: 6px;
-  border-radius: 10px;
-  color: #1f2937;
+  border-radius: 12px;
+  color: #1F3A5F;
   text-decoration: none;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .menu-item:hover {
-  background: #6FBFB5;
-  color: #FFFFFF;
+  background: rgba(31, 191, 159, 0.12);
+  color: #179E85;
+  transform: translateX(4px);
 }
 
 .menu-item.active {
-  background: #2EC4C6;
+  background: linear-gradient(135deg, #1FBF9F, #179E85);
   color: #FFFFFF;
+  box-shadow: 0 6px 16px rgba(31, 191, 159, 0.25);
+}
+
+.menu-item i {
+  font-size: 16px;
 }
 
 @media (max-width: 768px) {

@@ -1,0 +1,49 @@
+<div class="modal-backdrop" (click)="closeModal()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <ng-container *ngIf="view === 'profile'">
+
+      <div class="modal-header">
+        <h2>Mi Perfil</h2>
+        <span class="close-icon" (click)="closeModal()">✖</span>
+      </div>
+
+      <div class="profile-info">
+        <img src="/perfil.png" class="modal-img">
+        <h3>{{ user.nombre }}</h3>
+        <p class="role">Administrador</p>
+      </div>
+
+      <div class="info">
+        <p><strong>Correo:</strong> {{ user.correo }}</p>
+      </div>
+
+      <div class="actions">
+        <button class="edit-btn" (click)="goToEdit()">
+          Editar perfil
+        </button>
+
+        <button class="logout-btn" (click)="closeModal()">
+          Cerrar
+        </button>
+      </div>
+
+    </ng-container>
+
+    <ng-container *ngIf="view === 'edit'">
+
+      <app-edit-profile
+        [user]="user"
+        (save)="updateUser($event)">
+      </app-edit-profile>
+
+      <button class="back-btn" (click)="goToProfile()">
+        ← Volver
+      </button>
+
+    </ng-container>
+
+  </div>
+
+</div>

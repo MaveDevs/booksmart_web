@@ -1,0 +1,40 @@
+.edit-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.edit-container h3 {
+  color: #1F3A5F;
+  text-align: center;
+}
+
+input {
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #1FBF9F;
+  outline: none;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+input:focus {
+  border: 1px solid #179E85;
+  box-shadow: 0 0 0 2px rgba(31,191,159,0.15);
+}
+
+button {
+  padding: 11px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1FBF9F, #179E85);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(31,191,159,0.35);
+}

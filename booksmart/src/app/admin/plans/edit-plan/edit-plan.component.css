@@ -4,7 +4,7 @@
   right: 30px;
   background: #1FBF9F;
   color: #F8F9FA;
-  padding: 14px 20px;
+  padding: 15px 20px;
   border-radius: 14px;
   box-shadow: 0 8px 20px rgba(31, 58, 95, 0.3);
   font-weight: 500;
@@ -15,7 +15,7 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-8px);
+    transform: translateY(-10px);
   }
   to {
     opacity: 1;
@@ -38,26 +38,35 @@
 
 .modal {
   background: #F8F9FA;
-  padding: 28px;
+  padding: 25px;
   border-radius: 16px;
-  width: 380px;
+  width: 400px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  text-align: center;
+  gap: 10px;
 }
 
 .modal h2 {
   color: #1F3A5F;
+  text-align: center;
 }
 
-.message {
-  color: #3A3A3A;
-  font-size: 15px;
+.modal input {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #1FBF9F;
+  outline: none;
+  font-size: 14px;
+}
+
+.modal input:focus {
+  border: 1px solid #179E85;
 }
 
 .buttons {
   display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
   gap: 10px;
 }
 
@@ -72,25 +81,20 @@
   transition: 0.2s ease;
 }
 
-.delete-btn {
-  background: #1F3A5F;
+.save-btn {
+  background: #1FBF9F;
 }
 
-.delete-btn:hover:not(:disabled) {
+.save-btn:hover {
   background: #179E85;
   transform: scale(1.03);
 }
 
 .cancel-btn {
-  background: #1FBF9F;
+  background: #1F3A5F;
 }
 
-.cancel-btn:hover:not(:disabled) {
+.cancel-btn:hover {
   background: #179E85;
   transform: scale(1.03);
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
 }
