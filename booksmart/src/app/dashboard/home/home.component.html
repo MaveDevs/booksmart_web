@@ -24,10 +24,8 @@
 
   </div>
 
-  <!-- GRID -->
   <div class="content">
 
-    <!-- ESTADO -->
     <div class="panel">
 
       <h3>Estado de citas</h3>
@@ -68,27 +66,8 @@
 
     </div>
 
-    <!-- CLIENTES -->
-    <div class="panel">
-
-      <h3>Top clientes</h3>
-
-      <div *ngFor="let c of topClientes; let i = index" class="cliente-item">
-
-        <div class="cliente-left">
-          <span class="rank">#{{ i + 1 }}</span>
-          <span>{{ c.nombre }}</span>
-        </div>
-
-        <span class="badge">{{ c.total }}</span>
-
-      </div>
-
-    </div>
-
   </div>
 
-  <!-- TABLA -->
   <div class="table-box">
 
     <h3>Próximas citas</h3>

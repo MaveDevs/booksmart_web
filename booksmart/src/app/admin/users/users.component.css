@@ -168,3 +168,34 @@ app-delete-user {
     padding: 10px;
   }
 }
+.title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.tabs button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(31, 58, 95, 0.1);
+  color: #1F3A5F;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-size: 13px;
+}
+
+.tabs button.active {
+  background: linear-gradient(135deg, #1FBF9F, #179E85);
+  color: white;
+}
+
+.tabs button:hover {
+  transform: scale(1.05);
+}

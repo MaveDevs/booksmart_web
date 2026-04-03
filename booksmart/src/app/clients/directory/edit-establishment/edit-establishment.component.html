@@ -1,27 +1,127 @@
 <div class="success-card" *ngIf="showSuccessCard">
-   Establecimiento actualizado correctamente
+  Establecimiento actualizado correctamente
 </div>
 
 <div class="modal-backdrop">
   <div class="modal">
 
-    <h2>Editar Establecimiento</h2>
+    <h2 class="title">Editar Establecimiento</h2>
 
-    <label>Nombre</label>
-    <input type="text" [(ngModel)]="establishment.nombre">
+    <div class="grid">
 
-    <label>Descripción</label>
-    <input type="text" [(ngModel)]="establishment.descripcion">
+      <div class="column">
 
-    <label>Dirección</label>
-    <input type="text" [(ngModel)]="establishment.direccion">
+        <h3>Datos</h3>
 
-    <label>Teléfono</label>
-    <input type="text" [(ngModel)]="establishment.telefono">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input [(ngModel)]="establishment.nombre">
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <input [(ngModel)]="establishment.descripcion">
+        </div>
+
+        <div class="form-group">
+          <label>Dirección</label>
+          <input [(ngModel)]="establishment.direccion">
+        </div>
+
+        <div class="form-group">
+          <label>Teléfono</label>
+          <input [(ngModel)]="establishment.telefono">
+        </div>
+
+        <div class="form-group">
+          <label>Dueño</label>
+          <select [(ngModel)]="establishment.usuario_id">
+            <option *ngFor="let user of users" [value]="user.usuario_id">
+              {{ user.nombre }} {{ user.apellido }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Estado</label>
+
+          <div class="toggle">
+            <span [class.active]="establishment.activo">Activo</span>
+
+            <label class="switch">
+              <input type="checkbox"
+                     [(ngModel)]="establishment.activo">
+              <span class="slider"></span>
+            </label>
+
+            <span [class.inactive]="!establishment.activo">Inactivo</span>
+          </div>
+        </div>
+
+        <h3>Horario</h3>
+
+        <div class="form-group">
+          <label>Día</label>
+          <input [(ngModel)]="agenda.dia_semana">
+        </div>
+
+        <div class="form-group">
+          <label>Hora inicio</label>
+          <input type="time" [(ngModel)]="agenda.hora_inicio">
+        </div>
+
+        <div class="form-group">
+          <label>Hora fin</label>
+          <input type="time" [(ngModel)]="agenda.hora_fin">
+        </div>
+
+      </div>
+
+      <div class="column">
+
+        <h3>Perfil</h3>
+
+        <div class="form-group">
+          <label>Descripción pública</label>
+          <input [(ngModel)]="profile.descripcion_publica">
+        </div>
+
+        <h3>Imágenes</h3>
+
+        <div class="form-group">
+          <label>Logo</label>
+
+          <input type="file" (change)="onFileSelected($event,'logo')">
+
+          <img
+            *ngIf="logoPreview || profile.imagen_logo"
+            [src]="logoPreview ? logoPreview : profile.imagen_logo"
+            class="image-preview">
+        </div>
+
+        <div class="form-group">
+          <label>Portada</label>
+
+          <input type="file" (change)="onFileSelected($event,'portada')">
+
+          <img
+            *ngIf="portadaPreview || profile.imagen_portada"
+            [src]="portadaPreview ? portadaPreview : profile.imagen_portada"
+            class="image-preview">
+        </div>
+
+      </div>
+
+    </div>
 
     <div class="buttons">
-      <button (click)="updateEstablishment()">Guardar</button>
-      <button (click)="closeModal()">Cancelar</button>
+      <button class="save-btn" (click)="updateEstablishment()">
+        Guardar
+      </button>
+
+      <button class="cancel-btn" (click)="closeModal()">
+        Cancelar
+      </button>
     </div>
 
   </div>

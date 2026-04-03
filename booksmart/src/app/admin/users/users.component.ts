@@ -6,15 +6,23 @@ import { CreateUserComponent } from './create-user/create-user.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
 import { DeleteUserComponent } from './delete-user/delete-user.component';
 
+import { CreateClientComponent } from './create-client/create-client.component';
+import { EditClientComponent } from './edit-client/edit-client.component';
+import { DeleteClientComponent } from './delete-client/delete-client.component';
 @Component({
   selector: 'app-users',
   standalone: true,
   imports: [
     CommonModule,
     HttpClientModule,
+
     CreateUserComponent,
     EditUserComponent,
-    DeleteUserComponent
+    DeleteUserComponent,
+
+    CreateClientComponent,
+    EditClientComponent,
+    DeleteClientComponent
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
@@ -24,15 +32,21 @@ export class UsersComponent implements OnInit {
   apiUrl = 'http://localhost:8000/api/v1';
 
   users: any[] = [];
-  owners: any[] = [];
+  filteredUsers: any[] = [];
 
   loading = false;
+
+  view: 'owners' | 'clients' | 'all' = 'owners';
+
+  selectedId!: number;
 
   showCreateModal = false;
   showEditModal = false;
   showDeleteModal = false;
 
-  selectedId!: number;
+  showCreateClientModal = false;
+  showEditClientModal = false;
+  showDeleteClientModal = false;
 
   constructor(
     private http: HttpClient,
@@ -44,9 +58,7 @@ export class UsersComponent implements OnInit {
   }
 
   getHeaders(){
-
     let token = '';
-
     if(isPlatformBrowser(this.platformId)){
       token = localStorage.getItem('access_token') || '';
     }
@@ -55,32 +67,24 @@ export class UsersComponent implements OnInit {
       Authorization:`Bearer ${token}`,
       'Content-Type':'application/json'
     });
-
   }
 
   loadUsers(){
 
     this.loading = true;
 
-    this.http.get<any[]>(
-      `${this.apiUrl}/users/`,
-      { headers:this.getHeaders() }
-    ).subscribe({
+    this.http.get<any[]>(`${this.apiUrl}/users/`, {
+      headers:this.getHeaders()
+    }).subscribe({
 
       next:(data)=>{
-
         this.users = data;
-
-        this.owners = this.users.filter(
-          user => user.rol_id === 2
-        );
-
+        this.applyFilter();
         this.loading = false;
-
       },
 
       error:(err)=>{
-        console.error("Error cargando usuarios",err);
+        console.error(err);
         this.loading = false;
       }
 
@@ -88,44 +92,72 @@ export class UsersComponent implements OnInit {
 
   }
 
-  openCreateModal(){
-    this.showCreateModal = true;
+  applyFilter(){
+
+    if(this.view === 'owners'){
+      this.filteredUsers = this.users.filter(u => u.rol_id === 2);
+    }
+    else if(this.view === 'clients'){
+      this.filteredUsers = this.users.filter(u => u.rol_id === 3);
+    }
+    else{
+      this.filteredUsers = this.users;
+    }
+
   }
 
-  closeCreateModal(){
+  setView(view:'owners'|'clients'|'all'){
+    this.view = view;
+    this.applyFilter();
+  }
+
+  openCreate(){
+    if(this.view === 'clients'){
+      this.showCreateClientModal = true;
+    }else{
+      this.showCreateModal = true;
+    }
+  }
+
+  closeCreate(){
     this.showCreateModal = false;
+    this.showCreateClientModal = false;
   }
 
-  reloadAfterCreate(){
-    this.closeCreateModal();
-    this.loadUsers();
-  }
-
-  openEditModal(id:number){
+  openEdit(id:number){
     this.selectedId = id;
-    this.showEditModal = true;
+
+    if(this.view === 'clients'){
+      this.showEditClientModal = true;
+    }else{
+      this.showEditModal = true;
+    }
   }
 
-  closeEditModal(){
+  closeEdit(){
     this.showEditModal = false;
+    this.showEditClientModal = false;
   }
 
-  reloadAfterEdit(){
-    this.closeEditModal();
-    this.loadUsers();
-  }
-
-  openDeleteModal(id:number){
+  openDelete(id:number){
     this.selectedId = id;
-    this.showDeleteModal = true;
+
+    if(this.view === 'clients'){
+      this.showDeleteClientModal = true;
+    }else{
+      this.showDeleteModal = true;
+    }
   }
 
-  closeDeleteModal(){
+  closeDelete(){
     this.showDeleteModal = false;
+    this.showDeleteClientModal = false;
   }
 
-  reloadAfterDelete(){
-    this.closeDeleteModal();
+  reloadAll(){
+    this.closeCreate();
+    this.closeEdit();
+    this.closeDelete();
     this.loadUsers();
   }
 

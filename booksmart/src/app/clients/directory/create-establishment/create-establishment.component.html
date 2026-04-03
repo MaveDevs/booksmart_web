@@ -1,117 +1,128 @@
-<div class="modal-overlay" (click)="closeModal()">
+<div class="modal" (click)="closeModal()">
 
-  <div class="modal-card" (click)="$event.stopPropagation()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
 
-    <h2>Crear establecimiento</h2>
+    <h2>Crear Establecimiento</h2>
 
     <form (ngSubmit)="createEstablishment()">
 
-      <h3>Datos del establecimiento</h3>
+      <div class="grid">
 
-      <div class="form-group">
-        <label>Nombre</label>
-        <input type="text" [(ngModel)]="establishment.nombre" name="nombre" required>
+        <div class="column">
+
+          <h3>Datos</h3>
+
+          <div class="form-group">
+            <label>Nombre</label>
+            <input [(ngModel)]="establishment.nombre" name="nombre" required>
+          </div>
+
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea [(ngModel)]="establishment.descripcion" name="descripcion"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Dirección</label>
+            <input [(ngModel)]="establishment.direccion" name="direccion">
+          </div>
+
+          <div class="form-group">
+            <label>Latitud</label>
+            <input type="number" step="any" [(ngModel)]="establishment.latitud" name="latitud">
+          </div>
+
+          <div class="form-group">
+            <label>Longitud</label>
+            <input type="number" step="any" [(ngModel)]="establishment.longitud" name="longitud">
+          </div>
+
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input [(ngModel)]="establishment.telefono" name="telefono">
+          </div>
+
+          <div class="form-group">
+            <label>Dueño</label>
+            <select [(ngModel)]="establishment.usuario_id" name="usuario_id">
+              <option *ngFor="let user of users" [value]="user.usuario_id">
+                {{ user.nombre }} {{ user.apellido }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Estado</label>
+
+            <div class="toggle">
+              <span [class.active]="establishment.activo">Activo</span>
+
+              <label class="switch">
+                <input type="checkbox"
+                       [(ngModel)]="establishment.activo"
+                       name="activo">
+                <span class="slider"></span>
+              </label>
+
+              <span [class.inactive]="!establishment.activo">Inactivo</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="column">
+
+          <h3>Perfil</h3>
+
+          <div class="form-group">
+            <label>Descripción pública</label>
+            <input [(ngModel)]="profile.descripcion_publica" name="descripcion_publica">
+          </div>
+
+          <div class="form-group">
+            <label>Logo</label>
+            <input type="file" (change)="onFileSelected($event,'logo')">
+            <img *ngIf="logoPreview" [src]="logoPreview" class="image-preview">
+          </div>
+
+          <div class="form-group">
+            <label>Portada</label>
+            <input type="file" (change)="onFileSelected($event,'portada')">
+            <img *ngIf="portadaPreview" [src]="portadaPreview" class="image-preview">
+          </div>
+
+          <h3>Horario</h3>
+
+          <div class="form-group">
+            <label>Día</label>
+            <select [(ngModel)]="agenda.dia_semana" name="dia_semana">
+              <option>LUNES</option>
+              <option>MARTES</option>
+              <option>MIERCOLES</option>
+              <option>JUEVES</option>
+              <option>VIERNES</option>
+              <option>SABADO</option>
+              <option>DOMINGO</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Hora inicio</label>
+            <input type="time" [(ngModel)]="agenda.hora_inicio" name="hora_inicio">
+          </div>
+
+          <div class="form-group">
+            <label>Hora fin</label>
+            <input type="time" [(ngModel)]="agenda.hora_fin" name="hora_fin">
+          </div>
+
+        </div>
+
       </div>
-
-      <div class="form-group">
-        <label>Descripción</label>
-        <input type="text" [(ngModel)]="establishment.descripcion" name="descripcion">
-      </div>
-
-      <div class="form-group">
-        <label>Dirección</label>
-        <input type="text" [(ngModel)]="establishment.direccion" name="direccion">
-      </div>
-
-      <div class="form-group">
-        <label>Latitud</label>
-        <input type="number" [(ngModel)]="establishment.latitud" name="latitud">
-      </div>
-
-      <div class="form-group">
-        <label>Longitud</label>
-        <input type="number" [(ngModel)]="establishment.longitud" name="longitud">
-      </div>
-
-      <div class="form-group">
-        <label>Teléfono</label>
-        <input type="text" [(ngModel)]="establishment.telefono" name="telefono">
-      </div>
-
-      <div class="form-group">
-        <label>Usuario</label>
-
-        <select [(ngModel)]="establishment.usuario_id" name="usuario_id" required>
-
-          <option value="">Seleccionar usuario</option>
-
-          <option
-            *ngFor="let user of users"
-            [value]="user.usuario_id">
-
-            {{ user.nombre }} {{ user.apellido }}
-
-          </option>
-
-        </select>
-      </div>
-
-
-      <h3>Datos del perfil</h3>
-
-      <div class="form-group">
-        <label>Descripción pública</label>
-        <input type="text" [(ngModel)]="profile.descripcion_publica" name="descripcion_publica">
-      </div>
-
-      <div class="form-group">
-        <label>Logo</label>
-        <input type="text" [(ngModel)]="profile.imagen_logo" name="imagen_logo">
-      </div>
-
-      <div class="form-group">
-        <label>Imagen portada</label>
-        <input type="text" [(ngModel)]="profile.imagen_portada" name="imagen_portada">
-      </div>
-
-
-      <h3>Horario</h3>
-
-      <div class="form-group">
-        <label>Día</label>
-        <select [(ngModel)]="agenda.dia_semana" name="dia_semana">
-          <option value="">Seleccionar</option>
-          <option>LUNES</option>
-          <option>MARTES</option>
-          <option>MIERCOLES</option>
-          <option>JUEVES</option>
-          <option>VIERNES</option>
-          <option>SABADO</option>
-          <option>DOMINGO</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Hora inicio</label>
-        <input type="time" [(ngModel)]="agenda.hora_inicio" name="hora_inicio">
-      </div>
-
-      <div class="form-group">
-        <label>Hora fin</label>
-        <input type="time" [(ngModel)]="agenda.hora_fin" name="hora_fin">
-      </div>
-
 
       <div class="buttons">
-
-        <button type="submit" class="save-btn">
-          Crear
-        </button>
-
-        <button type="button" class="cancel-btn" (click)="closeModal()">
-          Cancelar
-        </button>
-
+        <button type="submit" class="save-btn">Crear</button>
+        <button type="button" class="cancel-btn" (click)="closeModal()">Cancelar</button>
       </div>
 
     </form>

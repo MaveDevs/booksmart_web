@@ -1,0 +1,38 @@
+<div class="modal-backdrop" (click)="closeModal()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <h2>Crear Cliente</h2>
+
+    <form (ngSubmit)="createClient()">
+
+      <div class="form-group">
+        <label>Nombre</label>
+        <input [(ngModel)]="client.nombre" name="nombre" required>
+      </div>
+
+      <div class="form-group">
+        <label>Apellido</label>
+        <input [(ngModel)]="client.apellido" name="apellido" required>
+      </div>
+
+      <div class="form-group">
+        <label>Correo</label>
+        <input [(ngModel)]="client.correo" name="correo" required>
+      </div>
+
+      <div class="form-group">
+        <label>Contraseña</label>
+        <input type="password" [(ngModel)]="client.contrasena" name="contrasena" required>
+      </div>
+
+      <div class="buttons">
+        <button class="save-btn">Crear</button>
+        <button type="button" class="cancel-btn" (click)="closeModal()">Cancelar</button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

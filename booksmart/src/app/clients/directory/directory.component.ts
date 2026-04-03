@@ -44,7 +44,6 @@ export class DirectoryComponent implements OnInit {
   }
 
   getHeaders() {
-
     let token = '';
 
     if (isPlatformBrowser(this.platformId)) {
@@ -55,7 +54,6 @@ export class DirectoryComponent implements OnInit {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-
   }
 
   loadData() {
@@ -81,6 +79,8 @@ export class DirectoryComponent implements OnInit {
         this.profiles = res.profiles;
         this.agendas = res.agendas;
 
+        console.log("PROFILES ", this.profiles);
+
         this.establishments = res.establishments.map(est => {
 
           const profile = this.profiles.find(
@@ -94,8 +94,15 @@ export class DirectoryComponent implements OnInit {
           return {
             ...est,
             descripcion_publica: profile?.descripcion_publica || 'Sin perfil',
-            imagen_logo: profile?.imagen_logo || '',
-            imagen_portada: profile?.imagen_portada || '',
+
+            imagen_logo: profile?.imagen_logo?.startsWith('http')
+              ? profile.imagen_logo
+              : '',
+
+            imagen_portada: profile?.imagen_portada?.startsWith('http')
+              ? profile.imagen_portada
+              : '',
+
             dia_semana: agenda?.dia_semana || 'Sin horario',
             hora_inicio: agenda?.hora_inicio || '',
             hora_fin: agenda?.hora_fin || ''
@@ -153,5 +160,4 @@ export class DirectoryComponent implements OnInit {
     this.closeEditModal();
     this.loadData();
   }
-
 }

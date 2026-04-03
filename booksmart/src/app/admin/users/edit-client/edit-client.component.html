@@ -1,0 +1,18 @@
+<div class="modal-backdrop" (click)="closeModal()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <h2>Editar Cliente</h2>
+
+    <input [(ngModel)]="client.nombre">
+    <input [(ngModel)]="client.apellido">
+    <input [(ngModel)]="client.correo">
+
+    <div class="buttons">
+      <button class="save-btn" (click)="updateClient()">Guardar</button>
+      <button class="cancel-btn" (click)="closeModal()">Cancelar</button>
+    </div>
+
+  </div>
+
+</div>

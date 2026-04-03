@@ -17,7 +17,13 @@ export class CreateEstablishmentComponent implements OnInit {
 
   apiUrl = 'http://localhost:8000/api/v1';
 
-  users: any[] = []; 
+  users: any[] = [];
+
+  logoFile: File | null = null;
+  portadaFile: File | null = null;
+
+  logoPreview: string | null = null;
+  portadaPreview: string | null = null;
 
   establishment: any = {
     nombre: '',
@@ -31,9 +37,7 @@ export class CreateEstablishmentComponent implements OnInit {
   };
 
   profile: any = {
-    descripcion_publica: '',
-    imagen_logo: '',
-    imagen_portada: ''
+    descripcion_publica: ''
   };
 
   agenda: any = {
@@ -52,7 +56,6 @@ export class CreateEstablishmentComponent implements OnInit {
   }
 
   getHeaders() {
-
     let token = '';
 
     if (isPlatformBrowser(this.platformId)) {
@@ -66,95 +69,84 @@ export class CreateEstablishmentComponent implements OnInit {
   }
 
   loadUsers() {
-
-    this.http.get<any[]>(
-      `${this.apiUrl}/users/`,
-      { headers: this.getHeaders() }
-    ).subscribe({
-
-      next: (data) => {
-        this.users = data;
-      },
-
-      error: (err) => {
-        console.error("Error cargando usuarios", err);
-      }
-
-    });
-
+    this.http.get(`${this.apiUrl}/users/`, { headers: this.getHeaders() })
+      .subscribe({
+        next: (data: any) => this.users = data,
+        error: (err) => console.error("Error usuarios", err)
+      });
   }
 
-  createEstablishment() {
+  onFileSelected(event: any, type: string) {
+    const file = event.target.files[0];
+    if (!file) return;
 
-    this.http.post(
-      `${this.apiUrl}/establishments/`,
-      this.establishment,
-      { headers: this.getHeaders() }
-    ).subscribe({
+    const reader = new FileReader();
 
-      next: (data: any) => {
-
-        const establishmentId = data.establecimiento_id;
-
-        const profileData = {
-          establecimiento_id: establishmentId,
-          descripcion_publica: this.profile.descripcion_publica,
-          imagen_logo: this.profile.imagen_logo,
-          imagen_portada: this.profile.imagen_portada
-        };
-
-        this.http.post(
-          `${this.apiUrl}/profiles/`,
-          profileData,
-          { headers: this.getHeaders() }
-        ).subscribe({
-
-          next: () => {
-
-            const agendaData = {
-              establecimiento_id: establishmentId,
-              dia_semana: this.agenda.dia_semana,
-              hora_inicio: this.agenda.hora_inicio,
-              hora_fin: this.agenda.hora_fin
-            };
-
-            this.http.post(
-              `${this.apiUrl}/agendas/`,
-              agendaData,
-              { headers: this.getHeaders() }
-            ).subscribe({
-
-              next: () => {
-                this.created.emit();
-                this.close.emit();
-              },
-
-              error: (err) => {
-                console.error(err);
-              }
-
-            });
-
-          },
-
-          error: (err) => {
-            console.error(err);
-          }
-
-        });
-
-      },
-
-      error: (err) => {
-        console.error(err);
+    reader.onload = () => {
+      if (type === 'logo') {
+        this.logoFile = file;
+        this.logoPreview = reader.result as string;
       }
+      if (type === 'portada') {
+        this.portadaFile = file;
+        this.portadaPreview = reader.result as string;
+      }
+    };
 
-    });
+    reader.readAsDataURL(file);
+  }
 
+  async uploadImage(file: File): Promise<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'upload_establecimientos');
+
+    const res = await fetch(
+      'https://api.cloudinary.com/v1_1/da8ohqavz/image/upload',
+      { method: 'POST', body: formData }
+    );
+
+    const data = await res.json();
+    return data.secure_url;
+  }
+
+  async createEstablishment() {
+    try {
+
+      const estRes: any = await this.http.post(
+        `${this.apiUrl}/establishments/`,
+        this.establishment,
+        { headers: this.getHeaders() }
+      ).toPromise();
+
+      const id = estRes.establecimiento_id;
+
+      const logoUrl = this.logoFile ? await this.uploadImage(this.logoFile) : '';
+      const portadaUrl = this.portadaFile ? await this.uploadImage(this.portadaFile) : '';
+
+      await this.http.post(`${this.apiUrl}/profiles/`, {
+        establecimiento_id: id,
+        descripcion_publica: this.profile.descripcion_publica,
+        imagen_logo: logoUrl,
+        imagen_portada: portadaUrl
+      }, { headers: this.getHeaders() }).toPromise();
+
+      await this.http.post(`${this.apiUrl}/agendas/`, {
+        establecimiento_id: id,
+        dia_semana: this.agenda.dia_semana || 'LUNES',
+        hora_inicio: this.agenda.hora_inicio || '09:00',
+        hora_fin: this.agenda.hora_fin || '18:00'
+      }, { headers: this.getHeaders() }).toPromise();
+
+      this.created.emit();
+      this.close.emit();
+
+    } catch (error) {
+      console.error("ERROR ❌", error);
+    }
   }
 
   closeModal() {
     this.close.emit();
   }
-
 }

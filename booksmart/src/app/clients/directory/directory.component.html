@@ -23,6 +23,10 @@
           *ngIf="business.imagen_portada"
           [src]="business.imagen_portada"
           alt="Portada">
+
+        <img
+          *ngIf="!business.imagen_portada"
+          src="https://via.placeholder.com/400x200">
       </div>
 
       <div class="card-header">
@@ -30,6 +34,11 @@
         <img
           *ngIf="business.imagen_logo"
           [src]="business.imagen_logo"
+          class="logo">
+
+        <img
+          *ngIf="!business.imagen_logo"
+          src="https://via.placeholder.com/80"
           class="logo">
 
         <h3>{{ business.nombre }}</h3>
@@ -42,11 +51,11 @@
           {{ business.descripcion_publica }}
         </p>
 
-        <p><strong>📍 Dirección:</strong><br>{{ business.direccion }}</p>
-        <p><strong>📞 Teléfono:</strong> {{ business.telefono }}</p>
+        <p><strong> Dirección:</strong><br>{{ business.direccion }}</p>
+        <p><strong> Teléfono:</strong> {{ business.telefono }}</p>
 
         <p>
-          <strong>🕒 Horario:</strong><br>
+          <strong> Horario:</strong><br>
           {{ business.dia_semana }}<br>
           {{ business.hora_inicio }} - {{ business.hora_fin }}
         </p>
