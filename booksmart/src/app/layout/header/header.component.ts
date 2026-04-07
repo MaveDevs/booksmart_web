@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProfileModalComponent } from './profile-modal/profile-modal.component';
-import { LogoutModalComponent } from './logout-modal/logout-modal.component'; // 🔥 IMPORTANTE
+import { LogoutModalComponent } from './logout-modal/logout-modal.component'; 
 import { AuthService } from '../../services/auth.service';
 
 @Component({

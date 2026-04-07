@@ -45,6 +45,7 @@
           <div class="form-group">
             <label>Dueño</label>
             <select [(ngModel)]="establishment.usuario_id" name="usuario_id">
+              <option value="">Selecciona</option>
               <option *ngFor="let user of users" [value]="user.usuario_id">
                 {{ user.nombre }} {{ user.apellido }}
               </option>
@@ -91,30 +92,48 @@
             <img *ngIf="portadaPreview" [src]="portadaPreview" class="image-preview">
           </div>
 
-          <h3>Horario</h3>
+          <h3>Horarios</h3>
 
-          <div class="form-group">
-            <label>Día</label>
-            <select [(ngModel)]="agenda.dia_semana" name="dia_semana">
-              <option>LUNES</option>
-              <option>MARTES</option>
-              <option>MIERCOLES</option>
-              <option>JUEVES</option>
-              <option>VIERNES</option>
-              <option>SABADO</option>
-              <option>DOMINGO</option>
-            </select>
+          <div *ngFor="let a of agendas; let i = index" class="agenda-block">
+
+            <div class="form-group">
+              <label>Día</label>
+              <select [(ngModel)]="a.dia_semana" name="dia_{{i}}">
+                <option value="">Selecciona</option>
+                <option>LUNES</option>
+                <option>MARTES</option>
+                <option>MIERCOLES</option>
+                <option>JUEVES</option>
+                <option>VIERNES</option>
+                <option>SABADO</option>
+                <option>DOMINGO</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Hora inicio</label>
+              <input type="time" [(ngModel)]="a.hora_inicio" name="inicio_{{i}}">
+            </div>
+
+            <div class="form-group">
+              <label>Hora fin</label>
+              <input type="time" [(ngModel)]="a.hora_fin" name="fin_{{i}}">
+            </div>
+
+            <button type="button"
+                    class="remove-btn"
+                    *ngIf="agendas.length > 1"
+                    (click)="removeAgenda(i)">
+              🗑 Eliminar
+            </button>
+
           </div>
 
-          <div class="form-group">
-            <label>Hora inicio</label>
-            <input type="time" [(ngModel)]="agenda.hora_inicio" name="hora_inicio">
-          </div>
-
-          <div class="form-group">
-            <label>Hora fin</label>
-            <input type="time" [(ngModel)]="agenda.hora_fin" name="hora_fin">
-          </div>
+          <button type="button"
+                  class="add-agenda-btn"
+                  (click)="addAgenda()">
+            + Agregar otro día
+          </button>
 
         </div>
 

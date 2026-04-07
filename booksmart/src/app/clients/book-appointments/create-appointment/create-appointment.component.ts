@@ -28,6 +28,9 @@ export class CreateAppointmentComponent implements OnInit {
 
   users: any[] = [];
   services: any[] = [];
+  establishments: any[] = [];
+
+  selectedService: any = null;
 
   constructor(
     private http: HttpClient,
@@ -57,21 +60,52 @@ export class CreateAppointmentComponent implements OnInit {
 
   loadData() {
 
+   
     this.http.get<any[]>(`${this.apiUrl}/users/`, {
       headers: this.getHeaders()
     }).subscribe({
-      next: (data) => this.users = data,
-      error: (err) => console.error('Error cargando usuarios', err)
+      next: (data) => {
+        this.users = data.filter(u => u.rol_id === 3);
+      },
+      error: (err) => console.error('Error usuarios', err)
     });
 
     this.http.get<any[]>(`${this.apiUrl}/services/`, {
       headers: this.getHeaders()
     }).subscribe({
       next: (data) => this.services = data,
-      error: (err) => console.error('Error cargando servicios', err)
+      error: (err) => console.error('Error servicios', err)
+    });
+
+    this.http.get<any[]>(`${this.apiUrl}/establishments/`, {
+      headers: this.getHeaders()
+    }).subscribe({
+      next: (data) => this.establishments = data,
+      error: (err) => console.error('Error establecimientos', err)
     });
 
   }
+
+  
+  onServiceChange() {
+
+    this.selectedService = this.services.find(
+      s => s.servicio_id == this.appointment.servicio_id
+    );
+
+  }
+
+ 
+  getEstablishmentName(id: number) {
+
+    const est = this.establishments.find(
+      e => e.establecimiento_id === id
+    );
+
+    return est ? est.nombre : '—';
+
+  }
+
 
   createAppointment() {
 
@@ -84,19 +118,18 @@ export class CreateAppointmentComponent implements OnInit {
     ).subscribe({
 
       next: () => {
-
         this.created.emit();
         this.close.emit();
-
       },
 
       error: (err) => {
-        console.error('Error al crear la cita', err);
+        console.error('Error creando cita', err);
       }
 
     });
 
   }
+
 
   closeModal() {
     this.close.emit();

@@ -1,0 +1,16 @@
+<div class="modal-backdrop" (click)="closeModal()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <h2>Eliminar Trabajador</h2>
+
+    <p class="message">¿Seguro que deseas eliminar este trabajador?</p>
+
+    <div class="buttons">
+      <button class="delete-btn" (click)="deleteWorker()">Eliminar</button>
+      <button class="cancel-btn" (click)="closeModal()">Cancelar</button>
+    </div>
+
+  </div>
+
+</div>

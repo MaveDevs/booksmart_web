@@ -41,6 +41,9 @@ h2 {
   border-radius: 16px;
   overflow: visible;
   box-shadow: 0 6px 20px rgba(31, 58, 95, 0.08);
+
+  position: relative;
+  z-index: 1;
 }
 
 .table thead {
@@ -70,7 +73,6 @@ h2 {
   background-color: rgba(31, 191, 159, 0.06);
 }
 
-
 .status-active {
   padding: 6px 14px;
   border-radius: 50px;
@@ -88,7 +90,6 @@ h2 {
   background: rgba(255, 99, 132, 0.15);
   color: #d64545;
 }
-
 
 .actions {
   display: flex;
@@ -145,18 +146,23 @@ h2 {
   transform: scale(1.08);
 }
 
-
 app-create-user,
 app-edit-user,
-app-delete-user {
+app-delete-user,
+app-create-client,
+app-edit-client,
+app-delete-client,
+app-create-worker,
+app-edit-worker,
+app-delete-worker {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 999;
-}
 
+  z-index: 9999;
+}
 
 @media (max-width: 768px) {
   .table {
@@ -168,6 +174,7 @@ app-delete-user {
     padding: 10px;
   }
 }
+
 .title-section {
   display: flex;
   flex-direction: column;

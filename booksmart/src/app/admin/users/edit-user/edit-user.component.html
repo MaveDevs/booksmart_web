@@ -17,21 +17,22 @@
     <label>Correo</label>
     <input type="email" [(ngModel)]="user.correo">
 
-    <label>Activo</label>
-    <select [(ngModel)]="user.activo">
-      <option [value]="true">Activo</option>
-      <option [value]="false">Inactivo</option>
-    </select>
+    <div class="checkbox-container">
+      <input 
+        type="checkbox" 
+        id="activoUser"
+        [(ngModel)]="user.activo"
+      >
+      <label for="activoUser">Activo</label>
+    </div>
 
     <div class="buttons">
 
-      <button class="save-btn"
-              (click)="updateUser()">
+      <button class="save-btn" (click)="updateUser()">
         Guardar
       </button>
 
-      <button class="cancel-btn"
-              (click)="closeModal()">
+      <button class="cancel-btn" (click)="closeModal()">
         Cancelar
       </button>
 

@@ -4,9 +4,18 @@
 
     <h2>Editar Cliente</h2>
 
-    <input [(ngModel)]="client.nombre">
-    <input [(ngModel)]="client.apellido">
-    <input [(ngModel)]="client.correo">
+    <input [(ngModel)]="client.nombre" placeholder="Nombre">
+    <input [(ngModel)]="client.apellido" placeholder="Apellido">
+    <input [(ngModel)]="client.correo" placeholder="Correo">
+
+    <div class="checkbox-container">
+      <input 
+        type="checkbox" 
+        id="activoClient"
+        [(ngModel)]="client.activo"
+      >
+      <label for="activoClient">Activo</label>
+    </div>
 
     <div class="buttons">
       <button class="save-btn" (click)="updateClient()">Guardar</button>

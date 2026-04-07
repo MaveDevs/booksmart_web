@@ -40,11 +40,13 @@ export class CreateEstablishmentComponent implements OnInit {
     descripcion_publica: ''
   };
 
-  agenda: any = {
-    dia_semana: '',
-    hora_inicio: '',
-    hora_fin: ''
-  };
+  agendas: any[] = [
+    {
+      dia_semana: '',
+      hora_inicio: '',
+      hora_fin: ''
+    }
+  ];
 
   constructor(
     private http: HttpClient,
@@ -72,8 +74,20 @@ export class CreateEstablishmentComponent implements OnInit {
     this.http.get(`${this.apiUrl}/users/`, { headers: this.getHeaders() })
       .subscribe({
         next: (data: any) => this.users = data,
-        error: (err) => console.error("Error usuarios", err)
+        error: (err) => console.error(err)
       });
+  }
+
+  addAgenda(){
+    this.agendas.push({
+      dia_semana: '',
+      hora_inicio: '',
+      hora_fin: ''
+    });
+  }
+
+  removeAgenda(index:number){
+    this.agendas.splice(index,1);
   }
 
   onFileSelected(event: any, type: string) {
@@ -111,6 +125,7 @@ export class CreateEstablishmentComponent implements OnInit {
   }
 
   async createEstablishment() {
+
     try {
 
       const estRes: any = await this.http.post(
@@ -131,22 +146,30 @@ export class CreateEstablishmentComponent implements OnInit {
         imagen_portada: portadaUrl
       }, { headers: this.getHeaders() }).toPromise();
 
-      await this.http.post(`${this.apiUrl}/agendas/`, {
-        establecimiento_id: id,
-        dia_semana: this.agenda.dia_semana || 'LUNES',
-        hora_inicio: this.agenda.hora_inicio || '09:00',
-        hora_fin: this.agenda.hora_fin || '18:00'
-      }, { headers: this.getHeaders() }).toPromise();
+      for(const a of this.agendas){
+
+        if(!a.dia_semana) continue;
+
+        await this.http.post(`${this.apiUrl}/agendas/`, {
+          establecimiento_id: id,
+          dia_semana: a.dia_semana,
+          hora_inicio: a.hora_inicio || '09:00',
+          hora_fin: a.hora_fin || '18:00'
+        }, { headers: this.getHeaders() }).toPromise();
+
+      }
 
       this.created.emit();
       this.close.emit();
 
     } catch (error) {
-      console.error("ERROR ❌", error);
+      console.error("ERROR ", error);
     }
+
   }
 
   closeModal() {
     this.close.emit();
   }
+
 }

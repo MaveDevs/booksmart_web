@@ -8,49 +8,50 @@
 
       <div class="tabs">
 
-        <button 
-          [class.active]="view === 'owners'"
-          (click)="setView('owners')">
-          Dueños
-        </button>
-
-        <button 
-          [class.active]="view === 'clients'"
-          (click)="setView('clients')">
-          Clientes
-        </button>
-
-        <button 
-          [class.active]="view === 'all'"
-          (click)="setView('all')">
-          Todos
-        </button>
+        <button [class.active]="view === 'owners'" (click)="setView('owners')">Dueños</button>
+        <button [class.active]="view === 'clients'" (click)="setView('clients')">Clientes</button>
+        <button [class.active]="view === 'workers'" (click)="setView('workers')">Trabajadores</button>
+        <button [class.active]="view === 'all'" (click)="setView('all')">Todos</button>
 
       </div>
 
     </div>
 
     <button class="add-btn" (click)="openCreate()">
-      + Crear {{ view === 'clients' ? 'Cliente' : 'Usuario' }}
+      + Crear 
+      {{ view === 'clients' ? 'Cliente' : view === 'workers' ? 'Trabajador' : 'Usuario' }}
     </button>
 
-  </div>
-
-  <div *ngIf="loading">
-    <p>Cargando usuarios...</p>
   </div>
 
   <table *ngIf="!loading && filteredUsers.length > 0" class="table">
 
     <thead>
       <tr>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Correo</th>
-        <th>Rol</th>
-        <th>Estado</th>
-        <th>Fecha</th>
-        <th>Acciones</th>
+
+        <!--  WORKERS -->
+        <ng-container *ngIf="view === 'workers'; else normalHeader">
+          <th>Foto</th>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Teléfono</th>
+          <th>Especialidad</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </ng-container>
+
+        <!-- 🔹 USERS -->
+        <ng-template #normalHeader>
+          <th>Nombre</th>
+          <th>Apellido</th>
+          <th>Correo</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </ng-template>
+
       </tr>
     </thead>
 
@@ -58,33 +59,66 @@
 
       <tr *ngFor="let user of filteredUsers">
 
-        <td>{{ user.nombre }}</td>
-        <td>{{ user.apellido }}</td>
-        <td>{{ user.correo }}</td>
+        <!-- WORKERS -->
+        <ng-container *ngIf="view === 'workers'; else normalRow">
 
-        <td>
-          {{ user.rol_id === 2 ? 'Dueño' : user.rol_id === 3 ? 'Cliente' : 'Otro' }}
-        </td>
+          <td>
+            <img 
+              [src]="user.foto_perfil || 'https://via.placeholder.com/40'"
+              style="width:40px;height:40px;border-radius:50%;object-fit:cover;"
+            >
+          </td>
 
-        <td>
-          <span [ngClass]="user.activo ? 'status-active' : 'status-inactive'">
-            {{ user.activo ? 'Activo' : 'Inactivo' }}
-          </span>
-        </td>
+          <td>{{ user.nombre }} {{ user.apellido }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.telefono }}</td>
+          <td>{{ user.especialidad }}</td>
 
-        <td>{{ user.fecha_creacion | date:'yyyy-MM-dd' }}</td>
+          <td>
+            <span [ngClass]="user.activo ? 'status-active' : 'status-inactive'">
+              {{ user.activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
 
-        <td class="actions">
+          <td>{{ user.fecha_contratacion | date:'yyyy-MM-dd' }}</td>
 
-          <button class="edit-btn" (click)="openEdit(user.usuario_id)">
-            ✎
-          </button>
+          <td class="actions">
+            <button class="edit-btn" (click)="openEdit(user.trabajador_id)">✎</button>
+            <button class="delete-btn" (click)="openDelete(user.trabajador_id)">🗑</button>
+          </td>
 
-          <button class="delete-btn" (click)="openDelete(user.usuario_id)">
-            🗑
-          </button>
+        </ng-container>
 
-        </td>
+        <!--  USERS -->
+        <ng-template #normalRow>
+
+          <td>{{ user.nombre }}</td>
+          <td>{{ user.apellido }}</td>
+          <td>{{ user.correo }}</td>
+
+          <td>
+            {{
+              user.rol_id === 2 ? 'Dueño' :
+              user.rol_id === 3 ? 'Cliente' :
+              user.rol_id === 4 ? 'Trabajador' :
+              'Otro'
+            }}
+          </td>
+
+          <td>
+            <span [ngClass]="user.activo ? 'status-active' : 'status-inactive'">
+              {{ user.activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+
+          <td>{{ user.fecha_creacion | date:'yyyy-MM-dd' }}</td>
+
+          <td class="actions">
+            <button class="edit-btn" (click)="openEdit(user.usuario_id)">✎</button>
+            <button class="delete-btn" (click)="openDelete(user.usuario_id)">🗑</button>
+          </td>
+
+        </ng-template>
 
       </tr>
 
@@ -93,31 +127,62 @@
   </table>
 
 </div>
+<app-create-user 
+  *ngIf="showCreateModal" 
+  (close)="closeCreate()" 
+  (created)="reloadAll()">
+</app-create-user>
 
-<app-create-user *ngIf="showCreateModal"
-(close)="closeCreate()"
-(created)="reloadAll()"></app-create-user>
+<app-edit-user 
+  *ngIf="showEditModal" 
+  [userId]="selectedId" 
+  (close)="closeEdit()" 
+  (updated)="reloadAll()">
+</app-edit-user>
 
-<app-edit-user *ngIf="showEditModal"
-[userId]="selectedId"
-(close)="closeEdit()"
-(updated)="reloadAll()"></app-edit-user>
+<app-delete-user 
+  *ngIf="showDeleteModal" 
+  [userId]="selectedId" 
+  (close)="closeDelete()" 
+  (deleted)="reloadAll()">
+</app-delete-user>
 
-<app-delete-user *ngIf="showDeleteModal"
-[userId]="selectedId"
-(close)="closeDelete()"
-(deleted)="reloadAll()"></app-delete-user>
+<app-create-client 
+  *ngIf="showCreateClientModal" 
+  (close)="closeCreate()" 
+  (created)="reloadAll()">
+</app-create-client>
 
-<app-create-client *ngIf="showCreateClientModal"
-(close)="closeCreate()"
-(created)="reloadAll()"></app-create-client>
+<app-edit-client 
+  *ngIf="showEditClientModal" 
+  [clientId]="selectedId" 
+  (close)="closeEdit()" 
+  (updated)="reloadAll()">
+</app-edit-client>
 
-<app-edit-client *ngIf="showEditClientModal"
-[clientId]="selectedId"
-(close)="closeEdit()"
-(updated)="reloadAll()"></app-edit-client>
+<app-delete-client 
+  *ngIf="showDeleteClientModal" 
+  [clientId]="selectedId" 
+  (close)="closeDelete()" 
+  (deleted)="reloadAll()">
+</app-delete-client>
 
-<app-delete-client *ngIf="showDeleteClientModal"
-[clientId]="selectedId"
-(close)="closeDelete()"
-(deleted)="reloadAll()"></app-delete-client>
+<app-create-worker 
+  *ngIf="showCreateWorkerModal" 
+  (close)="closeCreate()" 
+  (created)="reloadAll()">
+</app-create-worker>
+
+<app-edit-worker 
+  *ngIf="showEditWorkerModal" 
+  [workerId]="selectedId" 
+  (close)="closeEdit()" 
+  (updated)="reloadAll()">
+</app-edit-worker>
+
+<app-delete-worker 
+  *ngIf="showDeleteWorkerModal" 
+  [workerId]="selectedId" 
+  (close)="closeDelete()" 
+  (deleted)="reloadAll()">
+</app-delete-worker>

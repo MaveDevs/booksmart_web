@@ -1,0 +1,82 @@
+<div class="container">
+
+  <div class="header">
+    <h2>Pagos</h2>
+
+    <button class="add-btn" (click)="openCreateModal()">
+      + Nuevo Pago
+    </button>
+  </div>
+
+  <div *ngIf="loading">
+    <p>Cargando pagos...</p>
+  </div>
+
+  <div *ngIf="!loading && payments.length === 0">
+    <p>No hay pagos</p>
+  </div>
+
+  <table *ngIf="payments.length > 0" class="table">
+
+    <thead>
+      <tr>
+        <th>Suscripción</th>
+        <th>Monto</th>
+        <th>Método</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let p of payments">
+
+        <td>
+          {{ p.establecimiento_nombre }} - {{ p.plan_nombre }}
+        </td>
+
+        <td>${{ p.monto }}</td>
+        <td>{{ p.metodo_pago }}</td>
+        <td>{{ p.estado }}</td>
+
+        <td class="actions">
+
+          <button class="edit-btn" (click)="editPayment(p)">
+            ✎
+          </button>
+
+          <button class="delete-btn"
+                  (click)="openDeleteModal(p.pago_id || p.id)">
+            🗑
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+
+<app-create-payment
+  *ngIf="showCreateModal"
+  (close)="closeCreateModal()"
+  (created)="reloadAfterCreate()">
+</app-create-payment>
+
+<app-edit-payment
+  *ngIf="showEditModal"
+  [paymentId]="selectedId"
+  (close)="closeEditModal()"
+  (updated)="reloadAfterUpdate()">
+</app-edit-payment>
+
+<app-delete-payment
+  *ngIf="showDeleteModal"
+  [paymentId]="selectedId"
+  (close)="closeDeleteModal()"
+  (deleted)="reloadAfterDelete()">
+</app-delete-payment>

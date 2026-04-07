@@ -21,7 +21,6 @@ export class DeleteReportComponent {
 
   apiUrl='http://localhost:8000/api/v1';
 
-  // 🔥 AGREGAR ESTO
   showSuccessCard = false;
   loading = false;
 

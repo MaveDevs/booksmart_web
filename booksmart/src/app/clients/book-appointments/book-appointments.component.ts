@@ -27,6 +27,7 @@ export class BookAppointmentsComponent implements OnInit {
   appointments: any[] = [];
   users: any[] = [];
   services: any[] = [];
+  establishments: any[] = []; 
 
   loading = false;
 
@@ -64,22 +65,29 @@ export class BookAppointmentsComponent implements OnInit {
     forkJoin({
       appointments: this.http.get<any[]>(`${this.apiUrl}/appointments/`, { headers: this.getHeaders() }),
       users: this.http.get<any[]>(`${this.apiUrl}/users/`, { headers: this.getHeaders() }),
-      services: this.http.get<any[]>(`${this.apiUrl}/services/`, { headers: this.getHeaders() })
+      services: this.http.get<any[]>(`${this.apiUrl}/services/`, { headers: this.getHeaders() }),
+      establishments: this.http.get<any[]>(`${this.apiUrl}/establishments/`, { headers: this.getHeaders() }) 
     }).subscribe({
       next: (res) => {
 
         this.users = res.users;
         this.services = res.services;
+        this.establishments = res.establishments;
 
         this.appointments = res.appointments.map(cita => {
 
           const cliente = this.users.find(u => u.usuario_id === cita.cliente_id);
           const servicio = this.services.find(s => s.servicio_id === cita.servicio_id);
 
+          const establecimiento = this.establishments.find(
+            e => e.establecimiento_id === servicio?.establecimiento_id
+          );
+
           return {
             ...cita,
             cliente_nombre: cliente ? `${cliente.nombre} ${cliente.apellido}` : 'Sin nombre',
-            servicio_nombre: servicio ? servicio.nombre : 'Sin servicio'
+            servicio_nombre: servicio ? servicio.nombre : 'Sin servicio',
+            establecimiento_nombre: establecimiento ? establecimiento.nombre : '—'
           };
         });
 
@@ -132,4 +140,5 @@ export class BookAppointmentsComponent implements OnInit {
     this.closeDeleteModal();
     this.loadAllData();
   }
+
 }

@@ -20,9 +20,9 @@ export class EditEstablishmentComponent implements OnChanges {
 
   apiUrl = 'http://localhost:8000/api/v1';
 
-  establishment: any = {};
+  establishment: any = { activo: true };
   profile: any = {};
-  agenda: any = {};
+  agendas: any[] = [];
   users: any[] = [];
 
   logoFile: File | null = null;
@@ -54,84 +54,71 @@ export class EditEstablishmentComponent implements OnChanges {
 
   loadData() {
 
-    if (!isPlatformBrowser(this.platformId)) return;
-
     forkJoin({
+      est: this.http.get(`${this.apiUrl}/establishments/${this.establishmentId}`),
+      profiles: this.http.get<any[]>(`${this.apiUrl}/profiles/`),
+      agendas: this.http.get<any[]>(`${this.apiUrl}/agendas/`),
+      users: this.http.get<any[]>(`${this.apiUrl}/users/`)
+    }).subscribe((res: any) => {
 
-      est: this.http.get(`${this.apiUrl}/establishments/${this.establishmentId}`, {
-        headers: this.getHeaders()
-      }),
+      this.establishment = {
+        activo: true,
+        ...res.est
+      };
 
-      profiles: this.http.get<any[]>(`${this.apiUrl}/profiles/`, {
-        headers: this.getHeaders()
-      }),
+      this.profile = res.profiles.find(
+        (p: any) => p.establecimiento_id === this.establishmentId
+      ) || {};
 
-      agendas: this.http.get<any[]>(`${this.apiUrl}/agendas/`, {
-        headers: this.getHeaders()
-      }),
+      this.agendas = res.agendas.filter(
+        (a: any) => a.establecimiento_id === this.establishmentId
+      );
 
-      users: this.http.get<any[]>(`${this.apiUrl}/users/`, {
-        headers: this.getHeaders()
-      })
+      this.users = res.users;
 
-    }).subscribe({
-
-      next: (res: any) => {
-
-        this.establishment = res.est;
-
-        this.profile = res.profiles.find(
-          (p: any) => p.establecimiento_id === this.establishmentId
-        ) || {};
-
-        this.agenda = res.agendas.find(
-          (a: any) => a.establecimiento_id === this.establishmentId
-        ) || {};
-
-        this.users = res.users;
-
-      },
-
-      error: (err) => console.error(err)
     });
   }
 
-  onFileSelected(event: any, type: string) {
+  addAgenda() {
+    this.agendas.push({
+      dia_semana: 'LUNES',
+      hora_inicio: '09:00',
+      hora_fin: '18:00'
+    });
+  }
 
+  removeAgenda(index: number) {
+    this.agendas.splice(index, 1);
+  }
+
+  onFileSelected(event: any, type: string) {
     const file = event.target.files[0];
     if (!file) return;
 
     const reader = new FileReader();
 
     reader.onload = () => {
-
       if (type === 'logo') {
         this.logoFile = file;
         this.logoPreview = reader.result as string;
       }
-
       if (type === 'portada') {
         this.portadaFile = file;
         this.portadaPreview = reader.result as string;
       }
-
     };
 
     reader.readAsDataURL(file);
   }
 
   async uploadImage(file: File): Promise<string> {
-
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'upload_establecimientos');
 
     const res = await fetch(
       'https://api.cloudinary.com/v1_1/da8ohqavz/image/upload',
-      {
-        method: 'POST',
-        body: formData
-      }
+      { method: 'POST', body: formData }
     );
 
     const data = await res.json();
@@ -140,48 +127,46 @@ export class EditEstablishmentComponent implements OnChanges {
 
   async updateEstablishment() {
 
-    if (!isPlatformBrowser(this.platformId)) return;
-
     try {
 
       let logoUrl = this.profile.imagen_logo;
       let portadaUrl = this.profile.imagen_portada;
 
-      if (this.logoFile) {
-        logoUrl = await this.uploadImage(this.logoFile);
-      }
-
-      if (this.portadaFile) {
-        portadaUrl = await this.uploadImage(this.portadaFile);
-      }
+      if (this.logoFile) logoUrl = await this.uploadImage(this.logoFile);
+      if (this.portadaFile) portadaUrl = await this.uploadImage(this.portadaFile);
 
       await this.http.put(
         `${this.apiUrl}/establishments/${this.establishmentId}`,
-        this.establishment,
-        { headers: this.getHeaders() }
+        this.establishment
       ).toPromise();
 
       if (this.profile.perfil_id) {
-
-        const profileData = {
-          ...this.profile,
-          imagen_logo: logoUrl,
-          imagen_portada: portadaUrl
-        };
-
         await this.http.put(
           `${this.apiUrl}/profiles/${this.profile.perfil_id}`,
-          profileData,
-          { headers: this.getHeaders() }
+          {
+            ...this.profile,
+            imagen_logo: logoUrl,
+            imagen_portada: portadaUrl
+          }
         ).toPromise();
       }
 
-      if (this.agenda.agenda_id) {
-        await this.http.put(
-          `${this.apiUrl}/agendas/${this.agenda.agenda_id}`,
-          this.agenda,
-          { headers: this.getHeaders() }
-        ).toPromise();
+      for (const agenda of this.agendas) {
+
+        if (agenda.agenda_id) {
+          await this.http.put(
+            `${this.apiUrl}/agendas/${agenda.agenda_id}`,
+            agenda
+          ).toPromise();
+        } else {
+          await this.http.post(
+            `${this.apiUrl}/agendas/`,
+            {
+              ...agenda,
+              establecimiento_id: this.establishmentId
+            }
+          ).toPromise();
+        }
       }
 
       this.showSuccessCard = true;
@@ -193,7 +178,7 @@ export class EditEstablishmentComponent implements OnChanges {
       }, 2000);
 
     } catch (err) {
-      console.error("ERROR ❌", err);
+      console.error(err);
     }
   }
 

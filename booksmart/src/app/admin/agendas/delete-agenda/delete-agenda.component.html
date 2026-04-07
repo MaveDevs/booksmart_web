@@ -1,0 +1,16 @@
+<div class="modal-backdrop" (click)="close.emit()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <h2>Eliminar Agenda</h2>
+
+    <p>¿Seguro que deseas eliminar este horario?</p>
+
+    <div class="buttons">
+      <button class="delete-btn" (click)="delete()">Eliminar</button>
+      <button class="cancel-btn" (click)="close.emit()">Cancelar</button>
+    </div>
+
+  </div>
+
+</div>

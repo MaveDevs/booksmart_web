@@ -19,7 +19,15 @@ export class EditAppointmentComponent implements OnChanges {
   private apiUrl = 'http://localhost:8000/api/v1';
 
   appointment: any = {};
-  showSuccessCard: boolean = false;
+  showSuccessCard = false;
+
+  users:any[] = [];
+  services:any[] = [];
+  establishments:any[] = [];
+
+  selectedService:any = null;
+
+  estados = ['PENDIENTE','CONFIRMADA','CANCELADA','COMPLETADA'];
 
   constructor(
     private http: HttpClient,
@@ -28,7 +36,7 @@ export class EditAppointmentComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['appointmentId'] && this.appointmentId) {
-      this.loadAppointment();
+      this.loadAll();
     }
   }
 
@@ -40,25 +48,48 @@ export class EditAppointmentComponent implements OnChanges {
     });
   }
 
-  loadAppointment() {
-    if (!isPlatformBrowser(this.platformId)) return;
+  loadAll(){
 
-    this.http.get(
-      `${this.apiUrl}/appointments/${this.appointmentId}/`,
-      { headers: this.getHeaders() }
-    ).subscribe({
+    this.http.get<any[]>(`${this.apiUrl}/users/`, { headers:this.getHeaders() })
+      .subscribe(data => this.users = data);
+
+    this.http.get<any[]>(`${this.apiUrl}/services/`, { headers:this.getHeaders() })
+      .subscribe(data => this.services = data);
+
+    this.http.get<any[]>(`${this.apiUrl}/establishments/`, { headers:this.getHeaders() })
+      .subscribe(data => this.establishments = data);
+
+    this.loadAppointment();
+  }
+
+  loadAppointment() {
+
+    this.http.get(`${this.apiUrl}/appointments/${this.appointmentId}/`, {
+      headers: this.getHeaders()
+    }).subscribe({
       next: (data: any) => {
         this.appointment = data;
-      },
-      error: (err) => {
-        console.error('Error cargando cita:', err);
+
+     
+        this.selectedService = this.services.find(
+          s => s.servicio_id === this.appointment.servicio_id
+        );
       }
     });
   }
 
-  updateAppointment() {
+  onServiceChange(){
+    this.selectedService = this.services.find(
+      s => s.servicio_id == this.appointment.servicio_id
+    );
+  }
 
-    if (!isPlatformBrowser(this.platformId)) return;
+  getEstablishmentName(id:number){
+    const est = this.establishments.find(e => e.establecimiento_id === id);
+    return est ? est.nombre : '—';
+  }
+
+  updateAppointment() {
 
     this.http.put(
       `${this.apiUrl}/appointments/${this.appointmentId}/`,
@@ -66,7 +97,6 @@ export class EditAppointmentComponent implements OnChanges {
       { headers: this.getHeaders() }
     ).subscribe({
       next: () => {
-
         this.showSuccessCard = true;
         this.updated.emit();
 
@@ -74,10 +104,6 @@ export class EditAppointmentComponent implements OnChanges {
           this.showSuccessCard = false;
           this.close.emit();
         }, 2000);
-
-      },
-      error: (err) => {
-        console.error('Error actualizando cita:', err);
       }
     });
   }

@@ -1,0 +1,79 @@
+.success-card {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  background: #1FBF9F;
+  color: #F8F9FA;
+  padding: 15px 20px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(31, 58, 95, 0.3);
+  font-weight: 500;
+  z-index: 2000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(31, 58, 95, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background: #F8F9FA;
+  padding: 25px;
+  border-radius: 16px;
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.modal h2 {
+  color: #1F3A5F;
+  text-align: center;
+}
+
+.modal label {
+  font-weight: 500;
+}
+
+.modal input,
+.modal select {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #1FBF9F;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.buttons button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.save-btn {
+  background: #1FBF9F;
+}
+
+.cancel-btn {
+  background: #1F3A5F;
+}

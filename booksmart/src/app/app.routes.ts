@@ -11,6 +11,7 @@ import { ApproveAppointmentsComponent } from './business/approve-appointments/ap
 import { CalendarsComponent } from './business/calendars/calendars.component';
 import { TechniciansComponent } from './business/technicians/technicians.component';
 import { ServicesComponent } from './business/services/services.component';
+import { PaymentsComponent } from './business/payments/payments.component';
 
 import { PlansComponent } from './admin/plans/plans.component';
 import { AnalyticsComponent } from './admin/analytics/analytics.component';
@@ -27,7 +28,9 @@ export const routes: Routes = [
     component: DashboardComponent,
     children: [
 
+      // ========================
       // HOME
+      // ========================
       { path: 'home', component: HomeComponent },
       { path: '', redirectTo: 'home', pathMatch: 'full' },
 
@@ -44,8 +47,7 @@ export const routes: Routes = [
       { path: 'business/approve-appointments', component: ApproveAppointmentsComponent },
       { path: 'business/calendars', component: CalendarsComponent },
       { path: 'business/technicians', component: TechniciansComponent },
-
-      // NUEVO CRUD SERVICIOS
+      { path: 'business/payments', component: PaymentsComponent },
       { path: 'business/services', component: ServicesComponent },
 
       // ========================
@@ -55,6 +57,13 @@ export const routes: Routes = [
       { path: 'admin/analytics', component: AnalyticsComponent },
       { path: 'admin/reports', component: ReportsComponent },
       { path: 'admin/users', component: UsersComponent },
+
+      {
+        path: 'admin/agendas',
+        loadComponent: () => import('./admin/agendas/agendas.component')
+          .then(m => m.AgendasComponent)
+      }
+
     ]
   },
 

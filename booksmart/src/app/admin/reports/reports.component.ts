@@ -110,47 +110,52 @@ export class ReportsComponent implements OnInit {
 
   }
 
-  downloadReport(report:any){
+  truncate(text: string, limit: number): string {
+    if (!text) return '';
+    return text.length > limit ? text.substring(0, limit) + '...' : text;
+  }
+
+  downloadReport(report: any) {
     this.pdfService.generatePDF(report);
   }
 
-  openCreateModal(){
+  openCreateModal() {
     this.showCreateModal = true;
   }
 
-  closeCreateModal(){
+  closeCreateModal() {
     this.showCreateModal = false;
   }
 
-  reloadAfterCreate(){
+  reloadAfterCreate() {
     this.closeCreateModal();
     this.loadData();
   }
 
-  openEditModal(id:number){
+  openEditModal(id: number) {
     this.selectedId = id;
     this.showEditModal = true;
   }
 
-  closeEditModal(){
+  closeEditModal() {
     this.showEditModal = false;
   }
 
-  reloadAfterEdit(){
+  reloadAfterEdit() {
     this.closeEditModal();
     this.loadData();
   }
 
-  openDeleteModal(id:number){
+  openDeleteModal(id: number) {
     this.selectedId = id;
     this.showDeleteModal = true;
   }
 
-  closeDeleteModal(){
+  closeDeleteModal() {
     this.showDeleteModal = false;
   }
 
-  reloadAfterDelete(){
+  reloadAfterDelete() {
     this.closeDeleteModal();
     this.loadData();
   }

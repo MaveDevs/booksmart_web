@@ -56,19 +56,59 @@
   font-weight: 500;
 }
 
-.modal input,
-.modal select {
+.modal input {
   padding: 8px;
   border-radius: 8px;
   border: 1px solid #1FBF9F;
   outline: none;
 }
 
-.modal input:focus,
-.modal select:focus {
+.modal input:focus {
   border: 1px solid #179E85;
 }
 
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.checkbox-container input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+
+  width: 18px;
+  height: 18px;
+
+  border: 2px solid #1FBF9F;
+  border-radius: 4px;
+
+  cursor: pointer;
+  position: relative;
+}
+
+.checkbox-container input[type="checkbox"]:checked {
+  background-color: #1FBF9F;
+  border-color: #1FBF9F;
+}
+
+.checkbox-container input[type="checkbox"]:checked::after {
+  content: "✓";
+  position: absolute;
+  color: white;
+  font-size: 14px;
+  font-weight: bold;
+
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%);
+}
+
+.checkbox-container label {
+  cursor: pointer;
+  color: #1F3A5F;
+}
 
 .buttons {
   display: flex;

@@ -18,7 +18,11 @@
   <div class="menu-section">
 
     <a class="menu-item" routerLink="book-appointments" routerLinkActive="active">
-      Reservar citas
+      Citas
+    </a>
+
+    <a class="menu-item" routerLink="admin/agendas" routerLinkActive="active">
+      Agendas
     </a>
 
     <a class="menu-item" routerLink="clients/directory" routerLinkActive="active">
@@ -28,11 +32,10 @@
 
   <div class="menu-section">
 
-<!--
-    <a class="menu-item" routerLink="business/approve-appointments" routerLinkActive="active">
-      Aprobar citas
+
+    <a class="menu-item" [routerLink]="['/dashboard/business/payments']" routerLinkActive="active">
+      Pagos
     </a>
--->
 
 <!--
     <a class="menu-item" routerLink="business/calendars" routerLinkActive="active">

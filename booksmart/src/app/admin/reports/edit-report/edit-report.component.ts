@@ -25,7 +25,6 @@ export class EditReportComponent implements OnChanges {
 
   report:any={};
 
-  // 🔥 AGREGAR ESTO
   showSuccessCard = false;
 
   constructor(

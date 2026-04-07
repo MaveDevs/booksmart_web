@@ -1,7 +1,6 @@
 <div class="container">
 
   <div class="header">
-
     <h2>Reportes del Sistema</h2>
 
     <button
@@ -9,7 +8,6 @@
       (click)="openCreateModal()">
       + Crear reporte
     </button>
-
   </div>
 
   <div *ngIf="loading">
@@ -37,9 +35,11 @@
 
         <td>{{ report.establecimiento_nombre }}</td>
 
-        <td>{{ report.descripcion }}</td>
+        <td [title]="report.descripcion">
+          {{ truncate(report.descripcion, 60) }}
+        </td>
 
-        <td>{{ report.fecha_generacion }}</td>
+        <td>{{ report.fecha_generacion | date:'yyyy-MM-dd' }}</td>
 
         <td class="actions">
 
@@ -49,7 +49,7 @@
             ⬇
           </button>
 
-         <button
+          <button
             class="edit-btn"
             (click)="openEditModal(report.reporte_id)">
             ✎
@@ -70,6 +70,7 @@
   </table>
 
 </div>
+
 
 <app-create-report
   *ngIf="showCreateModal"

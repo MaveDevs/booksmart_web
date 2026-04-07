@@ -9,6 +9,11 @@ import { DeleteUserComponent } from './delete-user/delete-user.component';
 import { CreateClientComponent } from './create-client/create-client.component';
 import { EditClientComponent } from './edit-client/edit-client.component';
 import { DeleteClientComponent } from './delete-client/delete-client.component';
+
+import { CreateWorkerComponent } from './create-worker/create-worker.component';
+import { EditWorkerComponent } from './edit-worker/edit-worker.component';
+import { DeleteWorkerComponent } from './delete-worker/delete-worker.component';
+
 @Component({
   selector: 'app-users',
   standalone: true,
@@ -22,7 +27,11 @@ import { DeleteClientComponent } from './delete-client/delete-client.component';
 
     CreateClientComponent,
     EditClientComponent,
-    DeleteClientComponent
+    DeleteClientComponent,
+
+    CreateWorkerComponent,
+    EditWorkerComponent,
+    DeleteWorkerComponent
   ],
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.css']
@@ -36,7 +45,7 @@ export class UsersComponent implements OnInit {
 
   loading = false;
 
-  view: 'owners' | 'clients' | 'all' = 'owners';
+  view: 'owners' | 'clients' | 'workers' | 'all' = 'owners';
 
   selectedId!: number;
 
@@ -47,6 +56,10 @@ export class UsersComponent implements OnInit {
   showCreateClientModal = false;
   showEditClientModal = false;
   showDeleteClientModal = false;
+
+  showCreateWorkerModal = false;
+  showEditWorkerModal = false;
+  showDeleteWorkerModal = false;
 
   constructor(
     private http: HttpClient,
@@ -73,23 +86,35 @@ export class UsersComponent implements OnInit {
 
     this.loading = true;
 
+    if(this.view === 'workers'){
+      this.http.get<any[]>(`${this.apiUrl}/workers/`, {
+        headers:this.getHeaders()
+      }).subscribe({
+        next:(data)=>{
+          this.filteredUsers = data;
+          this.loading = false;
+        },
+        error:(err)=>{
+          console.error(err);
+          this.loading = false;
+        }
+      });
+      return;
+    }
+
     this.http.get<any[]>(`${this.apiUrl}/users/`, {
       headers:this.getHeaders()
     }).subscribe({
-
       next:(data)=>{
         this.users = data;
         this.applyFilter();
         this.loading = false;
       },
-
       error:(err)=>{
         console.error(err);
         this.loading = false;
       }
-
     });
-
   }
 
   applyFilter(){
@@ -103,18 +128,21 @@ export class UsersComponent implements OnInit {
     else{
       this.filteredUsers = this.users;
     }
-
   }
 
-  setView(view:'owners'|'clients'|'all'){
+  setView(view:'owners'|'clients'|'workers'|'all'){
     this.view = view;
-    this.applyFilter();
+    this.loadUsers(); 
   }
 
   openCreate(){
     if(this.view === 'clients'){
       this.showCreateClientModal = true;
-    }else{
+    }
+    else if(this.view === 'workers'){
+      this.showCreateWorkerModal = true;
+    }
+    else{
       this.showCreateModal = true;
     }
   }
@@ -122,14 +150,19 @@ export class UsersComponent implements OnInit {
   closeCreate(){
     this.showCreateModal = false;
     this.showCreateClientModal = false;
+    this.showCreateWorkerModal = false;
   }
 
   openEdit(id:number){
     this.selectedId = id;
 
-    if(this.view === 'clients'){
+    if(this.view === 'workers'){
+      this.showEditWorkerModal = true;
+    }
+    else if(this.view === 'clients'){
       this.showEditClientModal = true;
-    }else{
+    }
+    else{
       this.showEditModal = true;
     }
   }
@@ -137,14 +170,19 @@ export class UsersComponent implements OnInit {
   closeEdit(){
     this.showEditModal = false;
     this.showEditClientModal = false;
+    this.showEditWorkerModal = false;
   }
 
   openDelete(id:number){
     this.selectedId = id;
 
-    if(this.view === 'clients'){
+    if(this.view === 'workers'){
+      this.showDeleteWorkerModal = true;
+    }
+    else if(this.view === 'clients'){
       this.showDeleteClientModal = true;
-    }else{
+    }
+    else{
       this.showDeleteModal = true;
     }
   }
@@ -152,6 +190,7 @@ export class UsersComponent implements OnInit {
   closeDelete(){
     this.showDeleteModal = false;
     this.showDeleteClientModal = false;
+    this.showDeleteWorkerModal = false;
   }
 
   reloadAll(){

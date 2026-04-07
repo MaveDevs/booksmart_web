@@ -25,6 +25,7 @@
       <tr>
         <th>Cliente</th>
         <th>Servicio</th>
+        <th>Establecimiento</th> 
         <th>Fecha</th>
         <th>Hora</th>
         <th>Estado</th>
@@ -37,8 +38,17 @@
       <tr *ngFor="let cita of appointments">
 
         <td>{{ cita.cliente_nombre }}</td>
-        <td>{{ cita.servicio_nombre }}</td>
+
+        <td>
+          {{ cita.servicio_nombre }}
+        </td>
+
+        <td>
+          {{ cita.establecimiento_nombre }}
+        </td>
+
         <td>{{ cita.fecha }}</td>
+
         <td>{{ cita.hora_inicio }} - {{ cita.hora_fin }}</td>
 
         <td>
@@ -68,6 +78,7 @@
   </table>
 
 </div>
+
 
 <app-create-appointment
   *ngIf="showCreateModal"

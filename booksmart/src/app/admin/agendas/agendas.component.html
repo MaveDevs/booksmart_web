@@ -1,0 +1,128 @@
+<div class="container">
+
+  <div class="header">
+
+    <div class="left-section">
+
+      <div class="title-section">
+
+        <h2>Agenda</h2>
+
+        <div class="tabs">
+          <button [class.active]="view === 'calendar'" (click)="setView('calendar')">
+            Calendario
+          </button>
+
+          <button [class.active]="view === 'schedules'" (click)="setView('schedules')">
+            Horarios
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="center-section">
+
+      <select [(ngModel)]="selectedEstablishment" (change)="applyFilter()">
+        <option [ngValue]="null">Todos los establecimientos</option>
+        <option *ngFor="let est of establishments"
+                [ngValue]="est.establecimiento_id">
+          {{ est.nombre }}
+        </option>
+      </select>
+
+    </div>
+
+    <div class="right-section">
+
+      <button class="add-btn" (click)="openCreate()">
+        + Crear Horario
+      </button>
+
+    </div>
+
+  </div>
+
+  <div *ngIf="view === 'calendar'" class="calendar">
+
+    <div class="header-row">
+      <div class="hour-col"></div>
+      <div *ngFor="let day of days" class="day-col">{{ day }}</div>
+    </div>
+
+    <div *ngFor="let hour of hours" class="row">
+
+      <div class="hour-col">{{ hour }}</div>
+
+      <div *ngFor="let day of days"
+           class="cell"
+           [class.available]="isAvailable(day, hour)"
+           [class.occupied]="isOccupied(day, hour)"
+           [class.closed]="!isWorking(day, hour)"
+           (click)="selectSlot(day, hour)">
+
+        <span *ngIf="isOccupied(day, hour)">Ocupado</span>
+        <span *ngIf="isAvailable(day, hour)">Disponible</span>
+        <span *ngIf="!isWorking(day, hour)">Cerrado</span>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div *ngIf="view === 'schedules'">
+
+    <table class="table" *ngIf="filteredAgendas.length > 0">
+
+      <thead>
+        <tr>
+          <th>Establecimiento</th>
+          <th>Día</th>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <tr *ngFor="let a of filteredAgendas">
+
+          <td>{{ getEstablishmentName(a.establecimiento_id) }}</td>
+          <td>{{ a.dia_semana }}</td>
+          <td>{{ a.hora_inicio | slice:0:5 }}</td>
+          <td>{{ a.hora_fin | slice:0:5 }}</td>
+
+          <td class="actions">
+            <button class="edit-btn" (click)="openEdit(a.agenda_id)">✎</button>
+            <button class="delete-btn" (click)="openDelete(a.agenda_id)">🗑</button>
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</div>
+
+<app-create-agenda *ngIf="showCreateModal"
+  (close)="closeAll()"
+  (created)="reloadAll()">
+</app-create-agenda>
+
+<app-edit-agenda *ngIf="showEditModal"
+  [agendaId]="selectedId"
+  (close)="closeAll()"
+  (updated)="reloadAll()">
+</app-edit-agenda>
+
+<app-delete-agenda *ngIf="showDeleteModal"
+  [agendaId]="selectedId"
+  (close)="closeAll()"
+  (deleted)="reloadAll()">
+</app-delete-agenda>

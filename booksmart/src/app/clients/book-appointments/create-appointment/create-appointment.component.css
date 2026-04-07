@@ -110,3 +110,11 @@
     padding: 20px;
   }
 }
+.info-card {
+  background: rgba(31,191,159,0.1);
+  border-left: 4px solid #1FBF9F;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #1F3A5F;
+}

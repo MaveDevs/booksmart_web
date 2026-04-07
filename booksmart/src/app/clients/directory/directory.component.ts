@@ -1,11 +1,13 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 import { DeleteEstablishmentComponent } from './delete-establishment/delete-establishment.component';
 import { EditEstablishmentComponent } from './edit-establishment/edit-establishment.component';
 import { CreateEstablishmentComponent } from './create-establishment/create-establishment.component';
+import { RatingsComponent } from './ratings/ratings.component';
 
 @Component({
   selector: 'app-directory',
@@ -13,6 +15,8 @@ import { CreateEstablishmentComponent } from './create-establishment/create-esta
   imports: [
     CommonModule,
     HttpClientModule,
+    FormsModule,
+    RatingsComponent,
     DeleteEstablishmentComponent,
     EditEstablishmentComponent,
     CreateEstablishmentComponent
@@ -32,10 +36,15 @@ export class DirectoryComponent implements OnInit {
   showEditModal = false;
   showCreateModal = false;
 
+
+  showRatingModal = false;
+  selectedEstablishmentId!: number;
+
   selectedId!: number;
 
   constructor(
     private http: HttpClient,
+    private cdr: ChangeDetectorRef, 
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -70,6 +79,10 @@ export class DirectoryComponent implements OnInit {
 
       agendas: this.http.get<any[]>(`${this.apiUrl}/agendas/`, {
         headers: this.getHeaders()
+      }),
+
+      ratings: this.http.get<any[]>(`${this.apiUrl}/ratings/`, {
+        headers: this.getHeaders()
       })
 
     }).subscribe({
@@ -79,7 +92,7 @@ export class DirectoryComponent implements OnInit {
         this.profiles = res.profiles;
         this.agendas = res.agendas;
 
-        console.log("PROFILES ", this.profiles);
+        const ratings = res.ratings;
 
         this.establishments = res.establishments.map(est => {
 
@@ -87,25 +100,32 @@ export class DirectoryComponent implements OnInit {
             p => p.establecimiento_id === est.establecimiento_id
           );
 
-          const agenda = this.agendas.find(
+          const agendas = this.agendas.filter(
             a => a.establecimiento_id === est.establecimiento_id
           );
+
+          const ratingsDelNegocio = ratings.filter(
+            r => r.establecimiento_id === est.establecimiento_id
+          );
+
+          const totalRatings = ratingsDelNegocio.length;
+
+          const promedio =
+            totalRatings > 0
+              ? (
+                  ratingsDelNegocio.reduce((sum, r) => sum + r.calificacion, 0) /
+                  totalRatings
+                ).toFixed(1)
+              : 0;
 
           return {
             ...est,
             descripcion_publica: profile?.descripcion_publica || 'Sin perfil',
-
-            imagen_logo: profile?.imagen_logo?.startsWith('http')
-              ? profile.imagen_logo
-              : '',
-
-            imagen_portada: profile?.imagen_portada?.startsWith('http')
-              ? profile.imagen_portada
-              : '',
-
-            dia_semana: agenda?.dia_semana || 'Sin horario',
-            hora_inicio: agenda?.hora_inicio || '',
-            hora_fin: agenda?.hora_fin || ''
+            imagen_logo: profile?.imagen_logo || '',
+            imagen_portada: profile?.imagen_portada || '',
+            agendas: agendas,
+            rating_promedio: promedio,
+            rating_total: totalRatings
           };
 
         });
@@ -113,51 +133,43 @@ export class DirectoryComponent implements OnInit {
       },
 
       error: (err) => {
-        console.error('Error cargando datos', err);
+        console.error(err);
       }
 
     });
 
   }
 
-  openCreateModal() {
-    this.showCreateModal = true;
+  openRatingModal(id: number, event: Event) {
+    event.stopPropagation();
+    console.log('ID seleccionado:', id); 
+    this.selectedEstablishmentId = id;
+    this.showRatingModal = true;
   }
 
-  closeCreateModal() {
-    this.showCreateModal = false;
+  closeRatingModal() {
+    this.showRatingModal = false;
+    this.loadData(); 
   }
 
-  reloadAfterCreate() {
-    this.closeCreateModal();
-    this.loadData();
-  }
+  openCreateModal() { this.showCreateModal = true; }
+  closeCreateModal() { this.showCreateModal = false; }
+  reloadAfterCreate() { this.closeCreateModal(); this.loadData(); }
 
   openDeleteModal(id: number) {
     this.selectedId = id;
     this.showDeleteModal = true;
   }
 
-  closeDeleteModal() {
-    this.showDeleteModal = false;
-  }
-
-  reloadAfterDelete() {
-    this.closeDeleteModal();
-    this.loadData();
-  }
+  closeDeleteModal() { this.showDeleteModal = false; }
+  reloadAfterDelete() { this.closeDeleteModal(); this.loadData(); }
 
   openEditModal(id: number) {
     this.selectedId = id;
     this.showEditModal = true;
   }
 
-  closeEditModal() {
-    this.showEditModal = false;
-  }
+  closeEditModal() { this.showEditModal = false; }
+  reloadAfterEdit() { this.closeEditModal(); this.loadData(); }
 
-  reloadAfterEdit() {
-    this.closeEditModal();
-    this.loadData();
-  }
 }

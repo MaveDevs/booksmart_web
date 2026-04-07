@@ -1,34 +1,55 @@
-<div id="pdf-template" style="font-family: Arial; padding:15px; font-size:8px; width:550px;">
+<div id="pdf-template">
 
-  <h1 style="font-size:11px; margin:0;">BOOKSMART</h1>
-  <h2 style="font-size:9px; margin:5px 0;">Reporte del Sistema</h2>
-
-  
-
-  <p style="margin:2px 0;">
-    <strong>Establecimiento:</strong>
-    <span id="establecimiento"></span>
-  </p>
-
-  <p style="margin:2px 0;">
-    <strong>Dirección:</strong>
-    <span id="direccion"></span>
-  </p>
-
-  <p style="margin:2px 0;">
-    <strong>Teléfono:</strong>
-    <span id="telefono"></span>
-  </p>
-
-
-  <p style="margin:2px 0;"><strong>Descripción:</strong></p>
-
-  <p id="descripcion" style="margin:2px 0;"></p>
-
-
-  <p style="margin:2px 0;">
-    <strong>Fecha:</strong>
+  <div class="header">
+    <h1>BOOKSMART</h1>
+    <p>Reporte del Sistema</p>
     <span id="fecha"></span>
-  </p>
+  </div>
+
+  <div class="card">
+    <h2>Datos del Establecimiento</h2>
+    <p><strong>Nombre:</strong> <span id="establecimiento"></span></p>
+    <p><strong>Dirección:</strong> <span id="direccion"></span></p>
+    <p><strong>Teléfono:</strong> <span id="telefono"></span></p>
+  </div>
+
+  <div class="card">
+    <h2>Descripción</h2>
+    <p id="descripcion"></p>
+  </div>
+
+  <div class="card highlight">
+    <h2>Resumen</h2>
+
+    <div class="grid">
+      <div class="metric">
+        <span class="value" id="totalCitas">0</span>
+        <span class="label">Citas</span>
+      </div>
+
+      <div class="metric">
+        <span class="value" id="totalClientes">0</span>
+        <span class="label">Clientes</span>
+      </div>
+
+      <div class="metric">
+        <span class="value" id="totalIngresos">0</span>
+        <span class="label">Ingresos</span>
+      </div>
+    </div>
+
+    <p><strong>Servicio más solicitado:</strong> <span id="servicioTop"></span></p>
+    <p><strong>Cliente frecuente:</strong> <span id="clienteFrecuente"></span></p>
+
+  </div>
+
+  <div class="card">
+    <h2>Actividad por fecha</h2>
+    <div id="actividad"></div>
+  </div>
+
+  <div class="footer">
+    Reporte generado automáticamente por BookSmart
+  </div>
 
 </div>

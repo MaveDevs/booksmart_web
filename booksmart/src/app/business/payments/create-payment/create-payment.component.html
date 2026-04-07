@@ -1,0 +1,59 @@
+<div class="modal">
+
+  <div class="modal-content">
+
+    <h2>Crear Pago</h2>
+
+    <form>
+
+      <div class="form-group">
+        <label>Suscripción</label>
+        <select [(ngModel)]="payment.suscripcion_id" name="suscripcion">
+          <option [ngValue]="null">Seleccionar</option>
+
+          <option *ngFor="let s of subscriptions"
+                  [ngValue]="s.suscripcion_id">
+            {{ s.label }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Monto</label>
+        <input [(ngModel)]="payment.monto" type="number" name="monto">
+      </div>
+
+      <div class="form-group">
+        <label>Método</label>
+        <select [(ngModel)]="payment.metodo_pago" name="metodo">
+          <option value="TARJETA_CREDITO">Tarjeta</option>
+          <option value="PAYPAL"> PayPal</option>
+          <option value="TRANSFERENCIA_BANCARIA">Transferencia</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Estado</label>
+        <select [(ngModel)]="payment.estado" name="estado">
+          <option value="PENDIENTE">Pendiente</option>
+          <option value="COMPLETADO">Completado</option>
+          <option value="FALLIDO">Fallido</option>
+          <option value="REEMBOLSADO">Reembolsado</option>
+        </select>
+      </div>
+
+      <div class="buttons">
+        <button type="button" class="save-btn" (click)="create()">
+          Guardar
+        </button>
+
+        <button type="button" class="cancel-btn" (click)="closeModal()">
+          Cancelar
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

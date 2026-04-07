@@ -1,0 +1,33 @@
+<div class="modal-backdrop" (click)="close.emit()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
+
+    <h2>Editar Agenda</h2>
+
+    <select [(ngModel)]="agenda.establecimiento_id">
+      <option *ngFor="let est of establishments" [ngValue]="est.establecimiento_id">
+        {{ est.nombre }}
+      </option>
+    </select>
+
+    <select [(ngModel)]="agenda.dia_semana">
+      <option>LUNES</option>
+      <option>MARTES</option>
+      <option>MIERCOLES</option>
+      <option>JUEVES</option>
+      <option>VIERNES</option>
+      <option>SABADO</option>
+      <option>DOMINGO</option>
+    </select>
+
+    <input type="time" [(ngModel)]="agenda.hora_inicio">
+    <input type="time" [(ngModel)]="agenda.hora_fin">
+
+    <div class="buttons">
+      <button class="save-btn" (click)="update()">Guardar</button>
+      <button class="cancel-btn" (click)="close.emit()">Cancelar</button>
+    </div>
+
+  </div>
+
+</div>

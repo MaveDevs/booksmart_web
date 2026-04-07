@@ -1,28 +1,75 @@
 <div class="success-card" *ngIf="showSuccessCard">
-   Cita actualizada correctamente
+  Cita actualizada correctamente
 </div>
 
-<div class="modal-backdrop">
-  <div class="modal">
+<div class="modal-backdrop" (click)="closeModal()">
+
+  <div class="modal" (click)="$event.stopPropagation()">
 
     <h2>Editar Cita</h2>
 
-    <label>Fecha</label>
-    <input type="date" [(ngModel)]="appointment.fecha">
+    <div class="form-group">
+      <label>Cliente</label>
+      <select [(ngModel)]="appointment.cliente_id">
+        <option *ngFor="let u of users" [value]="u.usuario_id">
+          {{ u.nombre }} {{ u.apellido }}
+        </option>
+      </select>
+    </div>
 
-    <label>Hora Inicio</label>
-    <input type="time" [(ngModel)]="appointment.hora_inicio">
+    <div class="form-group">
+      <label>Servicio</label>
+      <select [(ngModel)]="appointment.servicio_id"
+              (change)="onServiceChange()">
 
-    <label>Hora Fin</label>
-    <input type="time" [(ngModel)]="appointment.hora_fin">
+        <option *ngFor="let s of services" [value]="s.servicio_id">
+          {{ s.nombre }} - ${{ s.precio }}
+        </option>
 
-    <label>Estado</label>
-    <input type="text" [(ngModel)]="appointment.estado">
+      </select>
+    </div>
+
+    <div class="info-card" *ngIf="selectedService">
+      <strong>📍 Establecimiento:</strong><br>
+      {{ getEstablishmentName(selectedService.establecimiento_id) }}
+    </div>
+
+    <div class="form-group">
+      <label>Fecha</label>
+      <input type="date" [(ngModel)]="appointment.fecha">
+    </div>
+
+    <div class="form-group">
+      <label>Hora Inicio</label>
+      <input type="time" [(ngModel)]="appointment.hora_inicio">
+    </div>
+
+    <div class="form-group">
+      <label>Hora Fin</label>
+      <input type="time" [(ngModel)]="appointment.hora_fin">
+    </div>
+
+    <div class="form-group">
+      <label>Estado</label>
+      <select [(ngModel)]="appointment.estado">
+        <option *ngFor="let e of estados" [value]="e">
+          {{ e }}
+        </option>
+      </select>
+    </div>
 
     <div class="buttons">
-      <button (click)="updateAppointment()">Guardar</button>
-      <button (click)="closeModal()">Cancelar</button>
+
+      <button class="save-btn" (click)="updateAppointment()">
+        Guardar
+      </button>
+
+      <button class="cancel-btn" (click)="closeModal()">
+        Cancelar
+      </button>
+
     </div>
 
   </div>
+
 </div>

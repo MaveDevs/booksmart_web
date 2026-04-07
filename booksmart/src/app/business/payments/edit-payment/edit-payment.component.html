@@ -1,0 +1,53 @@
+<div *ngIf="showSuccess" class="success-card">
+  Pago actualizado correctamente ✅
+</div>
+
+<div class="modal-backdrop">
+
+  <div class="modal">
+
+    <h2>Editar Pago</h2>
+
+    <label>Suscripción</label>
+    <select [(ngModel)]="payment.suscripcion_id">
+      <option [ngValue]="null">Seleccionar</option>
+
+      <option *ngFor="let s of subscriptions"
+              [ngValue]="s.suscripcion_id">
+        {{ s.label }}
+      </option>
+    </select>
+
+    <label>Monto</label>
+    <input [(ngModel)]="payment.monto" type="number">
+
+    <label>Método</label>
+    <select [(ngModel)]="payment.metodo_pago">
+      <option value="TARJETA_CREDITO">Tarjeta</option>
+      <option value="PAYPAL">PayPal</option>
+      <option value="TRANSFERENCIA_BANCARIA"> Transferencia</option>
+    </select>
+
+    <label>Estado</label>
+    <select [(ngModel)]="payment.estado">
+      <option value="PENDIENTE">Pendiente</option>
+      <option value="COMPLETADO">Completado</option>
+      <option value="FALLIDO">Fallido</option>
+      <option value="REEMBOLSADO">Reembolsado</option>
+    </select>
+
+    <div class="buttons">
+
+      <button class="save-btn" (click)="update()">
+        Guardar
+      </button>
+
+      <button class="cancel-btn" (click)="closeModal()">
+        Cancelar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
