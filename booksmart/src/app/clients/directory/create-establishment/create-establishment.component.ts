@@ -124,9 +124,31 @@ export class CreateEstablishmentComponent implements OnInit {
     return data.secure_url;
   }
 
+  async getCoordinates() {
+
+    if (!this.establishment.direccion) return;
+
+    try {
+      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(this.establishment.direccion)}`;
+
+      const res: any = await fetch(url);
+      const data = await res.json();
+
+      if (data.length === 0) return;
+
+      this.establishment.latitud = parseFloat(data[0].lat);
+      this.establishment.longitud = parseFloat(data[0].lon);
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async createEstablishment() {
 
     try {
+
+      await this.getCoordinates();
 
       const estRes: any = await this.http.post(
         `${this.apiUrl}/establishments/`,

@@ -127,9 +127,13 @@ export class AgendasComponent implements OnInit {
     return est ? est.nombre : '—';
   }
 
-  getDayName(date:string){
-    const d = new Date(date);
-    return this.days[d.getDay()];
+  getDayName(date: string){
+
+    const [year, month, day] = date.split('-').map(Number);
+
+    const localDate = new Date(year, month - 1, day); // 👈 LOCAL
+
+    return this.days[localDate.getDay()];
   }
 
   isOccupied(day:string, time:string){

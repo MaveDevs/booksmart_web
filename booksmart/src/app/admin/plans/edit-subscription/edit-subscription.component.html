@@ -5,14 +5,30 @@
     <h2>Cambiar Plan</h2>
 
     <label>Plan</label>
-
     <select [(ngModel)]="subscription.plan_id">
       <option [ngValue]="null">Selecciona plan</option>
-
       <option *ngFor="let p of plans" [ngValue]="p.plan_id">
         {{ p.nombre }}
       </option>
     </select>
+
+    <label class="checkbox-container">
+
+      <input 
+        type="checkbox"
+        [checked]="subscription.estado === 'ACTIVA'"
+        (change)="onEstadoChange($event)"
+      />
+
+      <span class="checkmark"></span>
+
+      Activo
+
+    </label>
+
+    <small class="estado-text">
+      Estado actual: {{ subscription.estado }}
+    </small>
 
     <div class="buttons">
 

@@ -1,0 +1,145 @@
+.notif-modal {
+  position: absolute;
+  top: 65px;
+  right: 0;
+  width: 330px;
+  background: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(31, 58, 95, 0.15);
+  overflow: hidden;
+}
+
+.notif-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px;
+  background: linear-gradient(135deg, #1FBF9F, #179E85);
+  color: white;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.mark-all {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.mark-all:hover {
+  background: white;
+  color: #179E85;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.notif-list {
+  max-height: 300px;
+  overflow-y: auto;
+  background: #F8F9FA;
+}
+
+.notif-item {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+}
+
+.notif-item.unread {
+  border-left: 4px solid #1FBF9F;
+  background: rgba(31, 191, 159, 0.05);
+}
+
+.msg {
+  font-size: 13px;
+  color: #1F3A5F;
+}
+
+.date {
+  font-size: 11px;
+  color: #777;
+}
+
+.notif-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+.btn {
+  border: none;
+  border-radius: 6px;
+  padding: 4px 6px;
+  cursor: pointer;
+}
+
+.btn.read {
+  background: rgba(31,191,159,0.2);
+  color: #179E85;
+}
+
+.btn.read:hover {
+  background: #1FBF9F;
+  color: white;
+}
+
+.btn.delete {
+  background: rgba(255,59,59,0.15);
+  color: #ff3b3b;
+}
+
+.btn.delete:hover {
+  background: #ff3b3b;
+  color: white;
+}
+
+.tipo {
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 10px;
+}
+
+.tipo.info {
+  background: rgba(31, 58, 95, 0.15);
+  color: #1F3A5F;
+}
+
+.tipo.success {
+  background: rgba(31,191,159,0.2);
+  color: #179E85;
+}
+
+.tipo.warning {
+  background: rgba(255,193,7,0.2);
+  color: #b88700;
+}
+
+.tipo.error {
+  background: rgba(255,59,59,0.2);
+  color: #ff3b3b;
+}
+
+.empty {
+  padding: 20px;
+  text-align: center;
+  color: #777;
+}

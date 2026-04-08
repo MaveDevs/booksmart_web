@@ -8,15 +8,14 @@
 
       <div class="form-group">
         <label>Cliente</label>
-        <select [(ngModel)]="appointment.cliente_id" name="cliente_id" required>
-
-          <option value="">Selecciona un cliente</option>
-
+        <select [(ngModel)]="appointment.cliente_id"
+                name="cliente_id"
+                required>
+          <option [ngValue]="null">Selecciona un cliente</option>
           <option *ngFor="let user of users"
-                  [value]="user.usuario_id">
+                  [ngValue]="user.usuario_id">
             {{ user.nombre }} {{ user.apellido }}
           </option>
-
         </select>
       </div>
 
@@ -26,62 +25,82 @@
                 (change)="onServiceChange()"
                 name="servicio_id"
                 required>
-
-          <option value="">Selecciona un servicio</option>
-
+          <option [ngValue]="null">Selecciona un servicio</option>
           <option *ngFor="let service of services"
-                  [value]="service.servicio_id">
+                  [ngValue]="service.servicio_id">
             {{ service.nombre }} - ${{ service.precio }}
           </option>
-
         </select>
       </div>
 
-   
       <div class="info-card" *ngIf="selectedService">
+        📍 {{ getEstablishmentName(selectedService.establecimiento_id) }}
+      </div>
 
-        <p>
-          <strong>📍 Establecimiento:</strong><br>
-          {{ getEstablishmentName(selectedService.establecimiento_id) }}
-        </p>
+      <div class="selected-info" *ngIf="appointment.fecha">
+
+        <p class="title">🗓 Cita seleccionada</p>
+
+        <div class="info-grid">
+
+          <div>
+            <span>Fecha</span>
+            <strong>{{ appointment.fecha }}</strong>
+          </div>
+
+          <div>
+            <span>Inicio</span>
+            <strong>{{ appointment.hora_inicio }}</strong>
+          </div>
+
+          <div>
+            <span>Fin</span>
+            <strong>{{ appointment.hora_fin }}</strong>
+          </div>
+
+        </div>
 
       </div>
 
-      
-      <div class="form-group">
-        <label>Fecha</label>
-        <input type="date"
-               [(ngModel)]="appointment.fecha"
-               name="fecha"
-               required>
+      <div class="calendar">
+
+        <div class="header-row">
+          <div class="hour-col"></div>
+          <div *ngFor="let day of days">{{ day }}</div>
+        </div>
+
+        <div *ngFor="let hour of hours" class="row">
+
+          <div class="hour-col">{{ hour }}</div>
+
+          <div *ngFor="let day of days"
+              class="cell"
+              [class.available]="isAvailable(day, hour)"
+              [class.occupied]="isOccupied(day, hour)"
+              [class.closed]="!isWorking(day, hour)"
+              [class.selected]="selectedSlot?.day === day && selectedSlot?.time === hour"
+              (click)="isAvailable(day,hour) && selectSlot(day, hour)">
+
+            <span *ngIf="isOccupied(day, hour)">Ocupado</span>
+            <span *ngIf="isAvailable(day, hour)">Disponible</span>
+            <span *ngIf="!isWorking(day, hour)">—</span>
+
+          </div>
+
+        </div>
+
       </div>
 
-
-      <div class="form-group">
-        <label>Hora inicio</label>
-        <input type="time"
-               [(ngModel)]="appointment.hora_inicio"
-               name="hora_inicio"
-               required>
-      </div>
-
-      <div class="form-group">
-        <label>Hora fin</label>
-        <input type="time"
-               [(ngModel)]="appointment.hora_fin"
-               name="hora_fin"
-               required>
-      </div>
-
-    
       <div class="buttons">
 
-        <button type="submit" class="btn-create">
+        <button type="submit"
+                class="save-btn"
+                [disabled]="!appointment.hora_inicio">
           Crear
         </button>
 
         <button type="button"
-                class="btn-cancel"
+                class="cancel-btn"
                 (click)="closeModal()">
           Cancelar
         </button>

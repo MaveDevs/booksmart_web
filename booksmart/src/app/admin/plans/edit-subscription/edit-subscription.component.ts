@@ -52,7 +52,6 @@ export class EditSubscriptionComponent implements OnInit {
       .subscribe({
         next: (res) => {
           console.log(' SUB ACTUAL:', res);
-
           this.subscription = res;
         },
         error: (err) => {
@@ -65,10 +64,20 @@ export class EditSubscriptionComponent implements OnInit {
     return date.toISOString().split('T')[0];
   }
 
+  onEstadoChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.subscription.estado = input.checked ? 'ACTIVA' : 'CANCELADA';
+  }
+
   update() {
 
     if (!this.subscription.plan_id) {
       alert('Selecciona un plan');
+      return;
+    }
+
+    if (!this.subscription.establecimiento_id) {
+      alert('Error: establecimiento no definido');
       return;
     }
 
@@ -77,14 +86,14 @@ export class EditSubscriptionComponent implements OnInit {
     fin.setMonth(fin.getMonth() + 1);
 
     const data = {
-      establecimiento_id: this.subscription.establecimiento_id,
+      establecimiento_id: Number(this.subscription.establecimiento_id),
       plan_id: Number(this.subscription.plan_id),
-      estado: 'ACTIVA',
+      estado: this.subscription.estado,
       fecha_inicio: this.formatDate(hoy),
       fecha_fin: this.formatDate(fin)
     };
 
-    console.log(' ENVIANDO UPDATE:', data);
+    console.log('DATA FINAL:', data);
 
     this.http.put(`${this.apiUrl}/subscriptions/${this.subId}`, data)
       .subscribe({
@@ -94,7 +103,7 @@ export class EditSubscriptionComponent implements OnInit {
           this.close.emit();
         },
         error: (err) => {
-          console.error(' ERROR:', err);
+          console.error(' ERROR BACKEND:', err.error);
           alert(JSON.stringify(err.error));
         }
       });

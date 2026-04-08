@@ -2,64 +2,63 @@
 
   <div class="header">
     <h2>Panel Administrativo</h2>
-    <p>Resumen general del sistema</p>
   </div>
 
-  <div class="cards">
+  <div class="analytics">
 
-    <div class="card">
+    <div class="kpi primary">
       <span>Usuarios</span>
-      <h1>{{ totalUsers }}</h1>
+      <h1>{{ analytics?.total_users }}</h1>
+      <p>Activos: {{ analytics?.active_users }}</p>
+      <p>Inactivos: {{ (analytics?.total_users || 0) - (analytics?.active_users || 0) }}</p>
     </div>
 
-    <div class="card">
+    <div class="kpi success">
       <span>Negocios</span>
-      <h1>{{ totalEstablishments }}</h1>
+      <h1>{{ analytics?.total_establishments }}</h1>
+      <p>Activos: {{ analytics?.active_establishments }}</p>
+      <p>Inactivos: {{ (analytics?.total_establishments || 0) - (analytics?.active_establishments || 0) }}</p>
     </div>
 
-    <div class="card">
-      <span>Citas</span>
-      <h1>{{ totalAppointments }}</h1>
+    <div class="kpi dark">
+      <span>Citas este mes</span>
+      <h1>{{ analytics?.appointments_this_month }}</h1>
+      <p>Completadas: {{ analytics?.completed_appointments_this_month }}</p>
+      <p>Canceladas: {{ analytics?.cancelled_appointments_this_month }}</p>
     </div>
+
+    <div class="kpi money">
+          <span>Ingresos</span>
+
+          <h1>${{ analytics?.revenue_this_month }}</h1>
+          <p>Este mes</p>
+          <p>Total: ${{ analytics?.revenue_total }}</p>
+    </div>
+
 
   </div>
 
   <div class="content">
 
-    <div class="panel">
+    <div class="panel negocio-panel">
 
-      <h3>Estado de citas</h3>
-
-      <div class="estado-grid">
-
-        <div class="estado-card pendiente">
-          <span>Pendientes</span>
-          <h2>{{ citasPendientes }}</h2>
-        </div>
-
-        <div class="estado-card completada">
-          <span>Completadas</span>
-          <h2>{{ citasCompletadas }}</h2>
-        </div>
-
+      <div class="panel-header">
+        <h3>Citas por negocio</h3>
       </div>
 
-    </div>
+      <div class="negocio-scroll">
 
-    <!-- NEGOCIOS -->
-    <div class="panel">
+        <div *ngFor="let e of citasPorLocal; let i = index" class="negocio-item">
 
-      <h3>Citas por negocio</h3>
+          <div class="negocio-header">
+            <div class="left">
+              <span class="rank">#{{ i + 1 }}</span>
+              <span class="nombre">{{ e.nombre }}</span>
+            </div>
 
-      <div *ngFor="let e of citasPorLocal" class="bar-item">
+            <span class="total">{{ e.total }}</span>
+          </div>
 
-        <div class="bar-info">
-          <span>{{ e.nombre }}</span>
-          <span>{{ e.total }}</span>
-        </div>
-
-        <div class="bar">
-          <div class="bar-fill" [style.width.%]="e.total * 20"></div>
         </div>
 
       </div>
@@ -73,7 +72,6 @@
     <h3>Próximas citas</h3>
 
     <table>
-
       <thead>
         <tr>
           <th>Cliente</th>
@@ -88,7 +86,6 @@
       <tbody>
 
         <tr *ngFor="let c of proximasCitas">
-
           <td>{{ c.cliente }}</td>
           <td>{{ c.servicio }}</td>
           <td>{{ c.negocio }}</td>
@@ -96,20 +93,13 @@
           <td>{{ c.hora_inicio }}</td>
 
           <td>
-            <span
-              class="status"
-              [ngClass]="{
-                'pendiente': c.estado === 'PENDIENTE',
-                'completada': c.estado === 'COMPLETADA'
-              }">
+            <span class="status pendiente">
               {{ c.estado }}
             </span>
           </td>
-
         </tr>
 
       </tbody>
-
     </table>
 
   </div>

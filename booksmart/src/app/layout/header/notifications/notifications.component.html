@@ -1,0 +1,65 @@
+<div class="notif-modal">
+
+  <div class="notif-header">
+    <h4>Notificaciones</h4>
+
+    <div class="header-actions">
+
+      <button 
+        *ngIf="hayNoLeidas()"
+        class="mark-all" 
+        (click)="marcarTodasLeidas()">
+        ✔ Leer todas
+      </button>
+
+      <button class="close-btn" (click)="close.emit()">✖</button>
+    </div>
+  </div>
+
+  <div *ngIf="notifications.length === 0" class="empty">
+    No hay notificaciones
+  </div>
+
+  <div class="notif-list">
+
+    <div *ngFor="let n of notifications" 
+         class="notif-item" 
+         [class.unread]="!n.leida">
+
+      <div class="notif-content">
+        <p class="msg">{{ n.mensaje }}</p>
+        <span class="date">{{ n.fecha_envio | date:'short' }}</span>
+      </div>
+
+      <div class="notif-actions">
+
+        <span class="tipo" [ngClass]="n.tipo?.toLowerCase()">
+          {{ n.tipo }}
+        </span>
+
+        <div class="actions">
+
+          <button 
+            *ngIf="!n.leida"
+            class="btn read"
+            title="Marcar como leída"
+            (click)="marcarLeida(n)">
+            ✔
+          </button>
+
+          <button 
+            class="btn delete"
+            title="Eliminar"
+            (click)="eliminar(n)">
+            🗑
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

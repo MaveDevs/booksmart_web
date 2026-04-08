@@ -19,16 +19,10 @@ export class HomeComponent implements OnInit {
   appointments: any[] = [];
   services: any[] = [];
 
-  totalUsers = 0;
-  totalEstablishments = 0;
-  totalAppointments = 0;
-
-  citasPendientes = 0;
-  citasCompletadas = 0;
-
   citasPorLocal: any[] = [];
-  topClientes: any[] = [];
   proximasCitas: any[] = [];
+
+  analytics: any = null;
 
   constructor(
     private http: HttpClient,
@@ -54,12 +48,11 @@ export class HomeComponent implements OnInit {
   loadDashboard() {
 
     forkJoin({
-
       users: this.http.get<any[]>(`${this.apiUrl}/users/`, { headers: this.getHeaders() }),
       establishments: this.http.get<any[]>(`${this.apiUrl}/establishments/`, { headers: this.getHeaders() }),
       appointments: this.http.get<any[]>(`${this.apiUrl}/appointments/`, { headers: this.getHeaders() }),
-      services: this.http.get<any[]>(`${this.apiUrl}/services/`, { headers: this.getHeaders() })
-
+      services: this.http.get<any[]>(`${this.apiUrl}/services/`, { headers: this.getHeaders() }),
+      analytics: this.http.get<any>(`${this.apiUrl}/analytics/system-overview`, { headers: this.getHeaders() })
     }).subscribe({
 
       next: (res) => {
@@ -69,40 +62,41 @@ export class HomeComponent implements OnInit {
         this.appointments = res.appointments;
         this.services = res.services;
 
-        this.totalUsers = this.users.length;
-        this.totalEstablishments = this.establishments.length;
-        this.totalAppointments = this.appointments.length;
-
-        this.citasPendientes = this.appointments.filter(a => a.estado === 'PENDIENTE').length;
-        this.citasCompletadas = this.appointments.filter(a => a.estado === 'COMPLETADA').length;
-
-        this.citasPorLocal = this.establishments.map(est => ({
-          nombre: est.nombre,
-          total: this.appointments.filter(a => a.establecimiento_id === est.establecimiento_id).length
-        }));
-
-        const conteo: any = {};
-        this.appointments.forEach(a => {
-          conteo[a.cliente_id] = (conteo[a.cliente_id] || 0) + 1;
+        const serviceToEstMap: any = {};
+        this.services.forEach(s => {
+          serviceToEstMap[s.servicio_id] = s.establecimiento_id;
         });
 
-        this.topClientes = Object.entries(conteo)
-          .map(([id, total]) => {
-            const user = this.users.find(u => u.usuario_id == id);
-            return {
-              nombre: user ? user.nombre : 'Cliente',
-              total
-            };
-          })
-          .sort((a: any, b: any) => b.total - a.total)
-          .slice(0, 5);
+        this.citasPorLocal = this.establishments.map(est => {
+
+          const total = this.appointments.filter(a => {
+            const estId = serviceToEstMap[a.servicio_id];
+            return estId === est.establecimiento_id;
+          }).length;
+
+          return {
+            nombre: est.nombre,
+            total
+          };
+
+        }).sort((a, b) => b.total - a.total);
 
         this.proximasCitas = this.appointments
+
+          .filter(a => a.estado === 'PENDIENTE')
+
+          .filter(a => {
+            const fechaHora = new Date(`${a.fecha}T${a.hora_inicio}`);
+            return fechaHora >= new Date();
+          })
+
           .map(a => {
 
             const user = this.users.find(u => u.usuario_id === a.cliente_id);
             const service = this.services.find(s => s.servicio_id === a.servicio_id);
-            const est = this.establishments.find(e => e.establecimiento_id === a.establecimiento_id);
+
+            const estId = service?.establecimiento_id;
+            const est = this.establishments.find(e => e.establecimiento_id === estId);
 
             return {
               ...a,
@@ -112,8 +106,16 @@ export class HomeComponent implements OnInit {
             };
 
           })
-          .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime())
+
+          .sort((a, b) => {
+            const f1 = new Date(`${a.fecha}T${a.hora_inicio}`).getTime();
+            const f2 = new Date(`${b.fecha}T${b.hora_inicio}`).getTime();
+            return f1 - f2;
+          })
+
           .slice(0, 6);
+
+        this.analytics = res.analytics;
 
       },
 

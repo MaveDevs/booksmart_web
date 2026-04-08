@@ -6,17 +6,34 @@
 
   <div class="header-right">
 
-    <button class="icon-btn">🌙</button>
+    <div class="notif-container">
+
+      <div class="bell" (click)="toggleNotifications()" title="Notificaciones">
+
+        <svg class="bell-icon" viewBox="0 0 24 24">
+          <path d="M12 22c1 0 2-.9 2-2h-4c0 1.1 1 2 2 2zm6-6V11c0-3.1-1.6-5.6-4.5-6.3V4a1.5 1.5 0 0 0-3 0v.7C7.6 5.4 6 7.9 6 11v5l-2 2v1h16v-1l-2-2z"/>
+        </svg>
+
+        <span *ngIf="unreadCount > 0" class="badge">
+          {{ unreadCount }}
+        </span>
+
+      </div>
+
+      <app-notifications
+        *ngIf="showNotifications"
+        [notifications]="notifications"
+        (close)="toggleNotifications()"
+        (updated)="loadNotifications()">
+      </app-notifications>
+
+    </div>
 
     <div class="profile" (click)="toggleProfile()">
-
       <span class="username">
         {{ user?.nombre || 'Usuario' }}
       </span>
-
-      <span class="chevron" [class.active]="isOpen">
-        ▼
-      </span>
+      <span class="chevron" [class.active]="isOpen">▼</span>
     </div>
 
     <button class="logout-btn" (click)="logout()" title="Cerrar sesión">
