@@ -1,13 +1,27 @@
 <div class="container">
 
   <div class="header">
+
     <h2>Reportes del Sistema</h2>
 
-    <button
-      class="add-btn"
-      (click)="openCreateModal()">
-      + Crear reporte
-    </button>
+    <div style="display:flex; gap:10px; align-items:center;">
+
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar reporte..."
+        [(ngModel)]="searchText"
+        (input)="filterReports()"
+      >
+
+      <button
+        class="add-btn"
+        (click)="openCreateModal()">
+        + Crear reporte
+      </button>
+
+    </div>
+
   </div>
 
   <div *ngIf="loading">
@@ -70,7 +84,6 @@
   </table>
 
 </div>
-
 
 <app-create-report
   *ngIf="showCreateModal"

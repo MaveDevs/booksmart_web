@@ -18,6 +18,7 @@ export class CreateEstablishmentComponent implements OnInit {
   apiUrl = 'http://localhost:8000/api/v1';
 
   users: any[] = [];
+  duenos: any[] = []; 
 
   logoFile: File | null = null;
   portadaFile: File | null = null;
@@ -73,7 +74,13 @@ export class CreateEstablishmentComponent implements OnInit {
   loadUsers() {
     this.http.get(`${this.apiUrl}/users/`, { headers: this.getHeaders() })
       .subscribe({
-        next: (data: any) => this.users = data,
+        next: (data: any) => {
+
+          this.users = data;
+
+          this.duenos = this.users.filter((u: any) => u.rol_id === 2);
+
+        },
         error: (err) => console.error(err)
       });
   }

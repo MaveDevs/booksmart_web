@@ -1,39 +1,52 @@
-<div class="ratings-container">
+<div class="modal">
 
-  <h3>
-    {{ existingReview ? 'Editar reseña' : 'Agregar reseña' }}
-  </h3>
+  <div class="modal-content">
 
-  <label>Calificación</label>
-  <input type="number" [(ngModel)]="ratingValue" min="1" max="5">
+    <div class="ratings-container">
 
-  <label>Comentario</label>
-  <textarea [(ngModel)]="ratingComment"></textarea>
+      <h3>
+        {{ existingReview ? 'Editar reseña' : 'Agregar reseña' }}
+      </h3>
 
-  <button (click)="enviarResena()">
-    {{ existingReview ? 'Actualizar' : 'Enviar' }}
-  </button>
+      <label>Calificación</label>
+      <input type="number" [(ngModel)]="ratingValue" min="1" max="5">
 
-  <button *ngIf="existingReview"
-          class="delete-review-btn"
-          (click)="openDeleteConfirm()">
-    🗑 Eliminar reseña
-  </button>
+      <label>Comentario</label>
+      <textarea [(ngModel)]="ratingComment"></textarea>
+
+      <button (click)="enviarResena()">
+        {{ existingReview ? 'Actualizar' : 'Enviar' }}
+      </button>
+
+      <button *ngIf="existingReview"
+              class="delete-review-btn"
+              (click)="openDeleteConfirm()">
+        🗑 Eliminar reseña
+      </button>
+
+      <button class="close-btn" (click)="close.emit()">
+        Cerrar
+      </button>
+
+    </div>
+
+  </div>
 
 </div>
 
+<div *ngIf="showDeleteConfirm" class="modal">
 
-<div *ngIf="showDeleteConfirm" class="modal-backdrop">
-  <div class="modal">
+  <div class="modal-content">
 
     <h2>Eliminar reseña</h2>
+
     <p class="message">
       ¿Estás seguro de que deseas eliminar tu reseña?
     </p>
 
     <div class="buttons">
       <button class="delete-btn" (click)="eliminarResena()">
-        Sí, eliminar
+        Eliminar
       </button>
 
       <button class="cancel-btn" (click)="cancelDelete()">
@@ -42,9 +55,5 @@
     </div>
 
   </div>
-</div>
 
-
-<div *ngIf="showSuccess" class="success-card">
-  Reseña eliminada correctamente
 </div>

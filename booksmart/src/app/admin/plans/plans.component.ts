@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 import { CreatePlanComponent } from './create-plan/create-plan.component';
 import { EditPlanComponent } from './edit-plan/edit-plan.component';
@@ -16,6 +17,7 @@ import { DeleteSubscriptionComponent } from './delete-subscription/delete-subscr
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     CreatePlanComponent,
     EditPlanComponent,
     DeletePlanComponent,
@@ -35,6 +37,12 @@ export class PlansComponent implements OnInit {
   subscriptions: any[] = [];
 
   data: any[] = [];
+  filteredData: any[] = [];
+
+  filteredPlans: any[] = [];
+
+  searchTerm: string = '';
+
   loading = true;
 
   view: 'subscriptions' | 'plans' = 'subscriptions';
@@ -56,6 +64,7 @@ export class PlansComponent implements OnInit {
   }
 
   loadData() {
+
     this.loading = true;
 
     forkJoin({
@@ -70,10 +79,13 @@ export class PlansComponent implements OnInit {
         this.subscriptions = res.subscriptions;
 
         this.combineData();
+
+        this.filteredPlans = this.plans;
+
         this.loading = false;
       },
       error: (err) => {
-        console.error('❌ ERROR LOAD:', err);
+        console.error(err);
         this.loading = false;
       }
     });
@@ -92,25 +104,66 @@ export class PlansComponent implements OnInit {
       );
 
       return {
-        subscription_id: Number(sub.suscripcion_id), 
+        subscription_id: Number(sub.suscripcion_id),
 
         establecimiento: establishment?.nombre || 'Sin nombre',
         plan: plan?.nombre || 'Sin plan',
         precio: plan?.precio || 0,
         estado: sub.estado,
         fecha_inicio: sub.fecha_inicio,
-        fecha_fin: sub.fecha_fin,
-
-        establecimiento_id: sub.establecimiento_id,
-        plan_id: sub.plan_id
+        fecha_fin: sub.fecha_fin
       };
+
     });
 
-    console.log(' DATA FINAL:', this.data);
+    this.filteredData = this.data;
+  }
+
+  // 🔍 BUSCADOR
+  onSearch() {
+
+    const term = this.searchTerm.toLowerCase();
+
+    if (this.view === 'subscriptions') {
+
+      this.filteredData = this.data.filter(item => {
+
+        const texto = `
+          ${item.establecimiento}
+          ${item.plan}
+          ${item.precio}
+          ${item.estado}
+        `.toLowerCase();
+
+        return texto.includes(term);
+
+      });
+
+    }
+
+    if (this.view === 'plans') {
+
+      this.filteredPlans = this.plans.filter(plan => {
+
+        const texto = `
+          ${plan.nombre}
+          ${plan.descripcion}
+          ${plan.precio}
+          ${plan.activo ? 'activo' : 'inactivo'}
+        `.toLowerCase();
+
+        return texto.includes(term);
+
+      });
+
+    }
+
   }
 
   setView(view: 'subscriptions' | 'plans') {
     this.view = view;
+    this.searchTerm = '';
+    this.onSearch();
   }
 
   openCreateModal() { this.showCreateModal = true; }
@@ -134,12 +187,6 @@ export class PlansComponent implements OnInit {
   closeCreateSubModal() { this.showCreateSubModal = false; }
 
   openEditSubModal(item: any) {
-
-    if (!item || !item.subscription_id) {
-      alert('Error: ID no válido');
-      return;
-    }
-
     this.selectedSubId = item.subscription_id;
     this.showEditSubModal = true;
   }
@@ -156,4 +203,5 @@ export class PlansComponent implements OnInit {
   reloadData() {
     this.loadData();
   }
+
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 
 import { ReportPdfService } from './services/report-pdf.service';
@@ -15,6 +16,7 @@ import { DeleteReportComponent } from './delete-report/delete-report.component';
   imports: [
     CommonModule,
     HttpClientModule,
+    FormsModule,
     CreateReportComponent,
     EditReportComponent,
     DeleteReportComponent
@@ -27,7 +29,10 @@ export class ReportsComponent implements OnInit {
   apiUrl = 'http://localhost:8000/api/v1';
 
   reports: any[] = [];
+  allReports: any[] = []; 
   establishments: any[] = [];
+
+  searchText: string = ''; 
 
   loading = false;
 
@@ -97,6 +102,8 @@ export class ReportsComponent implements OnInit {
 
         });
 
+        this.allReports = [...this.reports]; 
+
         this.loading = false;
 
       },
@@ -107,6 +114,18 @@ export class ReportsComponent implements OnInit {
       }
 
     });
+
+  }
+
+  filterReports() {
+
+    const text = this.searchText.toLowerCase();
+
+    this.reports = this.allReports.filter(r =>
+      r.establecimiento_nombre.toLowerCase().includes(text) ||
+      (r.descripcion || '').toLowerCase().includes(text) ||
+      (r.fecha_generacion || '').toLowerCase().includes(text)
+    );
 
   }
 

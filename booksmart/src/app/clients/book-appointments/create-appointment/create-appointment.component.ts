@@ -1,7 +1,10 @@
-import { Component, EventEmitter, Output, Inject, PLATFORM_ID, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, Inject, PLATFORM_ID, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+
+import flatpickr from "flatpickr";
+import { Spanish } from "flatpickr/dist/l10n/es.js";
 
 @Component({
   selector: 'app-create-appointment',
@@ -33,13 +36,17 @@ export class CreateAppointmentComponent implements OnInit {
   appointments: any[] = [];
 
   selectedService: any = null;
-  selectedSlot: {day:string, time:string} | null = null;
+  selectedHour: string | null = null;
+  calendarInstance: any;
+
+  availableSlots: any[] = []; 
 
   days = ['DOMINGO','LUNES','MARTES','MIERCOLES','JUEVES','VIERNES','SABADO'];
   hours: string[] = [];
 
   constructor(
     private http: HttpClient,
+    private cd: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -48,6 +55,48 @@ export class CreateAppointmentComponent implements OnInit {
       this.hours = this.generateTimeSlots();
       this.loadData();
     }
+  }
+
+  initCalendar(){
+
+    if(this.calendarInstance){
+      this.calendarInstance.destroy();
+    }
+
+    this.calendarInstance = flatpickr("#calendarInput", {
+      locale: Spanish,
+      minDate: "today",
+      maxDate: new Date(new Date().setDate(new Date().getDate() + 90)),
+
+      disable: [
+        (date: Date) => {
+          const dayName = this.days[date.getDay()];
+          return !this.agendas.some(a =>
+            a.dia_semana.toUpperCase() === dayName.toUpperCase()
+          );
+        }
+      ],
+
+      onChange: (dates) => {
+        if (dates.length) {
+          const d = dates[0];
+
+          const y = d.getFullYear();
+          const m = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+
+          this.appointment.fecha = `${y}-${m}-${day}`;
+          this.selectedHour = null;
+
+          this.updateSlots(); 
+          this.cd.detectChanges();
+        }
+      }
+    });
+  }
+
+  updateSlots(){
+    this.availableSlots = this.getAvailableSlots();
   }
 
   getHeaders() {
@@ -68,8 +117,9 @@ export class CreateAppointmentComponent implements OnInit {
   }
 
   loadData() {
+
     this.http.get<any[]>(`${this.apiUrl}/users/`, { headers: this.getHeaders() })
-      .subscribe(data => this.users = data.filter(u => u.rol_id === 3));
+      .subscribe(data => this.users = data.filter(u => u.rol_id === 1));
 
     this.http.get<any[]>(`${this.apiUrl}/services/`, { headers: this.getHeaders() })
       .subscribe(data => this.services = data);
@@ -77,11 +127,18 @@ export class CreateAppointmentComponent implements OnInit {
     this.http.get<any[]>(`${this.apiUrl}/establishments/`, { headers: this.getHeaders() })
       .subscribe(data => this.establishments = data);
 
-    this.http.get<any[]>(`${this.apiUrl}/agendas/`, { headers: this.getHeaders() })
-      .subscribe(data => this.agendas = data);
-
     this.http.get<any[]>(`${this.apiUrl}/appointments/`, { headers: this.getHeaders() })
       .subscribe(data => this.appointments = data);
+
+    this.http.get<any[]>(`${this.apiUrl}/agendas/`, { headers: this.getHeaders() })
+      .subscribe(data => {
+        this.agendas = data;
+
+        setTimeout(() => {
+          this.initCalendar();
+          this.updateSlots(); 
+        }, 0);
+      });
   }
 
   onServiceChange() {
@@ -91,80 +148,98 @@ export class CreateAppointmentComponent implements OnInit {
   }
 
   getEstablishmentName(id:number){
-    const est = this.establishments.find(e => e.establecimiento_id === id);
-    return est ? est.nombre : '—';
+    return this.establishments.find(e => e.establecimiento_id === id)?.nombre || '—';
   }
 
-  getDayName(date:string){
-    const d = new Date(date);
-    return this.days[d.getDay()];
-  }
+  getAvailableSlots(){
 
-  isOccupied(day:string, time:string){
-    return this.appointments.some(cita => {
+    if(!this.appointment.fecha) return [];
 
-      if(cita.estado === 'COMPLETADA' || cita.estado === 'CANCELADA'){
-        return false;
-      }
-
-      const citaDay = this.getDayName(cita.fecha);
-      const start = cita.hora_inicio.substring(0,5);
-      const end = cita.hora_fin.substring(0,5);
-
-      return citaDay === day && time >= start && time < end;
-    });
-  }
-
-  isWorking(day:string, time:string){
-    return this.agendas.some(agenda => {
-
-      const start = agenda.hora_inicio.substring(0,5);
-      const end = agenda.hora_fin.substring(0,5);
-
-      return agenda.dia_semana === day && time >= start && time < end;
-    });
-  }
-
-  isAvailable(day:string, time:string){
-    return this.isWorking(day, time) && !this.isOccupied(day, time);
-  }
-
-  selectSlot(day:string, time:string){
-
-    this.selectedSlot = { day, time };
-
+    const selectedDate = new Date(this.appointment.fecha + 'T00:00:00');
     const today = new Date();
-    const dayIndex = this.days.indexOf(day);
-    const diff = (dayIndex - today.getDay() + 7) % 7;
 
-    const selectedDate = new Date();
-    selectedDate.setDate(today.getDate() + diff);
+    const isToday =
+      selectedDate.getFullYear() === today.getFullYear() &&
+      selectedDate.getMonth() === today.getMonth() &&
+      selectedDate.getDate() === today.getDate();
 
-    const year = selectedDate.getFullYear();
-    const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
-    const dayNum = String(selectedDate.getDate()).padStart(2, '0');
+    const dayName = this.days[selectedDate.getDay()];
 
-    this.appointment.fecha = `${year}-${month}-${dayNum}`;
+    let now: Date | null = null;
 
-    this.appointment.hora_inicio = time;
+    if(isToday){
+      now = new Date();
+      now.setMinutes(now.getMinutes() + 30);
+    }
 
-    const [h,m] = time.split(':').map(Number);
+    return this.hours
+      .map(hour => {
+
+        const [h, m] = hour.split(':').map(Number);
+
+        const slotDateTime = new Date(selectedDate);
+        slotDateTime.setHours(h, m, 0, 0);
+
+        if(isToday && now && slotDateTime <= now){
+          return null;
+        }
+
+        const inAgenda = this.agendas.some(a => {
+          if(a.dia_semana.toUpperCase() !== dayName.toUpperCase()) return false;
+
+          const start = a.hora_inicio.substring(0,5);
+          const end = a.hora_fin.substring(0,5);
+
+          return hour >= start && hour < end;
+        });
+
+        const occupied = this.appointments.some(cita => {
+
+          if(!cita.fecha) return false;
+
+          const citaDate = cita.fecha.substring(0,10);
+          if(citaDate !== this.appointment.fecha) return false;
+
+          const start = cita.hora_inicio.substring(0,5);
+          const end = cita.hora_fin.substring(0,5);
+
+          return hour >= start && hour < end;
+        });
+
+        return {
+          hour,
+          status: !inAgenda ? 'closed'
+                 : occupied ? 'occupied'
+                 : 'available'
+        };
+      })
+      .filter(slot => slot !== null);
+  }
+
+  onSelectSlot(slot:any){
+
+    if(slot.status !== 'available') return;
+
+    this.selectedHour = slot.hour;
+    this.appointment.hora_inicio = slot.hour;
+
+    const [h,m] = slot.hour.split(':').map(Number);
     const end = new Date();
     end.setHours(h, m + 30);
 
     this.appointment.hora_fin =
       `${String(end.getHours()).padStart(2,'0')}:${String(end.getMinutes()).padStart(2,'0')}`;
+
+    this.updateSlots(); 
+    this.cd.detectChanges();
   }
 
   createAppointment() {
     this.http.post(`${this.apiUrl}/appointments/`, this.appointment, {
       headers: this.getHeaders()
-    }).subscribe({
-      next: () => {
-        this.created.emit();
-        this.close.emit();
-      },
-      error: err => console.error('Error creando cita', err)
+    }).subscribe(() => {
+      this.created.emit();
+      this.close.emit();
     });
   }
 

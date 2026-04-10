@@ -3,7 +3,6 @@
   <div class="header">
 
     <div class="left-section">
-
       <div class="title-section">
 
         <h2>Agenda</h2>
@@ -18,53 +17,80 @@
           </button>
         </div>
 
+       <div class="range-buttons" *ngIf="view === 'calendar'">
+
+        <button 
+          [class.active]="range === 'week'" 
+          (click)="setRange('week')">
+          Semana
+        </button>
+
+        <button 
+          [class.active]="range === 'month'" 
+          (click)="setRange('month')">
+          Mes
+        </button>
+
+        <button 
+          [class.active]="range === '3months'" 
+          (click)="setRange('3months')">
+          3 Meses
+        </button>
+
       </div>
 
+      </div>
     </div>
 
     <div class="center-section">
-
       <select [(ngModel)]="selectedEstablishment" (change)="applyFilter()">
-        <option [ngValue]="null">Todos los establecimientos</option>
+        <option [ngValue]="null">Todos</option>
+
         <option *ngFor="let est of establishments"
                 [ngValue]="est.establecimiento_id">
           {{ est.nombre }}
         </option>
       </select>
-
     </div>
 
     <div class="right-section">
-
-      <button class="add-btn" (click)="openCreate()">
-        + Crear Horario
-      </button>
-
+      <button class="add-btn" (click)="openCreate()">+ Crear Horario</button>
     </div>
 
   </div>
 
   <div *ngIf="view === 'calendar'" class="calendar">
 
-    <div class="header-row">
-      <div class="hour-col"></div>
-      <div *ngFor="let day of days" class="day-col">{{ day }}</div>
-    </div>
+    <div *ngFor="let group of groupedDates">
 
-    <div *ngFor="let hour of hours" class="row">
+      <h3 class="month-title">{{ group.month }}</h3>
 
-      <div class="hour-col">{{ hour }}</div>
+      <div class="header-row">
+        <div class="hour-col"></div>
 
-      <div *ngFor="let day of days"
-           class="cell"
-           [class.available]="isAvailable(day, hour)"
-           [class.occupied]="isOccupied(day, hour)"
-           [class.closed]="!isWorking(day, hour)"
-           (click)="selectSlot(day, hour)">
+        <div *ngFor="let date of group.dates" class="day-col">
+          {{ date.toLocaleDateString('es-MX', { weekday: 'short', day: '2-digit' }) | uppercase }}
+        </div>
+      </div>
 
-        <span *ngIf="isOccupied(day, hour)">Ocupado</span>
-        <span *ngIf="isAvailable(day, hour)">Disponible</span>
-        <span *ngIf="!isWorking(day, hour)">Cerrado</span>
+      <div *ngFor="let hour of hours" class="row">
+
+        <div class="hour-col">{{ hour }}</div>
+
+        <div *ngFor="let date of group.dates"
+             class="cell"
+
+             [class.available]="isInAgenda(date, hour) && isAvailable(date, hour)"
+             [class.occupied]="isOccupied(date, hour)"
+             [class.disabled]="!isInAgenda(date, hour)"
+
+             (click)="isInAgenda(date, hour) && selectSlot(date, hour)">
+
+          <span *ngIf="isOccupied(date, hour)">Ocupado</span>
+          <span *ngIf="isInAgenda(date, hour) && isAvailable(date, hour)">Disponible</span>
+          <span *ngIf="!isInAgenda(date, hour)">No disponible</span>
+
+        </div>
 
       </div>
 
@@ -106,23 +132,87 @@
 
     </table>
 
+    <div *ngIf="filteredAgendas.length === 0" class="empty">
+      No hay horarios disponibles
+    </div>
+
   </div>
 
 </div>
 
-<app-create-agenda *ngIf="showCreateModal"
+
+<app-create-agenda
+  *ngIf="showCreateModal"
   (close)="closeAll()"
   (created)="reloadAll()">
 </app-create-agenda>
 
-<app-edit-agenda *ngIf="showEditModal"
+<app-edit-agenda
+  *ngIf="showEditModal"
   [agendaId]="selectedId"
   (close)="closeAll()"
   (updated)="reloadAll()">
 </app-edit-agenda>
 
-<app-delete-agenda *ngIf="showDeleteModal"
+<app-delete-agenda
+  *ngIf="showDeleteModal"
   [agendaId]="selectedId"
   (close)="closeAll()"
   (deleted)="reloadAll()">
 </app-delete-agenda>
+
+
+<div *ngIf="showAppointmentModal" class="modal-overlay">
+
+  <div class="modal">
+
+    <div class="modal-header">
+      <h3>Detalle de la Cita</h3>
+      <span class="close-icon" (click)="closeAppointmentModal()">✕</span>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="item">
+        <span class="label">Fecha</span>
+        <span class="value">{{ getFecha(selectedAppointment) }}</span>
+      </div>
+
+      <div class="item">
+        <span class="label">Hora</span>
+        <span class="value">{{ getHora(selectedAppointment) }}</span>
+      </div>
+
+      <div class="item">
+        <span class="label">Cliente</span>
+        <span class="value">{{ getClientName(selectedAppointment) }}</span>
+      </div>
+
+      <div class="item">
+        <span class="label">Servicio</span>
+        <span class="value">{{ getServiceName(selectedAppointment?.servicio_id) }}</span>
+      </div>
+
+      <div class="item">
+        <span class="label">Establecimiento</span>
+        <span class="value">{{ getEstablishmentFromService(selectedAppointment?.servicio_id) }}</span>
+      </div>
+
+      <div class="item price">
+        <span class="label">Precio</span>
+        <span class="value">
+          ${{ getServicePrice(selectedAppointment?.servicio_id) }}
+        </span>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-close" (click)="closeAppointmentModal()">
+        Cerrar
+      </button>
+    </div>
+
+  </div>
+
+</div>

@@ -24,22 +24,34 @@ export class LoginComponent {
   ) {}
 
   login() {
+
     this.errorMessage = '';
     this.loading = true;
 
     this.authService.login(this.email, this.password).subscribe({
-      next: (res: any) => {
 
-        console.log('RESPUESTA LOGIN:', res);
+      next: (res: any) => {
 
         if (res && res.access_token) {
 
           this.authService.saveToken(res.access_token);
 
           this.authService.getCurrentUser().subscribe({
+
             next: (user: any) => {
 
               console.log('USUARIO REAL:', user);
+              const rol = Number(user.rol_id); 
+
+              if (rol !== 3) {
+
+                this.errorMessage = 'Acceso solo para administradores';
+                this.loading = false;
+
+                localStorage.removeItem('access_token');
+
+                return;
+              }
 
               this.authService.setUser(user);
 
@@ -47,24 +59,30 @@ export class LoginComponent {
 
               this.router.navigate(['/dashboard']);
             },
+
             error: (err: any) => {
               console.error('Error obteniendo usuario:', err);
               this.errorMessage = 'Error al obtener usuario';
               this.loading = false;
             }
+
           });
 
         } else {
           this.errorMessage = 'No se recibió token válido';
           this.loading = false;
         }
+
       },
 
       error: (err: any) => {
-        console.error('ERROR COMPLETO:', err);
+        console.error('ERROR LOGIN:', err);
         this.errorMessage = 'Correo o contraseña incorrectos';
         this.loading = false;
       }
+
     });
+
   }
+
 }

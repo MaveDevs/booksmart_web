@@ -32,7 +32,7 @@ export class ReportPdfService {
           headers: this.getHeaders()
         }).toPromise(),
 
-        this.http.get<any>(`${this.apiUrl}/payments/`, {
+        this.http.get<any>(`${this.apiUrl}/payments/?suscripcion_id=1`, {
           headers: this.getHeaders()
         }).toPromise()
 
@@ -55,9 +55,7 @@ export class ReportPdfService {
         return serviciosIds.includes(servicioId);
       });
 
-      const pagos = payments.filter((p: any) =>
-        p.establecimiento_id === report.establecimiento_id
-      );
+      const pagos = payments || [];
 
       const totalCitas = citas.length;
 
@@ -70,7 +68,7 @@ export class ReportPdfService {
       const totalClientes = clientesSet.size;
 
       const totalIngresos = pagos.reduce(
-        (sum: number, p: any) => sum + (p.monto || p.amount || 0),
+        (sum: number, p: any) => sum + Number(p.monto || p.amount || 0),
         0
       );
 
@@ -104,7 +102,6 @@ export class ReportPdfService {
 
       const logo = new Image();
       logo.src = '/logo.png';
-
       await new Promise(resolve => logo.onload = resolve);
 
       doc.addImage(logo, 'PNG', 20, 10, 15, 15);
@@ -145,11 +142,9 @@ export class ReportPdfService {
       doc.setFont('helvetica', 'normal');
 
       const descripcion = report.descripcion || 'Sin descripción disponible';
-
       const splitDesc = doc.splitTextToSize(descripcion, 170);
 
       doc.text(splitDesc, 20, yPos);
-
       yPos += splitDesc.length * 5;
 
       yPos += 10;
@@ -161,7 +156,8 @@ export class ReportPdfService {
       doc.setFont('helvetica', 'normal');
 
       doc.text(`Citas: ${totalCitas}`, 20, yPos); yPos += 5;
-      doc.text(`Clientes: ${totalClientes}`, 20, yPos);
+      doc.text(`Clientes: ${totalClientes}`, 20, yPos); yPos += 5;
+      doc.text(`Ingresos: $${totalIngresos.toFixed(2)}`, 20, yPos);
 
       yPos += 10;
 
@@ -194,7 +190,7 @@ export class ReportPdfService {
       doc.save(`reporte_${report.reporte_id}.pdf`);
 
     } catch (error) {
-      console.error(error);
+      console.error('❌ ERROR PDF:', error);
     }
 
   }

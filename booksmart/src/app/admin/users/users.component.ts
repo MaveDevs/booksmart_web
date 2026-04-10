@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 import { CreateUserComponent } from './create-user/create-user.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
@@ -20,6 +21,7 @@ import { DeleteWorkerComponent } from './delete-worker/delete-worker.component';
   imports: [
     CommonModule,
     HttpClientModule,
+    FormsModule,
 
     CreateUserComponent,
     EditUserComponent,
@@ -42,6 +44,8 @@ export class UsersComponent implements OnInit {
 
   users: any[] = [];
   filteredUsers: any[] = [];
+
+  searchText: string = '';
 
   loading = false;
 
@@ -91,6 +95,7 @@ export class UsersComponent implements OnInit {
         headers:this.getHeaders()
       }).subscribe({
         next:(data)=>{
+          this.users = data;
           this.filteredUsers = data;
           this.loading = false;
         },
@@ -123,15 +128,55 @@ export class UsersComponent implements OnInit {
       this.filteredUsers = this.users.filter(u => u.rol_id === 2);
     }
     else if(this.view === 'clients'){
-      this.filteredUsers = this.users.filter(u => u.rol_id === 3);
+      this.filteredUsers = this.users.filter(u => u.rol_id === 1);
     }
     else{
       this.filteredUsers = this.users;
     }
+
+  }
+
+  filterUsers(){
+
+    const text = this.searchText.toLowerCase();
+
+    if(!text){
+      this.applyFilter();
+      return;
+    }
+
+    const found = this.users.filter(u =>
+      (u.nombre || '').toLowerCase().includes(text) ||
+      (u.apellido || '').toLowerCase().includes(text) ||
+      (u.correo || '').toLowerCase().includes(text)
+    );
+
+    if(found.length > 0){
+
+      const first = found[0];
+
+      if(first.rol_id === 1) this.view = 'clients';
+      else if(first.rol_id === 2) this.view = 'owners';
+      else if(first.rol_id === 4) this.view = 'workers';
+      else this.view = 'all';
+
+      this.applyFilter();
+
+      this.filteredUsers = this.filteredUsers.filter(u =>
+        (u.nombre || '').toLowerCase().includes(text) ||
+        (u.apellido || '').toLowerCase().includes(text) ||
+        (u.correo || '').toLowerCase().includes(text)
+      );
+
+    } else {
+      this.filteredUsers = [];
+    }
+
   }
 
   setView(view:'owners'|'clients'|'workers'|'all'){
     this.view = view;
+    this.searchText = '';
     this.loadUsers(); 
   }
 

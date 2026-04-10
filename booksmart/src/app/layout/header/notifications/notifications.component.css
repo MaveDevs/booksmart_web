@@ -1,12 +1,13 @@
 .notif-modal {
-  position: absolute;
+  position: fixed;  
   top: 65px;
-  right: 0;
+  right: 20px;
   width: 330px;
   background: #FFFFFF;
   border-radius: 16px;
   box-shadow: 0 12px 30px rgba(31, 58, 95, 0.15);
   overflow: hidden;
+  z-index: 99999; 
 }
 
 .notif-header {

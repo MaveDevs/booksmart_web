@@ -3,20 +3,32 @@
   <div class="header">
     <h2>Pagos</h2>
 
-    <button class="add-btn" (click)="openCreateModal()">
-      + Nuevo Pago
-    </button>
+    <div class="header-actions">
+
+      <input 
+        type="text"
+        placeholder="Buscar por suscripción, monto, método o estado..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        class="search-input"
+      />
+
+      <button class="add-btn" (click)="openCreateModal()">
+        + Nuevo Pago
+      </button>
+
+    </div>
   </div>
 
   <div *ngIf="loading">
     <p>Cargando pagos...</p>
   </div>
 
-  <div *ngIf="!loading && payments.length === 0">
-    <p>No hay pagos</p>
+  <div *ngIf="!loading && filteredPayments.length === 0">
+    <p>No se encontraron pagos</p>
   </div>
 
-  <table *ngIf="payments.length > 0" class="table">
+  <table *ngIf="filteredPayments.length > 0" class="table">
 
     <thead>
       <tr>
@@ -30,7 +42,7 @@
 
     <tbody>
 
-      <tr *ngFor="let p of payments">
+      <tr *ngFor="let p of filteredPayments">
 
         <td>
           {{ p.establecimiento_nombre }} - {{ p.plan_nombre }}

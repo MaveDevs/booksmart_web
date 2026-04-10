@@ -150,3 +150,22 @@ app-delete-service {
     padding: 10px;
   }
 }
+.header-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.search-input {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #E6E8E7;
+  outline: none;
+  width: 250px;
+  transition: 0.2s;
+}
+
+.search-input:focus {
+  border-color: #1FBF9F;
+  box-shadow: 0 0 0 3px rgba(31,191,159,0.15);
+}

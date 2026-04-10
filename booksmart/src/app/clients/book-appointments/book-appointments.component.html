@@ -4,10 +4,21 @@
 
     <h2>Citas</h2>
 
-    <button class="add-btn"
-            (click)="openCreateModal()">
-      + Agregar Cita
-    </button>
+    <div class="header-actions">
+
+      <input 
+        type="text"
+        placeholder="Buscar cliente, servicio, fecha..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        class="search-input"
+      />
+
+      <button class="add-btn" (click)="openCreateModal()">
+        + Agregar Cita
+      </button>
+
+    </div>
 
   </div>
 
@@ -15,17 +26,17 @@
     <p>Cargando citas...</p>
   </div>
 
-  <div *ngIf="!loading && appointments.length === 0">
-    <p>No hay citas registradas</p>
+  <div *ngIf="!loading && filteredAppointments.length === 0">
+    <p>No se encontraron resultados </p>
   </div>
 
-  <table *ngIf="appointments.length > 0" class="table">
+  <table *ngIf="filteredAppointments.length > 0" class="table">
 
     <thead>
       <tr>
         <th>Cliente</th>
         <th>Servicio</th>
-        <th>Establecimiento</th> 
+        <th>Establecimiento</th>
         <th>Fecha</th>
         <th>Hora</th>
         <th>Estado</th>
@@ -35,21 +46,16 @@
 
     <tbody>
 
-      <tr *ngFor="let cita of appointments">
+      <tr *ngFor="let cita of filteredAppointments">
 
         <td>{{ cita.cliente_nombre }}</td>
-
-        <td>
-          {{ cita.servicio_nombre }}
-        </td>
-
-        <td>
-          {{ cita.establecimiento_nombre }}
-        </td>
-
+        <td>{{ cita.servicio_nombre }}</td>
+        <td>{{ cita.establecimiento_nombre }}</td>
         <td>{{ cita.fecha }}</td>
 
-        <td>{{ cita.hora_inicio }} - {{ cita.hora_fin }}</td>
+        <td>
+          {{ formatHour(cita.hora_inicio) }} - {{ formatHour(cita.hora_fin) }}
+        </td>
 
         <td>
           <span class="status">
@@ -59,13 +65,11 @@
 
         <td class="actions">
 
-          <button class="edit-btn"
-                  (click)="editAppointment(cita)">
+          <button class="edit-btn" (click)="editAppointment(cita)">
             ✎
           </button>
 
-          <button class="delete-btn"
-                  (click)="openDeleteModal(cita.cita_id)">
+          <button class="delete-btn" (click)="openDeleteModal(cita.cita_id)">
             🗑
           </button>
 
@@ -78,7 +82,6 @@
   </table>
 
 </div>
-
 
 <app-create-appointment
   *ngIf="showCreateModal"

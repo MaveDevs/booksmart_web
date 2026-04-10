@@ -34,11 +34,18 @@
 
           <div class="form-group">
             <label>Dueño</label>
-            <select [(ngModel)]="establishment.usuario_id" name="usuario_id">
+            <select [(ngModel)]="establishment.usuario_id" name="usuario_id" required>
+
               <option value="">Selecciona</option>
-              <option *ngFor="let user of users" [value]="user.usuario_id">
+
+              <option *ngFor="let user of duenos" [value]="user.usuario_id">
                 {{ user.nombre }} {{ user.apellido }}
               </option>
+
+              <option *ngIf="duenos.length === 0" disabled>
+                No hay dueños disponibles
+              </option>
+
             </select>
           </div>
 

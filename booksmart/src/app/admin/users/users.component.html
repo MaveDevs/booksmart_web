@@ -2,20 +2,29 @@
 
   <div class="header">
 
-    <div class="title-section">
+  <div class="title-section">
 
-      <h2>Usuarios</h2>
+    <h2>Usuarios</h2>
 
-      <div class="tabs">
-
-        <button [class.active]="view === 'owners'" (click)="setView('owners')">Dueños</button>
-        <button [class.active]="view === 'clients'" (click)="setView('clients')">Clientes</button>
-        <button [class.active]="view === 'workers'" (click)="setView('workers')">Trabajadores</button>
-        <button [class.active]="view === 'all'" (click)="setView('all')">Todos</button>
-
-      </div>
-
+    <div class="tabs">
+      <button [class.active]="view === 'owners'" (click)="setView('owners')">Dueños</button>
+      <button [class.active]="view === 'clients'" (click)="setView('clients')">Clientes</button>
+      <button [class.active]="view === 'workers'" (click)="setView('workers')">Trabajadores</button>
+      <button [class.active]="view === 'all'" (click)="setView('all')">Todos</button>
     </div>
+
+  </div>
+
+  <div style="display:flex; gap:10px; align-items:center;">
+
+    <!--  BUSCADOR -->
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Buscar usuario..."
+      [(ngModel)]="searchText"
+      (input)="filterUsers()"
+    >
 
     <button class="add-btn" (click)="openCreate()">
       + Crear 
@@ -23,6 +32,8 @@
     </button>
 
   </div>
+
+</div>
 
   <table *ngIf="!loading && filteredUsers.length > 0" class="table">
 
@@ -41,7 +52,7 @@
           <th>Acciones</th>
         </ng-container>
 
-        <!-- 🔹 USERS -->
+        <!-- USERS -->
         <ng-template #normalHeader>
           <th>Nombre</th>
           <th>Apellido</th>
@@ -98,8 +109,9 @@
 
           <td>
             {{
+              user.rol_id === 1 ? 'Cliente' :
               user.rol_id === 2 ? 'Dueño' :
-              user.rol_id === 3 ? 'Cliente' :
+              user.rol_id === 3 ? 'Admin' :
               user.rol_id === 4 ? 'Trabajador' :
               'Otro'
             }}

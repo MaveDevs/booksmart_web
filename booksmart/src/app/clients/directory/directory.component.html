@@ -1,62 +1,76 @@
 <div class="container">
 
   <div class="header">
-    <h2>Directorio de Negocios</h2>
+    <h2>Directorio de Establecimientos</h2>
 
-    <button class="add-btn" (click)="openCreateModal()">
-      + Agregar establecimiento
-    </button>
+    <div class="header-actions">
+
+      <input 
+        type="text"
+        placeholder="Buscar negocio, dirección, teléfono, estado..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        class="search-input"
+      />
+
+      <button class="add-btn" (click)="openCreateModal()">
+        + Agregar establecimiento
+      </button>
+
+    </div>
   </div>
 
-  
-  <div *ngIf="establishments.length === 0" class="empty">
-    <p>No hay establecimientos registrados</p>
+  <div *ngIf="filteredEstablishments.length === 0" class="empty">
+    <p>No se encontraron resultados</p>
   </div>
 
- 
-  <div class="cards" *ngIf="establishments.length > 0">
+  <div class="cards" *ngIf="filteredEstablishments.length > 0">
 
-    <div class="card" *ngFor="let business of establishments">
+    <div class="card" *ngFor="let business of filteredEstablishments">
 
-    
       <div class="cover">
-        <img *ngIf="business.imagen_portada"
-             [src]="business.imagen_portada">
-
-        <img *ngIf="!business.imagen_portada"
-             src="https://via.placeholder.com/400x200">
+        <img *ngIf="business.imagen_portada" [src]="business.imagen_portada">
+        <img *ngIf="!business.imagen_portada" src="https://via.placeholder.com/400x200">
       </div>
 
-   
       <div class="card-header">
 
-        <img *ngIf="business.imagen_logo"
-             [src]="business.imagen_logo"
-             class="logo">
+        <img *ngIf="business.imagen_logo" [src]="business.imagen_logo" class="logo">
+        <img *ngIf="!business.imagen_logo" src="https://via.placeholder.com/80" class="logo">
 
-        <img *ngIf="!business.imagen_logo"
-             src="https://via.placeholder.com/80"
-             class="logo">
+        <div class="header-info">
 
-        <div>
           <h3>{{ business.nombre }}</h3>
 
           <p class="rating">
             ⭐ {{ business.rating_promedio }} ({{ business.rating_total }} reseñas)
           </p>
+
+          <button class="view-all-inline"
+                  *ngIf="business.rating_total > 0"
+                  (click)="openAllRatingsModal(business.establecimiento_id, $event)">
+            Ver todas las reseñas
+          </button>
+
         </div>
 
       </div>
 
-      <!-- BODY -->
       <div class="card-body">
 
         <p class="description">
           {{ business.descripcion_publica }}
         </p>
 
-        <p><strong>Dirección:</strong><br>{{ business.direccion }}</p>
-        <p><strong>Teléfono:</strong> {{ business.telefono }}</p>
+        <p>
+          <strong>Dirección:</strong><br>
+          {{ business.direccion }}
+        </p>
+
+        <p>
+          <strong>Teléfono:</strong>
+          {{ business.telefono }}
+        </p>
 
         <p><strong>Horario:</strong></p>
 
@@ -73,15 +87,13 @@
 
         <p>
           <strong>Estado:</strong>
-          <span class="status"
-                [ngClass]="{ 'inactive': !business.activo }">
+          <span class="status" [ngClass]="{ 'inactive': !business.activo }">
             {{ business.activo ? 'Activo' : 'Inactivo' }}
           </span>
         </p>
 
       </div>
 
-     
       <div class="card-actions">
 
         <button class="edit-btn"
@@ -93,7 +105,6 @@
                 (click)="openDeleteModal(business.establecimiento_id)">
           🗑
         </button>
-
 
         <button class="review-btn"
                 (click)="openRatingModal(business.establecimiento_id, $event)">
@@ -107,7 +118,6 @@
   </div>
 
 </div>
-
 
 <div class="modals">
 
@@ -133,20 +143,14 @@
 
 </div>
 
+<app-ratings
+  *ngIf="showRatingModal"
+  [establecimientoId]="selectedEstablishmentId"
+  (close)="closeRatingModal()">
+</app-ratings>
 
-<div *ngIf="showRatingModal" class="modal">
-
-  <div class="modal-content">
-
-    <app-ratings
-      [establecimientoId]="selectedEstablishmentId"
-      (close)="closeRatingModal()">
-    </app-ratings>
-
-    <button class="close-btn" (click)="closeRatingModal()">
-      Cerrar
-    </button>
-
-  </div>
-
-</div>
+<app-all-ratings
+  *ngIf="showAllRatingsModal"
+  [establecimientoId]="selectedEstablishmentForAll"
+  (close)="closeAllRatingsModal()">
+</app-all-ratings>

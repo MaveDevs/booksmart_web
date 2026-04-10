@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 import { EditAppointmentComponent } from './edit-appointment/edit-appointment.component';
 import { DeleteAppointmentComponent } from './delete-appointment/delete-appointment.component';
@@ -13,6 +14,7 @@ import { CreateAppointmentComponent } from './create-appointment/create-appointm
   imports: [
     CommonModule,
     HttpClientModule,
+    FormsModule,
     EditAppointmentComponent,
     DeleteAppointmentComponent,
     CreateAppointmentComponent
@@ -25,9 +27,13 @@ export class BookAppointmentsComponent implements OnInit {
   private apiUrl = 'http://localhost:8000/api/v1';
 
   appointments: any[] = [];
+  filteredAppointments: any[] = [];
+
   users: any[] = [];
   services: any[] = [];
-  establishments: any[] = []; 
+  establishments: any[] = [];
+
+  searchTerm: string = '';
 
   loading = false;
 
@@ -66,7 +72,7 @@ export class BookAppointmentsComponent implements OnInit {
       appointments: this.http.get<any[]>(`${this.apiUrl}/appointments/`, { headers: this.getHeaders() }),
       users: this.http.get<any[]>(`${this.apiUrl}/users/`, { headers: this.getHeaders() }),
       services: this.http.get<any[]>(`${this.apiUrl}/services/`, { headers: this.getHeaders() }),
-      establishments: this.http.get<any[]>(`${this.apiUrl}/establishments/`, { headers: this.getHeaders() }) 
+      establishments: this.http.get<any[]>(`${this.apiUrl}/establishments/`, { headers: this.getHeaders() })
     }).subscribe({
       next: (res) => {
 
@@ -91,6 +97,8 @@ export class BookAppointmentsComponent implements OnInit {
           };
         });
 
+        this.filteredAppointments = [...this.appointments];
+
         this.loading = false;
       },
       error: (err) => {
@@ -98,6 +106,32 @@ export class BookAppointmentsComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  formatHour(hour: string): string {
+    if (!hour) return '';
+    return hour.substring(0, 5);
+  }
+
+  onSearch() {
+
+    const term = this.searchTerm.toLowerCase();
+
+    this.filteredAppointments = this.appointments.filter(cita => {
+
+      const hora = `${this.formatHour(cita.hora_inicio)} ${this.formatHour(cita.hora_fin)}`;
+
+      return (
+        cita.cliente_nombre?.toLowerCase().includes(term) ||
+        cita.servicio_nombre?.toLowerCase().includes(term) ||
+        cita.establecimiento_nombre?.toLowerCase().includes(term) ||
+        cita.fecha?.toLowerCase().includes(term) ||
+        hora.toLowerCase().includes(term) ||
+        cita.estado?.toLowerCase().includes(term)
+      );
+
+    });
+
   }
 
   openCreateModal() {

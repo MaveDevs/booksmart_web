@@ -2,6 +2,7 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 import { CreateServiceComponent } from './create-service/create-service.component';
 import { EditServiceComponent } from './edit-service/edit-service.component';
@@ -13,6 +14,7 @@ import { DeleteServiceComponent } from './delete-service/delete-service.componen
   imports: [
     CommonModule,
     HttpClientModule,
+    FormsModule,
     CreateServiceComponent,
     EditServiceComponent,
     DeleteServiceComponent
@@ -25,7 +27,10 @@ export class ServicesComponent implements OnInit {
   private apiUrl = 'http://localhost:8000/api/v1';
 
   services: any[] = [];
+  filteredServices: any[] = [];
   establishments: any[] = [];
+
+  searchTerm: string = '';
 
   loading = false;
 
@@ -45,7 +50,6 @@ export class ServicesComponent implements OnInit {
   }
 
   getHeaders() {
-
     let token = '';
 
     if (isPlatformBrowser(this.platformId)) {
@@ -56,7 +60,6 @@ export class ServicesComponent implements OnInit {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-
   }
 
   loadAllData() {
@@ -85,6 +88,8 @@ export class ServicesComponent implements OnInit {
 
         });
 
+        this.filteredServices = [...this.services]; 
+
         this.loading = false;
       },
 
@@ -94,6 +99,17 @@ export class ServicesComponent implements OnInit {
       }
 
     });
+
+  }
+
+  onSearch() {
+
+    const term = this.searchTerm.toLowerCase();
+
+    this.filteredServices = this.services.filter(service =>
+      service.nombre?.toLowerCase().includes(term) ||
+      service.establecimiento_nombre?.toLowerCase().includes(term)
+    );
 
   }
 

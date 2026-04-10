@@ -1,0 +1,45 @@
+<div class="modal">
+
+  <div class="modal-content">
+
+    <h2>Todas las reseñas</h2>
+
+    <div *ngIf="loading" class="loading">
+      Cargando reseñas...
+    </div>
+
+    <div *ngIf="!loading && ratings.length === 0">
+      No hay reseñas
+    </div>
+
+    <div *ngFor="let r of ratings" class="rating-item">
+
+      <div class="rating-header">
+
+        <strong class="user">
+          {{ r.usuario_nombre || 'Usuario' }}
+        </strong>
+
+        <span class="date">
+          {{ formatFecha(r.fecha) }}
+        </span>
+
+      </div>
+
+      <div class="stars">
+        ⭐ {{ r.calificacion }}
+      </div>
+
+      <p class="comment">
+        {{ r.comentario }}
+      </p>
+
+    </div>
+
+    <button class="close-btn" (click)="close.emit()">
+      Cerrar
+    </button>
+
+  </div>
+
+</div>

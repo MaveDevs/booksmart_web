@@ -23,19 +23,31 @@
 
     </div>
 
-    <button 
-      *ngIf="view === 'plans'"
-      class="add-btn" 
-      (click)="openCreateModal()">
-      + Crear Plan
-    </button>
+    <div class="header-actions">
 
-    <button 
-      *ngIf="view === 'subscriptions'"
-      class="add-btn" 
-      (click)="openCreateSubModal()">
-      + Asignar Plan
-    </button>
+      <input 
+        type="text"
+        placeholder="Buscar..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        class="search-input"
+      />
+
+      <button 
+        *ngIf="view === 'plans'"
+        class="add-btn" 
+        (click)="openCreateModal()">
+        + Crear Plan
+      </button>
+
+      <button 
+        *ngIf="view === 'subscriptions'"
+        class="add-btn" 
+        (click)="openCreateSubModal()">
+        + Asignar Plan
+      </button>
+
+    </div>
 
   </div>
 
@@ -57,8 +69,7 @@
 
       <tbody>
 
-        <tr *ngFor="let item of data">
-
+        <tr *ngFor="let item of filteredData">
 
           <td>{{ item.establecimiento }}</td>
           <td>{{ item.plan }}</td>
@@ -109,7 +120,7 @@
 
       <tbody>
 
-        <tr *ngFor="let plan of plans">
+        <tr *ngFor="let plan of filteredPlans">
 
           <td>{{ plan.nombre }}</td>
           <td>{{ plan.descripcion }}</td>
@@ -138,10 +149,43 @@
 
 </div>
 
-<app-create-plan *ngIf="showCreateModal" (close)="closeCreateModal()" (created)="reloadData()"></app-create-plan>
-<app-edit-plan *ngIf="showEditModal" [planId]="selectedId" (close)="closeEditModal()" (updated)="reloadData()"></app-edit-plan>
-<app-delete-plan *ngIf="showDeleteModal" [planId]="selectedId" (close)="closeDeleteModal()" (deleted)="reloadData()"></app-delete-plan>
+<app-create-plan 
+  *ngIf="showCreateModal"
+  (close)="closeCreateModal()"
+  (created)="reloadData()">
+</app-create-plan>
 
-<app-create-subscription *ngIf="showCreateSubModal" (close)="closeCreateSubModal()" (created)="reloadData()"></app-create-subscription>
-<app-edit-subscription *ngIf="showEditSubModal" [subId]="selectedSubId" (close)="closeEditSubModal()" (updated)="reloadData()"></app-edit-subscription>
-<app-delete-subscription *ngIf="showDeleteSubModal" [subId]="selectedSubId" (close)="closeDeleteSubModal()" (deleted)="reloadData()"></app-delete-subscription>
+<app-edit-plan 
+  *ngIf="showEditModal"
+  [planId]="selectedId"
+  (close)="closeEditModal()"
+  (updated)="reloadData()">
+</app-edit-plan>
+
+<app-delete-plan 
+  *ngIf="showDeleteModal"
+  [planId]="selectedId"
+  (close)="closeDeleteModal()"
+  (deleted)="reloadData()">
+</app-delete-plan>
+
+
+<app-create-subscription 
+  *ngIf="showCreateSubModal"
+  (close)="closeCreateSubModal()"
+  (created)="reloadData()">
+</app-create-subscription>
+
+<app-edit-subscription 
+  *ngIf="showEditSubModal"
+  [subId]="selectedSubId"
+  (close)="closeEditSubModal()"
+  (updated)="reloadData()">
+</app-edit-subscription>
+
+<app-delete-subscription 
+  *ngIf="showDeleteSubModal"
+  [subId]="selectedSubId"
+  (close)="closeDeleteSubModal()"
+  (deleted)="reloadData()">
+</app-delete-subscription>

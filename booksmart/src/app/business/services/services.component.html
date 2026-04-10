@@ -4,10 +4,21 @@
 
     <h2>Servicios</h2>
 
-    <button class="add-btn"
-            (click)="openCreateModal()">
-      + Agregar Servicio
-    </button>
+    <div class="header-actions">
+
+      <input 
+        type="text"
+        placeholder="Buscar servicio o establecimiento..."
+        [(ngModel)]="searchTerm"
+        (input)="onSearch()"
+        class="search-input"
+      />
+
+      <button class="add-btn" (click)="openCreateModal()">
+        + Agregar Servicio
+      </button>
+
+    </div>
 
   </div>
 
@@ -15,11 +26,11 @@
     <p>Cargando servicios...</p>
   </div>
 
-  <div *ngIf="!loading && services.length === 0">
-    <p>No hay servicios registrados</p>
+  <div *ngIf="!loading && filteredServices.length === 0">
+    <p>No se encontraron resultados</p>
   </div>
 
-  <table *ngIf="services.length > 0" class="table">
+  <table *ngIf="filteredServices.length > 0" class="table">
 
     <thead>
       <tr>
@@ -34,7 +45,7 @@
 
     <tbody>
 
-      <tr *ngFor="let service of services">
+      <tr *ngFor="let service of filteredServices">
 
         <td>{{ service.nombre }}</td>
         <td>{{ service.descripcion }}</td>
@@ -44,13 +55,11 @@
 
         <td class="actions">
 
-          <button class="edit-btn"
-                  (click)="editService(service)">
+          <button class="edit-btn" (click)="editService(service)">
             ✎
           </button>
 
-          <button class="delete-btn"
-                  (click)="openDeleteModal(service.servicio_id)">
+          <button class="delete-btn" (click)="openDeleteModal(service.servicio_id)">
             🗑
           </button>
 

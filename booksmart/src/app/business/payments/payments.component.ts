@@ -26,6 +26,10 @@ export class PaymentsComponent implements OnInit {
   private apiUrl = 'http://localhost:8000/api/v1';
 
   payments: any[] = [];
+  filteredPayments: any[] = [];
+
+  searchTerm: string = '';
+
   loading = false;
 
   showCreateModal = false;
@@ -71,6 +75,8 @@ export class PaymentsComponent implements OnInit {
 
         });
 
+        this.filteredPayments = this.payments;
+
         this.loading = false;
       },
 
@@ -83,6 +89,26 @@ export class PaymentsComponent implements OnInit {
 
   }
 
+  // 🔍 BUSCADOR
+  onSearch() {
+
+    const term = this.searchTerm.toLowerCase();
+
+    this.filteredPayments = this.payments.filter(p => {
+
+      const texto = `
+        ${p.establecimiento_nombre}
+        ${p.plan_nombre}
+        ${p.monto}
+        ${p.metodo_pago}
+        ${p.estado}
+      `.toLowerCase();
+
+      return texto.includes(term);
+
+    });
+
+  }
 
   openCreateModal() {
     this.showCreateModal = true;
