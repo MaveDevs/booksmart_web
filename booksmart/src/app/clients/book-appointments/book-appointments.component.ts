@@ -9,7 +9,6 @@ import { DeleteAppointmentComponent } from './delete-appointment/delete-appointm
 import { CreateAppointmentComponent } from './create-appointment/create-appointment.component';
 import { AppointmentsService } from '../../services/appointments.service';
 import { BusinessServicesService } from '../../services/business-services.service';
-import { UsersService } from '../../services/users.service';
 import { EstablishmentsService } from '../../services/establishments.service';
 
 @Component({
@@ -31,12 +30,10 @@ export class BookAppointmentsComponent implements OnInit {
   appointments: any[] = [];
   filteredAppointments: any[] = [];
 
-  users: any[] = [];
   services: any[] = [];
   establishments: any[] = [];
 
   searchTerm: string = '';
-
   loading = false;
 
   showModal = false;
@@ -47,7 +44,6 @@ export class BookAppointmentsComponent implements OnInit {
   constructor(
     private appointmentsService: AppointmentsService,
     private servicesService: BusinessServicesService,
-    private usersService: UsersService,
     private establishmentsService: EstablishmentsService
   ) {}
 
@@ -61,20 +57,19 @@ export class BookAppointmentsComponent implements OnInit {
 
     forkJoin({
       appointments: this.appointmentsService.getAppointments(),
-      users: this.usersService.getUsers(),
       services: this.servicesService.getServices(),
       establishments: this.establishmentsService.getEstablishments()
     }).subscribe({
       next: (res) => {
 
-        this.users = res.users;
         this.services = res.services;
         this.establishments = res.establishments;
 
         this.appointments = res.appointments.map(cita => {
 
-          const cliente = this.users.find(u => u.usuario_id === cita.cliente_id);
-          const servicio = this.services.find(s => s.servicio_id === cita.servicio_id);
+          const servicio = this.services.find(
+            s => s.servicio_id === cita.servicio_id
+          );
 
           const establecimiento = this.establishments.find(
             e => e.establecimiento_id === servicio?.establecimiento_id
@@ -82,14 +77,20 @@ export class BookAppointmentsComponent implements OnInit {
 
           return {
             ...cita,
-            cliente_nombre: cliente ? `${cliente.nombre} ${cliente.apellido}` : 'Sin nombre',
-            servicio_nombre: servicio ? servicio.nombre : 'Sin servicio',
-            establecimiento_nombre: establecimiento ? establecimiento.nombre : '—'
+
+            cliente_nombre: `${cita.cliente_nombre} ${cita.cliente_apellido}`,
+
+            servicio_nombre: servicio
+              ? servicio.nombre
+              : cita.servicio_nombre,
+
+            establecimiento_nombre: establecimiento
+              ? establecimiento.nombre
+              : '—'
           };
         });
 
         this.filteredAppointments = [...this.appointments];
-
         this.loading = false;
       },
       error: (err) => {
@@ -165,5 +166,4 @@ export class BookAppointmentsComponent implements OnInit {
     this.closeDeleteModal();
     this.loadAllData();
   }
-
 }
