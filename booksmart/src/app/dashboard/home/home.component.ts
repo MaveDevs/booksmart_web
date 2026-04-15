@@ -1,7 +1,12 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
+import { UsersService } from '../../services/users.service';
+import { EstablishmentsService } from '../../services/establishments.service';
+import { AppointmentsService } from '../../services/appointments.service';
+import { BusinessServicesService } from '../../services/business-services.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
   selector: 'app-home',
@@ -11,8 +16,6 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-
-  apiUrl = 'http://localhost:8000/api/v1';
 
   users: any[] = [];
   establishments: any[] = [];
@@ -25,34 +28,25 @@ export class HomeComponent implements OnInit {
   analytics: any = null;
 
   constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private usersService: UsersService,
+    private establishmentsService: EstablishmentsService,
+    private appointmentsService: AppointmentsService,
+    private servicesService: BusinessServicesService,
+    private analyticsService: AnalyticsService
   ) {}
 
   ngOnInit(): void {
     this.loadDashboard();
   }
 
-  getHeaders() {
-    let token = '';
-    if (isPlatformBrowser(this.platformId)) {
-      token = localStorage.getItem('access_token') || '';
-    }
-
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-  }
-
   loadDashboard() {
 
     forkJoin({
-      users: this.http.get<any[]>(`${this.apiUrl}/users/`, { headers: this.getHeaders() }),
-      establishments: this.http.get<any[]>(`${this.apiUrl}/establishments/`, { headers: this.getHeaders() }),
-      appointments: this.http.get<any[]>(`${this.apiUrl}/appointments/`, { headers: this.getHeaders() }),
-      services: this.http.get<any[]>(`${this.apiUrl}/services/`, { headers: this.getHeaders() }),
-      analytics: this.http.get<any>(`${this.apiUrl}/analytics/system-overview`, { headers: this.getHeaders() })
+      users: this.usersService.getUsers(),
+      establishments: this.establishmentsService.getEstablishments(),
+      appointments: this.appointmentsService.getAppointments(),
+      services: this.servicesService.getServices(),
+      analytics: this.analyticsService.getSystemOverview()
     }).subscribe({
 
       next: (res) => {

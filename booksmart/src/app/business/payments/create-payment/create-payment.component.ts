@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 interface PaymentForm {
   suscripcion_id: number | null;
@@ -23,7 +24,7 @@ export class CreatePaymentComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();
 
-  private apiUrl = 'http://localhost:8000/api/v1';
+  private apiUrl = environment.apiUrl;
 
   subscriptions: any[] = [];
   plans: any[] = [];

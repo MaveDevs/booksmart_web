@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-delete-agenda',
@@ -15,7 +16,7 @@ export class DeleteAgendaComponent {
   @Output() close = new EventEmitter<void>();
   @Output() deleted = new EventEmitter<void>();
 
-  apiUrl = 'http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { AppointmentsService } from '../../../services/appointments.service';
 
 @Component({
   selector: 'app-delete-appointment',
@@ -15,33 +16,18 @@ export class DeleteAppointmentComponent {
   @Output() close = new EventEmitter<void>();
   @Output() deleted = new EventEmitter<void>();
 
-  private apiUrl = 'http://localhost:8000/api/v1';
-
   showSuccessCard: boolean = false;
   loading: boolean = false;
 
   constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private appointmentsService: AppointmentsService
   ) {}
-
-  getHeaders() {
-    const token = localStorage.getItem('access_token');
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-  }
 
   confirmDelete() {
 
-    if (!isPlatformBrowser(this.platformId)) return;
-
     this.loading = true;
 
-    this.http.delete(
-      `${this.apiUrl}/appointments/${this.appointmentId}/`,
-      { headers: this.getHeaders() }
-    ).subscribe({
+    this.appointmentsService.deleteAppointment(this.appointmentId).subscribe({
       next: () => {
         this.loading = false;
         this.showSuccessCard = true;

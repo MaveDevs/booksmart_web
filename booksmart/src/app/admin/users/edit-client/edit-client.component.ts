@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, Inject, PLATFORM_ID, OnChanges 
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-edit-client',
@@ -17,7 +18,7 @@ export class EditClientComponent implements OnChanges {
   @Output() close = new EventEmitter<void>();
   @Output() updated = new EventEmitter<void>();
 
-  apiUrl = 'http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   client: any = {};
 

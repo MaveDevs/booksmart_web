@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { ApiConfigService } from '../../../services/api-config.service';
 
 @Component({
   selector: 'app-notifications',
@@ -15,12 +16,11 @@ export class NotificationsComponent {
   @Output() close = new EventEmitter<void>();
   @Output() updated = new EventEmitter<void>(); 
 
-  apiUrl = 'http://localhost:8000/api/v1';
-
   noLeidasCount = 0;
 
   constructor(
     private http: HttpClient,
+    private apiConfigService: ApiConfigService,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -45,7 +45,7 @@ export class NotificationsComponent {
   }
 
   marcarLeida(n: any) {
-    this.http.patch(`${this.apiUrl}/notifications/${n.notificacion_id}`, {
+    this.http.patch(this.apiConfigService.notifications.getById(n.notificacion_id), {
       leida: true
     }, { headers: this.getHeaders() }).subscribe(() => {
       n.leida = true;
@@ -58,7 +58,7 @@ export class NotificationsComponent {
     const noLeidas = this.notifications.filter(n => !n.leida);
 
     noLeidas.forEach(n => {
-      this.http.patch(`${this.apiUrl}/notifications/${n.notificacion_id}`, {
+      this.http.patch(this.apiConfigService.notifications.getById(n.notificacion_id), {
         leida: true
       }, { headers: this.getHeaders() }).subscribe(() => {
         n.leida = true;
@@ -73,7 +73,7 @@ export class NotificationsComponent {
   }
 
   eliminar(n: any) {
-    this.http.delete(`${this.apiUrl}/notifications/${n.notificacion_id}`, {
+    this.http.delete(this.apiConfigService.notifications.getById(n.notificacion_id), {
       headers: this.getHeaders()
     }).subscribe(() => {
       this.notifications = this.notifications.filter(x => x !== n);

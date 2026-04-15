@@ -1,12 +1,14 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
 import { CreateServiceComponent } from './create-service/create-service.component';
 import { EditServiceComponent } from './edit-service/edit-service.component';
 import { DeleteServiceComponent } from './delete-service/delete-service.component';
+import { BusinessServicesService } from '../../services/business-services.service';
+import { EstablishmentsService } from '../../services/establishments.service';
 
 @Component({
   selector: 'app-services',
@@ -24,8 +26,6 @@ import { DeleteServiceComponent } from './delete-service/delete-service.componen
 })
 export class ServicesComponent implements OnInit {
 
-  private apiUrl = 'http://localhost:8000/api/v1';
-
   services: any[] = [];
   filteredServices: any[] = [];
   establishments: any[] = [];
@@ -41,25 +41,12 @@ export class ServicesComponent implements OnInit {
   selectedId!: number;
 
   constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private servicesService: BusinessServicesService,
+    private establishmentsService: EstablishmentsService
   ) {}
 
   ngOnInit(): void {
     this.loadAllData();
-  }
-
-  getHeaders() {
-    let token = '';
-
-    if (isPlatformBrowser(this.platformId)) {
-      token = localStorage.getItem('access_token') || '';
-    }
-
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
   }
 
   loadAllData() {
@@ -67,8 +54,8 @@ export class ServicesComponent implements OnInit {
     this.loading = true;
 
     forkJoin({
-      services: this.http.get<any[]>(`${this.apiUrl}/services/`, { headers: this.getHeaders() }),
-      establishments: this.http.get<any[]>(`${this.apiUrl}/establishments/`, { headers: this.getHeaders() })
+      services: this.servicesService.getServices(),
+      establishments: this.establishmentsService.getEstablishments()
     }).subscribe({
 
       next: (res: any) => {

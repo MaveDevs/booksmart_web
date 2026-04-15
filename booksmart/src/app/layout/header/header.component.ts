@@ -6,6 +6,8 @@ import { ProfileModalComponent } from './profile-modal/profile-modal.component';
 import { LogoutModalComponent } from './logout-modal/logout-modal.component'; 
 import { NotificationsComponent } from './notifications/notifications.component';
 import { AuthService } from '../../services/auth.service';
+import { ApiConfigService } from '../../services/api-config.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-header',
@@ -22,8 +24,6 @@ import { AuthService } from '../../services/auth.service';
 })
 export class HeaderComponent implements OnInit {
 
-  apiUrl = 'http://localhost:8000/api/v1';
-
   isOpen = false;
   showModal = false;
   showLogoutModal = false;
@@ -36,6 +36,7 @@ export class HeaderComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
+    private apiConfigService: ApiConfigService,
     private http: HttpClient,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
@@ -58,7 +59,7 @@ export class HeaderComponent implements OnInit {
   }
 
   loadNotifications() {
-    this.http.get<any[]>(`${this.apiUrl}/notifications/`, {
+    this.http.get<any[]>(this.apiConfigService.notifications.list, {
       headers: this.getHeaders()
     }).subscribe({
       next: (res) => {

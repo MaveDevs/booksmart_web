@@ -2,6 +2,7 @@ import { Component, Output, EventEmitter, Inject, PLATFORM_ID, OnInit } from '@a
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-create-agenda',
@@ -15,7 +16,7 @@ export class CreateAgendaComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();
 
-  apiUrl = 'http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   establishments: any[] = [];
 

@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-ratings',
@@ -12,7 +13,7 @@ import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http'
 })
 export class RatingsComponent implements OnInit {
 
-  apiUrl = 'http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   @Input() establecimientoId: number | null = null;
   @Output() close = new EventEmitter<void>();

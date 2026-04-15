@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, Inject, PLATFORM_ID } f
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-edit-worker',
@@ -16,7 +17,7 @@ export class EditWorkerComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
   @Output() updated = new EventEmitter<void>();
 
-  apiUrl = 'http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   worker: any = {};
   establishments: any[] = [];

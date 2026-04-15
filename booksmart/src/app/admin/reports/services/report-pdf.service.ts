@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import jsPDF from 'jspdf';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReportPdfService {
 
-  apiUrl = 'http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
 

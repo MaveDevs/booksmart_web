@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 import { DeleteEstablishmentComponent } from './delete-establishment/delete-establishment.component';
 import { EditEstablishmentComponent } from './edit-establishment/edit-establishment.component';
@@ -28,7 +29,7 @@ import { AllRatingsComponent } from './all-ratings/all-ratings.component';
 })
 export class DirectoryComponent implements OnInit {
 
-  apiUrl = 'http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   establishments: any[] = [];
   filteredEstablishments: any[] = [];

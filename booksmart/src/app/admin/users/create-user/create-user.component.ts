@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output, Inject, PLATFORM_ID } from '@angular/c
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-create-user',
@@ -15,7 +16,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 })
 export class CreateUserComponent {
 
-  apiUrl = 'http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   @Output() close = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();

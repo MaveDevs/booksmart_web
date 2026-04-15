@@ -2,6 +2,7 @@ import { Component, Input, Output, EventEmitter, OnInit, Inject, PLATFORM_ID } f
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-all-ratings',
@@ -15,7 +16,7 @@ export class AllRatingsComponent implements OnInit {
   @Input() establecimientoId!: number;
   @Output() close = new EventEmitter<void>();
 
-  apiUrl = 'http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   ratings: any[] = [];
   loading = false;

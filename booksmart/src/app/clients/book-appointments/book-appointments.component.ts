@@ -1,12 +1,16 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 
 import { EditAppointmentComponent } from './edit-appointment/edit-appointment.component';
 import { DeleteAppointmentComponent } from './delete-appointment/delete-appointment.component';
 import { CreateAppointmentComponent } from './create-appointment/create-appointment.component';
+import { AppointmentsService } from '../../services/appointments.service';
+import { BusinessServicesService } from '../../services/business-services.service';
+import { UsersService } from '../../services/users.service';
+import { EstablishmentsService } from '../../services/establishments.service';
 
 @Component({
   selector: 'app-book-appointments',
@@ -23,8 +27,6 @@ import { CreateAppointmentComponent } from './create-appointment/create-appointm
   styleUrls: ['./book-appointments.component.css']
 })
 export class BookAppointmentsComponent implements OnInit {
-
-  private apiUrl = 'http://localhost:8000/api/v1';
 
   appointments: any[] = [];
   filteredAppointments: any[] = [];
@@ -43,25 +45,14 @@ export class BookAppointmentsComponent implements OnInit {
   showCreateModal = false;
 
   constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private appointmentsService: AppointmentsService,
+    private servicesService: BusinessServicesService,
+    private usersService: UsersService,
+    private establishmentsService: EstablishmentsService
   ) {}
 
   ngOnInit(): void {
     this.loadAllData();
-  }
-
-  getHeaders() {
-    let token = '';
-
-    if (isPlatformBrowser(this.platformId)) {
-      token = localStorage.getItem('access_token') || '';
-    }
-
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
   }
 
   loadAllData() {
@@ -69,10 +60,10 @@ export class BookAppointmentsComponent implements OnInit {
     this.loading = true;
 
     forkJoin({
-      appointments: this.http.get<any[]>(`${this.apiUrl}/appointments/`, { headers: this.getHeaders() }),
-      users: this.http.get<any[]>(`${this.apiUrl}/users/`, { headers: this.getHeaders() }),
-      services: this.http.get<any[]>(`${this.apiUrl}/services/`, { headers: this.getHeaders() }),
-      establishments: this.http.get<any[]>(`${this.apiUrl}/establishments/`, { headers: this.getHeaders() })
+      appointments: this.appointmentsService.getAppointments(),
+      users: this.usersService.getUsers(),
+      services: this.servicesService.getServices(),
+      establishments: this.establishmentsService.getEstablishments()
     }).subscribe({
       next: (res) => {
 

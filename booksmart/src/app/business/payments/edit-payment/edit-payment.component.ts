@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-edit-payment',
@@ -19,7 +20,7 @@ export class EditPaymentComponent implements OnInit {
 
   showSuccess: boolean = false; 
 
-  private apiUrl = 'http://localhost:8000/api/v1';
+  private apiUrl = environment.apiUrl;
 
   payment: any = {
     suscripcion_id: '',

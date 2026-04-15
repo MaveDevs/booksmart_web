@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-delete-payment',
@@ -15,7 +16,7 @@ export class DeletePaymentComponent {
   @Output() close = new EventEmitter<void>();
   @Output() deleted = new EventEmitter<void>();
 
-  private apiUrl = 'http://localhost:8000/api/v1/payments';
+  private apiUrl = environment.apiUrl + '/payments';
 
   constructor(private http: HttpClient) {}
 

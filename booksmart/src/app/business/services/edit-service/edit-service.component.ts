@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { BusinessServicesService } from '../../../services/business-services.service';
 
 @Component({
   selector: 'app-edit-service',
@@ -17,15 +18,12 @@ export class EditServiceComponent implements OnChanges {
   @Output() close = new EventEmitter<void>();
   @Output() updated = new EventEmitter<void>();
 
-  private apiUrl = 'http://localhost:8000/api/v1';
-
   service: any = {};
 
   showSuccessCard: boolean = false;
 
   constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private servicesService: BusinessServicesService
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -34,25 +32,9 @@ export class EditServiceComponent implements OnChanges {
     }
   }
 
-  getHeaders() {
-
-    const token = localStorage.getItem('access_token');
-
-    return new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-
-  }
-
   loadService() {
 
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    this.http.get(
-      `${this.apiUrl}/services/${this.serviceId}`,
-      { headers: this.getHeaders() }
-    ).subscribe({
+    this.servicesService.getServiceById(this.serviceId).subscribe({
       next: (data: any) => {
         this.service = data;
       },
@@ -65,13 +47,7 @@ export class EditServiceComponent implements OnChanges {
 
   updateService() {
 
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    this.http.put(
-      `${this.apiUrl}/services/${this.serviceId}`,
-      this.service,
-      { headers: this.getHeaders() }
-    ).subscribe({
+    this.servicesService.updateService(this.serviceId, this.service).subscribe({
       next: () => {
 
         this.showSuccessCard = true;

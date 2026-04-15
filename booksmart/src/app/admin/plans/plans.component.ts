@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 import { CreatePlanComponent } from './create-plan/create-plan.component';
 import { EditPlanComponent } from './edit-plan/edit-plan.component';
@@ -30,7 +31,7 @@ import { DeleteSubscriptionComponent } from './delete-subscription/delete-subscr
 })
 export class PlansComponent implements OnInit {
 
-  apiUrl = 'http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   establishments: any[] = [];
   plans: any[] = [];

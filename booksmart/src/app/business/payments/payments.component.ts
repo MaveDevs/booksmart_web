@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 import { CreatePaymentComponent } from './create-payment/create-payment.component';
 import { EditPaymentComponent } from './edit-payment/edit-payment.component';
@@ -23,7 +24,7 @@ import { DeletePaymentComponent } from './delete-payment/delete-payment.componen
 })
 export class PaymentsComponent implements OnInit {
 
-  private apiUrl = 'http://localhost:8000/api/v1';
+  private apiUrl = environment.apiUrl;
 
   payments: any[] = [];
   filteredPayments: any[] = [];

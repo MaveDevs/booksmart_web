@@ -1,18 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
 
 import { CreateAgendaComponent } from './create-agenda/create-agenda.component';
 import { EditAgendaComponent } from './edit-agenda/edit-agenda.component';
 import { DeleteAgendaComponent } from './delete-agenda/delete-agenda.component';
+import { AppointmentsService } from '../../services/appointments.service';
+import { BusinessServicesService } from '../../services/business-services.service';
+import { EstablishmentsService } from '../../services/establishments.service';
+import { UsersService } from '../../services/users.service';
+import { AgendasService } from '../../services/agendas.service';
 
 @Component({
   selector: 'app-agendas',
   standalone: true,
   imports: [
     CommonModule,
+    HttpClientModule,
     FormsModule,
     CreateAgendaComponent,
     EditAgendaComponent,
@@ -22,8 +28,6 @@ import { DeleteAgendaComponent } from './delete-agenda/delete-agenda.component';
   styleUrls: ['./agendas.component.css']
 })
 export class AgendasComponent implements OnInit {
-
-  apiUrl = 'http://localhost:8000/api/v1';
 
   view: 'calendar' | 'schedules' = 'calendar';
   range: 'week' | 'month' | '3months' = 'week';
@@ -53,7 +57,13 @@ export class AgendasComponent implements OnInit {
   selectedAppointment: any = null;
   showAppointmentModal = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private appointmentsService: AppointmentsService,
+    private servicesService: BusinessServicesService,
+    private establishmentsService: EstablishmentsService,
+    private usersService: UsersService,
+    private agendasService: AgendasService
+  ) {}
 
   ngOnInit(){
     this.hours = this.generateTimeSlots();
@@ -120,21 +130,12 @@ export class AgendasComponent implements OnInit {
     return slots;
   }
 
-  getHeaders(){
-    const token = localStorage.getItem('access_token') || '';
-
-    return new HttpHeaders({
-      Authorization:`Bearer ${token}`,
-      'Content-Type':'application/json'
-    });
-  }
-
   loadAll(){
     forkJoin({
-      appointments: this.http.get<any[]>(`${this.apiUrl}/appointments/`, { headers:this.getHeaders() }),
-      services: this.http.get<any[]>(`${this.apiUrl}/services/`, { headers:this.getHeaders() }),
-      establishments: this.http.get<any[]>(`${this.apiUrl}/establishments/`, { headers:this.getHeaders() }),
-      users: this.http.get<any[]>(`${this.apiUrl}/users/`, { headers:this.getHeaders() })
+      appointments: this.appointmentsService.getAppointments(),
+      services: this.servicesService.getServices(),
+      establishments: this.establishmentsService.getEstablishments(),
+      users: this.usersService.getUsers()
     }).subscribe(res=>{
       this.appointments = res.appointments;
       this.services = res.services;
@@ -145,9 +146,7 @@ export class AgendasComponent implements OnInit {
   }
 
   loadAgendas(){
-    this.http.get<any[]>(`${this.apiUrl}/agendas/`, {
-      headers:this.getHeaders()
-    }).subscribe(data=>{
+    this.agendasService.getAgendas().subscribe(data=>{
       this.agendas = data;
       this.applyFilter();
     });

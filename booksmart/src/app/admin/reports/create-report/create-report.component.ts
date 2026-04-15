@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output, Inject, PLATFORM_ID, OnInit } from '@a
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-create-report',
@@ -16,7 +17,7 @@ import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http'
 })
 export class CreateReportComponent implements OnInit {
 
-  apiUrl = 'http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   @Output() close = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();

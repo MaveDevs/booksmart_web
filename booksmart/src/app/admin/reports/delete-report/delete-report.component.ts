@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector:'app-delete-report',
@@ -19,7 +20,7 @@ export class DeleteReportComponent {
   @Output() close = new EventEmitter<void>();
   @Output() deleted = new EventEmitter<void>();
 
-  apiUrl='http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   showSuccessCard = false;
   loading = false;

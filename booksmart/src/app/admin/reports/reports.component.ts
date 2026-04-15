@@ -3,6 +3,7 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { forkJoin } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 import { ReportPdfService } from './services/report-pdf.service';
 
@@ -26,7 +27,7 @@ import { DeleteReportComponent } from './delete-report/delete-report.component';
 })
 export class ReportsComponent implements OnInit {
 
-  apiUrl = 'http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   reports: any[] = [];
   allReports: any[] = []; 

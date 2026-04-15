@@ -1,7 +1,11 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { AppointmentsService } from '../../../services/appointments.service';
+import { BusinessServicesService } from '../../../services/business-services.service';
+import { UsersService } from '../../../services/users.service';
+import { EstablishmentsService } from '../../../services/establishments.service';
 
 @Component({
   selector: 'app-edit-appointment',
@@ -16,8 +20,6 @@ export class EditAppointmentComponent implements OnChanges {
   @Output() close = new EventEmitter<void>();
   @Output() updated = new EventEmitter<void>();
 
-  private apiUrl = 'http://localhost:8000/api/v1';
-
   appointment: any = {};
   showSuccessCard = false;
 
@@ -30,8 +32,10 @@ export class EditAppointmentComponent implements OnChanges {
   estados = ['PENDIENTE','CONFIRMADA','CANCELADA','COMPLETADA'];
 
   constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private appointmentsService: AppointmentsService,
+    private servicesService: BusinessServicesService,
+    private usersService: UsersService,
+    private establishmentsService: EstablishmentsService
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -40,23 +44,15 @@ export class EditAppointmentComponent implements OnChanges {
     }
   }
 
-  getHeaders() {
-    const token = localStorage.getItem('access_token');
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-  }
-
   loadAll(){
 
-    this.http.get<any[]>(`${this.apiUrl}/users/`, { headers:this.getHeaders() })
+    this.usersService.getUsers()
       .subscribe(data => this.users = data);
 
-    this.http.get<any[]>(`${this.apiUrl}/services/`, { headers:this.getHeaders() })
+    this.servicesService.getServices()
       .subscribe(data => this.services = data);
 
-    this.http.get<any[]>(`${this.apiUrl}/establishments/`, { headers:this.getHeaders() })
+    this.establishmentsService.getEstablishments()
       .subscribe(data => this.establishments = data);
 
     this.loadAppointment();
@@ -64,9 +60,7 @@ export class EditAppointmentComponent implements OnChanges {
 
   loadAppointment() {
 
-    this.http.get(`${this.apiUrl}/appointments/${this.appointmentId}/`, {
-      headers: this.getHeaders()
-    }).subscribe({
+    this.appointmentsService.getAppointmentById(this.appointmentId).subscribe({
       next: (data: any) => {
         this.appointment = data;
 
@@ -91,11 +85,7 @@ export class EditAppointmentComponent implements OnChanges {
 
   updateAppointment() {
 
-    this.http.put(
-      `${this.apiUrl}/appointments/${this.appointmentId}/`,
-      this.appointment,
-      { headers: this.getHeaders() }
-    ).subscribe({
+    this.appointmentsService.updateAppointment(this.appointmentId, this.appointment).subscribe({
       next: () => {
         this.showSuccessCard = true;
         this.updated.emit();

@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-delete-plan',
@@ -16,7 +17,7 @@ export class DeletePlanComponent {
   @Output() close = new EventEmitter<void>();
   @Output() deleted = new EventEmitter<void>();
 
-  apiUrl = 'http://localhost:8000/api/v1/plans';
+  apiUrl = environment.apiUrl + '/plans';
 
   loading = false;
   showSuccessCard = false;

@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { HttpClient, HttpHeaders, HttpClientModule } from '@angular/common/http';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { BusinessServicesService } from '../../../services/business-services.service';
 
 @Component({
   selector: 'app-delete-service',
@@ -16,34 +17,15 @@ export class DeleteServiceComponent {
   @Output() close = new EventEmitter<void>();
   @Output() deleted = new EventEmitter<void>();
 
-  private apiUrl = 'http://localhost:8000/api/v1';
-
   showSuccessCard = false;
 
   constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
+    private servicesService: BusinessServicesService
   ) {}
-
-  getHeaders() {
-
-    const token = localStorage.getItem('access_token');
-
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
-
-  }
 
   deleteService() {
 
-    if (!isPlatformBrowser(this.platformId)) return;
-
-    this.http.delete(
-      `${this.apiUrl}/services/${this.serviceId}`,
-      { headers: this.getHeaders() }
-    ).subscribe({
+    this.servicesService.deleteService(this.serviceId).subscribe({
 
       next: () => {
 

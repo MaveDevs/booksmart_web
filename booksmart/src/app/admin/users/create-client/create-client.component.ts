@@ -2,6 +2,7 @@ import { Component, Output, EventEmitter, Inject, PLATFORM_ID } from '@angular/c
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-create-client',
@@ -15,7 +16,7 @@ export class CreateClientComponent {
   @Output() close = new EventEmitter<void>();
   @Output() created = new EventEmitter<void>();
 
-  apiUrl = 'http://localhost:8000/api/v1';
+  apiUrl = environment.apiUrl;
 
   client: any = {
     nombre: '',
