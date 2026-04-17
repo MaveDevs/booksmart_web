@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { forkJoin } from 'rxjs';
+
 import { UsersService } from '../../services/users.service';
 import { EstablishmentsService } from '../../services/establishments.service';
 import { AppointmentsService } from '../../services/appointments.service';
@@ -86,7 +87,6 @@ export class HomeComponent implements OnInit {
 
           .map(a => {
 
-            const user = this.users.find(u => u.usuario_id === a.cliente_id);
             const service = this.services.find(s => s.servicio_id === a.servicio_id);
 
             const estId = service?.establecimiento_id;
@@ -94,7 +94,9 @@ export class HomeComponent implements OnInit {
 
             return {
               ...a,
-              cliente: user ? `${user.nombre} ${user.apellido}` : 'N/A',
+
+              cliente: `${a.cliente_nombre || ''} ${a.cliente_apellido || ''}`.trim() || 'N/A',
+
               servicio: service?.nombre || 'N/A',
               negocio: est?.nombre || 'N/A'
             };
